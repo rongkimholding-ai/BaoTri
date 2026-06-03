@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <x-slot name="header">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -59,6 +58,7 @@
                 @php
                     $canUpdate = auth()->user()->can('update data');
                 @endphp
+                @if (!empty($requests))
                 @foreach($requests as $item)
                     <tr data-id="{{ $item->id }}">
 
@@ -327,7 +327,7 @@
 
                     </tr>
                 @endforeach
-
+                @endif
             </tbody>
         </table>
     </div>

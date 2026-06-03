@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\MaintenanceRequestController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,5 +37,14 @@ Route::post(
     '/maintenance-requests/remind',
     [MaintenanceRequestController::class, 'remind']
 )->name('maintenance-requests.remind');
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    Route::resource('users', UserController::class);
+
+    Route::resource('roles', RoleController::class);
+
+    Route::resource('permissions', PermissionController::class);
+});
 
 require __DIR__.'/auth.php';

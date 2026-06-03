@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('maintenance-requests.index')" :active="request()->routeIs('maintenance-requests.index')">
                         {{ __('Danh sách bảo trì') }}
                     </x-nav-link>
+
+                    @role('admin')
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('Người dùng') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')">
+                        {{ __('Vai trò') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('permissions.index')" :active="request()->routeIs('permissions.index')">
+                        {{ __('Quyền') }}
+                    </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
