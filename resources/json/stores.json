@@ -1,0 +1,1136 @@
+[
+  {
+    "code": 201052,
+    "name": "41 Thái Thịnh",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201054,
+    "name": "11 Nam Đồng",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201101,
+    "name": "32 Trần Điền",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201195,
+    "name": "144 Mễ Trì Thượng",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201205,
+    "name": "12 Ngõ 14 Mễ Trì Hạ",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201005,
+    "name": "Royal City",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201125,
+    "name": "101C Nguyên Hồng",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201127,
+    "name": "45 Nguyễn Ngọc Nại",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201028,
+    "name": "02 Trần Thái Tông",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201070,
+    "name": "B5 Nguyễn Quý Đức",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 303019,
+    "name": "TIC - 08 Đồng Me",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201046,
+    "name": "619 Vũ Tông Phan",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201150,
+    "name": "147 Tam Khương",
+    "am_name": "Đặng Khoa Tùng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV2"
+  },
+  {
+    "code": 201085,
+    "name": "128 Nguyễn Đức Cảnh",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201147,
+    "name": "Xóm 3 Lạc Thị",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201148,
+    "name": "Xóm 4 Quỳnh Đô",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201163,
+    "name": "134 Ái Mộ",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201188,
+    "name": "16 Tả Thanh Oai",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201149,
+    "name": "43 Tả Thanh Oai",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201182,
+    "name": "132 Phúc Tân",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 303023,
+    "name": "TIC - 212 Dương Văn Bé",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 303017,
+    "name": "TIC - 90 Thành Trung",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 303002,
+    "name": "TIC - 142 Thạch Bàn",
+    "am_name": "Đỗ Anh Đạt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV4"
+  },
+  {
+    "code": 201114,
+    "name": "54 Mậu Lương",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201080,
+    "name": "93 Hoàng Công",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201088,
+    "name": "10 Nguyễn Thanh Bình",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201022,
+    "name": "BigC Hà Đông",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201077,
+    "name": "TT17 Nguyễn Khuyến",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201016,
+    "name": "59 Tôn Đức Thắng",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201009,
+    "name": "02 Nguyễn Văn Tố",
+    "am_name": "Đỗ Thị Mai Hồng",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV12"
+  },
+  {
+    "code": 201176,
+    "name": "50 Hoàng Văn Thái",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201108,
+    "name": "100 Cổ Bi",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201109,
+    "name": "156 Nguyễn Sơn",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201102,
+    "name": "287 Nguyễn Văn Linh",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201115,
+    "name": "326 Chợ Bún",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201159,
+    "name": "53 Vũ Xuân Thiều",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201020,
+    "name": "Aeon Long Biên",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201106,
+    "name": "361 Hà Huy Tập",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201165,
+    "name": "172 Bồ Đề",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201190,
+    "name": "61 Gia Thượng",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201087,
+    "name": "210A Định Công Hạ",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201208,
+    "name": "109 E5 Tạ Quang Bửu",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201192,
+    "name": "115 Ngõ 254 Minh Khai",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201083,
+    "name": "460 Khương Đình",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201161,
+    "name": "112 Kim Giang",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201111,
+    "name": "104 Nhân Hòa",
+    "am_name": "Đỗ Trung Anh",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV3"
+  },
+  {
+    "code": 201082,
+    "name": "An Bình City",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201091,
+    "name": "52 Cổ Nhuế",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201131,
+    "name": "233 Cổ Nhuế",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201065,
+    "name": "17 Xuân Đỉnh",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201118,
+    "name": "261 Xuân Đỉnh",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201064,
+    "name": "89 Lai Xá",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201186,
+    "name": "82 Vân Canh",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201096,
+    "name": "288 Hoàng Công Chất",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201166,
+    "name": "153 Cầu Diễn",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201191,
+    "name": "36 Nguyên Xá",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201197,
+    "name": "66 Tây Tựu",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201204,
+    "name": "310 Phương Canh",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201211,
+    "name": "66 Phú Mỹ",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201107,
+    "name": "135 Thiên Hiền (Mỹ Đình)",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201196,
+    "name": "154 Mỹ Đình",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 303009,
+    "name": "TIC - 193 Yên Hòa",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201143,
+    "name": "39 Dương Khuê",
+    "am_name": "Lê Đức Thọ",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV8"
+  },
+  {
+    "code": 201130,
+    "name": "Xóm 2 Quỳnh Đô",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201067,
+    "name": "354 Phan Trọng Tuệ",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201141,
+    "name": "122 Phố Vọng",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201033,
+    "name": "HH4C Linh Đàm",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201201,
+    "name": "43 Ngõ 108 Trần Phú",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201041,
+    "name": "39 Quang Trung",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201079,
+    "name": "209 Hà Trì",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201049,
+    "name": "XaLa",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201072,
+    "name": "CT36 Trịnh Đình Cửu",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201198,
+    "name": "5 Ngô Thì Nhậm",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201099,
+    "name": "208A Lê Trọng Tấn",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201207,
+    "name": "29 Nguyễn An Ninh",
+    "am_name": "Lê Thị Kiều",
+    "om_name": "Trần Văn Quý",
+    "region": "KV10"
+  },
+  {
+    "code": 201152,
+    "name": "97 Thanh Đàm",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201129,
+    "name": "16 Trần Đại Nghĩa",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201074,
+    "name": "52 Văn Cao",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201157,
+    "name": "58 Hương Viên",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201175,
+    "name": "62 Nguyễn Hoàng Tôn",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201199,
+    "name": "23 Tô Ngọc Vân",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201057,
+    "name": "274 Kim Ngưu",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201017,
+    "name": "331 Kim Mã",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201136,
+    "name": "18 Phan Kế Bính",
+    "am_name": "Lê Thùy Dương",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV14"
+  },
+  {
+    "code": 201160,
+    "name": "44 Yên Duyên",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201081,
+    "name": "Gamuda",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201128,
+    "name": "269 Lĩnh Nam",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 303022,
+    "name": "TIC - 220 Tam Trinh",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201179,
+    "name": "123 Nam Dư",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201138,
+    "name": "220 Nam Dư",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201140,
+    "name": "5 Thịnh Liệt",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 303013,
+    "name": "TIC - 27 Đền Lừ",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201036,
+    "name": "244 Minh Khai",
+    "am_name": "Ngô Trung Hiếu",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV5"
+  },
+  {
+    "code": 201135,
+    "name": "328 Nguyễn Trãi",
+    "am_name": "Nguyễn Anh Tuấn",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV17"
+  },
+  {
+    "code": 201076,
+    "name": "139 Hồ Tùng Mậu",
+    "am_name": "Nguyễn Anh Tuấn",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV17"
+  },
+  {
+    "code": 201032,
+    "name": "459 Bạch Mai",
+    "am_name": "Nguyễn Đức Minh",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV13"
+  },
+  {
+    "code": 201031,
+    "name": "42F Lý Thường Kiệt",
+    "am_name": "Nguyễn Đức Minh",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV13"
+  },
+  {
+    "code": 201097,
+    "name": "10 Nguyễn Khuyến",
+    "am_name": "Nguyễn Đức Minh",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV13"
+  },
+  {
+    "code": 201003,
+    "name": "Times City",
+    "am_name": "Nguyễn Đức Minh",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV13"
+  },
+  {
+    "code": 201058,
+    "name": "Times City 2",
+    "am_name": "Nguyễn Đức Minh",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV13"
+  },
+  {
+    "code": 201117,
+    "name": "386 Hồ Tùng Mậu",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201039,
+    "name": "102 Trần Duy Hưng",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201120,
+    "name": "94 Đào Tấn",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201024,
+    "name": "95 Đội Cấn",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201209,
+    "name": "35 Phú Đô",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201090,
+    "name": "348 Thụy Khuê",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201184,
+    "name": "72 Nguyễn Đổng Chi",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201025,
+    "name": "60 Hồ Tùng Mậu",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201034,
+    "name": "BigC Thăng Long",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201146,
+    "name": "174 Chiến Thắng",
+    "am_name": "Nguyễn Ngọc Ánh",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV7"
+  },
+  {
+    "code": 201007,
+    "name": "19 Khâm Thiên",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201008,
+    "name": "113 Ô Chợ Dừa",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201154,
+    "name": "277 Lương Thế Vinh",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201126,
+    "name": "67A Quan Nhân",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201110,
+    "name": "305 Trung Văn",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201206,
+    "name": "1A An Trường",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201098,
+    "name": "69 Tây Mỗ",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201116,
+    "name": "355 Đại Mỗ",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201203,
+    "name": "79 La Nội",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201189,
+    "name": "45 Ỷ La",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201122,
+    "name": "162 Nguyễn Văn Lộc",
+    "am_name": "Nguyễn Quỳnh Trang",
+    "om_name": "Lê Anh Tài",
+    "region": "KV9"
+  },
+  {
+    "code": 201055,
+    "name": "253 Trần Quốc Hoàn",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201210,
+    "name": "31 Ngõ 8 Lê Quang Đạo",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201095,
+    "name": "72 Thành Công",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201158,
+    "name": "180 Cầu Giấy",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201043,
+    "name": "175 Tô Hiệu",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 303004,
+    "name": "TIC - 92 Doãn Kế Thiện",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201066,
+    "name": "78 Dương Quảng Hàm",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201169,
+    "name": "53 Trần Quốc Vượng",
+    "am_name": "Phạm Đức Thắng",
+    "om_name": "Nguyễn Anh Tuấn",
+    "region": "KV11"
+  },
+  {
+    "code": 201113,
+    "name": "639 Trương Định",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201030,
+    "name": "12 Tân Mai",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201089,
+    "name": "647 Tân Mai",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201170,
+    "name": "TT5 N7 Bắc Linh Đàm",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201084,
+    "name": "43 Ngọc Hồi",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201193,
+    "name": "IEC Thanh Trì",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201171,
+    "name": "131 Tựu Liệt",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201164,
+    "name": "19 ngõ 61 Giáp Nhị",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201063,
+    "name": "88 Cửa Bắc",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201162,
+    "name": "100 Phùng Hưng",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201075,
+    "name": "123 Đại Từ",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201168,
+    "name": "31 Hàng Mã",
+    "am_name": "Phạm Thị Minh Nguyệt",
+    "om_name": "Trần Văn Quý",
+    "region": "KV15"
+  },
+  {
+    "code": 201123,
+    "name": "83D Nguyễn Khang",
+    "am_name": "Phạm Văn Ven",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV6"
+  },
+  {
+    "code": 201145,
+    "name": "109B Lê Hồng Phong",
+    "am_name": "Phạm Văn Ven",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV6"
+  },
+  {
+    "code": 201026,
+    "name": "114 Cầu Gỗ",
+    "am_name": "Phạm Văn Ven",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV6"
+  },
+  {
+    "code": 303001,
+    "name": "TIC - 60 Chiến Thắng",
+    "am_name": "Phạm Văn Ven",
+    "om_name": "Phạm Văn Ven",
+    "region": "KV6"
+  },
+  {
+    "code": 201121,
+    "name": "26 Yên Phụ",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201068,
+    "name": "KPark Văn Phú",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201167,
+    "name": "LK26 Văn Phú",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201181,
+    "name": "71 Ngô Đình Mẫn",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201073,
+    "name": "LK16 Phan Đình Giót",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201178,
+    "name": "8 LK3 Văn Khê",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 303012,
+    "name": "TIC - 317 Trần Cung",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201187,
+    "name": "91 Tổ 12 Phú Lương",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201092,
+    "name": "The Vesta",
+    "am_name": "Trần Đăng Huấn",
+    "om_name": "Lê Anh Tài",
+    "region": "KV16"
+  },
+  {
+    "code": 201124,
+    "name": "81 Định Công",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 201177,
+    "name": "41 Đại Đồng",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 201155,
+    "name": "11 Vân Đồn",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 201011,
+    "name": "259A Bạch Mai",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 201173,
+    "name": "46 Bạch Đằng",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 303003,
+    "name": "TIC - 472 Minh Khai",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 201183,
+    "name": "GO! Long Biên",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  },
+  {
+    "code": 201194,
+    "name": "42 Lò Đúc",
+    "am_name": "Vũ Thăng Long",
+    "om_name": "Nguyễn Đức Minh",
+    "region": "KV1"
+  }
+]
