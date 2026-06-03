@@ -10,7 +10,7 @@ class MaintenanceController extends Controller
 {
     public function export()
     {
-        $exportName = rand(1,2000).date('Ymd').'_report.xlsx';
+        $exportName = rand(1, 2000) . date('Ymd') . '_report.xlsx';
         return Excel::download(
             new MaintenanceRequestsExport(),
             $exportName

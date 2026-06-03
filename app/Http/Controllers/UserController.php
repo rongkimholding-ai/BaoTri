@@ -56,7 +56,7 @@ class UserController extends Controller
 
         $user->load('roles');
 
-        return view('users._form', compact('user','roles'));
+        return view('users._form', compact('user', 'roles'));
     }
 
     /**

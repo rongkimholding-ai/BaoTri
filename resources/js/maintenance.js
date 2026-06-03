@@ -53,23 +53,23 @@ $(function () {
         if (!input.length) {
             return;
         }
-    
+
         let id = input.data('id');
         let field = input.data('field');
-    
+
         if (!id || !field) {
             console.warn('Missing id or field', input);
             return;
         }
-    
+
         let value = input.val();
 
         if (input.data('saving')) {
             return;
         }
-    
+
         input.data('saving', true);
-    
+
         $.ajax({
             url: '/maintenance-requests/inline-update',
             type: 'POST',
@@ -80,19 +80,19 @@ $(function () {
                 value: input.val()
             },
             success: function () {
-    
+
                 input
                     .removeClass('saving')
                     .addClass('inline-edit-success');
-    
+
                 setTimeout(function () {
                     input.removeClass('inline-edit-success');
                 }, 800);
             },
             error: function (xhr) {
-    
+
                 console.error(xhr.responseText);
-    
+
                 input.addClass('inline-edit-error');
             },
             complete: function () {
@@ -105,13 +105,13 @@ $(function () {
 
         container.find('.issue-description')
             .val(option.data('issue'));
-    
+
         container.find('.severity-field')
             .val(option.data('severity'));
-    
+
         container.find('.processing-time')
             .val(option.data('processing'));
-    
+
         container.find('.solution-description')
             .val(option.data('solution'));
     }
@@ -147,7 +147,7 @@ $(function () {
         'change',
         '.confirm-request',
         function () {
-    
+
             let checkbox = $(this);
             let row = checkbox.closest('tr');
             $.ajax({
@@ -170,17 +170,17 @@ $(function () {
                         }
                     } else {
                         let input = row.find('.confirmer-name input');
-                        
+
                         if (input.length) {
                             input.val('');
                         } else {
                             row.find('.confirmer-name')
-                            .text('');
+                                .text('');
                         }
                     }
                 }
             });
-    
+
         }
     );
 
@@ -188,9 +188,9 @@ $(function () {
         'click',
         '.btn-remind',
         function () {
-    
+
             let button = $(this);
-    
+
             $.ajax({
                 url: '/maintenance-requests/remind',
                 type: 'POST',
@@ -199,22 +199,22 @@ $(function () {
                     id: button.data('id')
                 },
                 success: function () {
-    
+
                     alert('Đã gửi email nhắc việc');
-    
+
                     location.reload();
-    
+
                 },
                 error: function (xhr) {
-    
+
                     alert(
                         xhr.responseJSON?.message ||
                         'Có lỗi xảy ra'
                     );
-    
+
                 }
             });
-    
+
         }
     );
 
@@ -223,11 +223,11 @@ $(function () {
         $('.select2-branch').select2({
             width: '100%'
         });
-    
+
         $('.select2-category').select2({
             width: '100%'
         });
-    
+
     }
 
     $('#createModal').on('shown.bs.modal', function () {
@@ -238,34 +238,58 @@ $(function () {
                 dropdownParent: $('#createModal'),
                 width: '100%'
             });
-    
+
         $(this)
             .find('.select2-category')
             .select2({
                 dropdownParent: $('#createModal'),
                 width: '100%'
             });
-    
+
     });
 
     $(document).on('submit', '#createForm', function (e) {
         e.preventDefault();
-    
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
             data: $(this).serialize(),
             success: function () {
-    
+
                 let modalEl = document.getElementById('createModal');
                 let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                 modal.hide();
-    
+
                 location.reload();
             },
             error: function (xhr) {
                 console.log(xhr.responseJSON?.errors);
             }
         });
+    });
+
+    document.addEventListener('click', function (e) {
+
+        let btn = e.target.closest('.submitBtn');
+
+        if (!btn) return;
+
+        let form = btn.closest('form');
+        if (!form) return;
+
+        let text = btn.querySelector('.btnText');
+        let icon = btn.querySelector('.loadingIcon');
+
+        // disable ngay lập tức
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+        if (text) text.innerText = 'Đang xử lý...';
+        if (icon) icon.classList.remove('hidden');
+
+        // cho form submit tiếp
+        form.submit();
+
     });
 });

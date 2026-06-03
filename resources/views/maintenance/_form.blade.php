@@ -2,16 +2,13 @@
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.branch_code') }}</label>
-        <input class="form-control form-branch-code"
-            name="branch_code">
+        <input class="form-control form-branch-code" name="branch_code">
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.branch_name') }}</label>
 
-        <select
-            class="form-control form-branch-name select2-branch"
-            name="branch_name">
+        <select class="form-control form-branch-name select2-branch" name="branch_name">
 
             <option value="">-- Chọn cơ sở --</option>
 
@@ -27,18 +24,13 @@
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.request_date') }}</label>
 
-        <input
-            type="date"
-            class="form-control form-request-date"
-            name="request_date">
+        <input type="date" class="form-control form-request-date" name="request_date">
     </div>
 
     <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.item_category') }}</label>
 
-        <select
-            class="form-control select2-category issue-selector"
-            name="item_category">
+        <select class="form-control select2-category issue-selector" name="item_category">
 
             <option value="">Chọn hạng mục</option>
 
@@ -48,13 +40,9 @@
 
                     @foreach($check['issues'] as $issue)
 
-                        <option
-                            value="{{ $check['name'] }}"
-                            data-category="{{ $check['name'] }}"
-                            data-issue="{{ $issue['name'] }}"
-                            data-severity="{{ $issue['severity'] }}"
-                            data-processing="{{ $issue['processing_time'] }}"
-                            data-solution="{{ $issue['solution'] }}">
+                        <option value="{{ $check['name'] }}" data-category="{{ $check['name'] }}"
+                            data-issue="{{ $issue['name'] }}" data-severity="{{ $issue['severity'] }}"
+                            data-processing="{{ $issue['processing_time'] }}" data-solution="{{ $issue['solution'] }}">
                             {{ $check['name'] }} - {{ $issue['name'] }}
                         </option>
 
@@ -70,51 +58,37 @@
     <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.severity') }}</label>
 
-        <input
-            class="form-control severity-field"
-            name="severity">
+        <input class="form-control severity-field" name="severity">
     </div>
 
     <div class="col-md-12 mb-3">
         <label>{{ config('maintenance.fields.issue_description') }}</label>
 
-        <textarea
-            rows="3"
-            class="form-control issue-description"
-            name="issue_description"></textarea>
+        <textarea rows="3" class="form-control issue-description" name="issue_description"></textarea>
     </div>
 
     <div class="col-md-3 mb-3">
         <label>{{ config('maintenance.fields.standard_completion_time') }}</label>
 
-        <input
-            class="form-control processing-time"
-            name="standard_completion_time">
+        <input class="form-control processing-time" name="standard_completion_time">
     </div>
 
     <div class="col-md-3 mb-3">
         <label>{{ config('maintenance.fields.technician_name') }}</label>
 
-        <input
-            class="form-control"
-            name="technician_name">
+        <input class="form-control" name="technician_name">
     </div>
-    
+
     <div class="col-md-3 mb-3">
         <label>{{ config('maintenance.fields.technician_email') }}</label>
 
-        <input
-            type="email"
-            name="technician_email"
-            class="form-control">
+        <input type="email" name="technician_email" class="form-control">
     </div>
 
     <div class="col-md-3 mb-3">
         <label>{{ config('maintenance.fields.sla_status') }}</label>
 
-        <select
-            class="form-control"
-            name="sla_status">
+        <select class="form-control" name="sla_status">
 
             <option value="Đúng hạn">Đúng hạn</option>
             <option value="Trễ hạn">Trễ hạn</option>
@@ -125,59 +99,43 @@
     <div class="col-md-12 mb-3">
         <label>{{ config('maintenance.fields.solution_description') }}</label>
 
-        <textarea
-            rows="3"
-            class="form-control solution-description"
-            name="solution_description"></textarea>
+        <textarea rows="3" class="form-control solution-description" name="solution_description"></textarea>
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.actual_completion_date') }}</label>
 
-        <input
-            type="date"
-            class="form-control"
-            name="actual_completion_date">
+        <input type="date" class="form-control" name="actual_completion_date">
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.actual_duration') }}</label>
 
-        <input
-            class="form-control"
-            name="actual_duration">
+        <input class="form-control" name="actual_duration">
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.delay_reason') }}</label>
 
-        <input
-            class="form-control"
-            name="delay_reason">
+        <input class="form-control" name="delay_reason">
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.outsourced_provider') }}</label>
 
-        <input
-            class="form-control"
-            name="outsourced_provider">
+        <input class="form-control" name="outsourced_provider">
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.acceptance_result') }}</label>
 
-        <input
-            class="form-control"
-            name="acceptance_result">
+        <input class="form-control" name="acceptance_result">
     </div>
 
     <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.acceptance_confirmed_by') }}</label>
 
-        <input
-            class="form-control"
-            name="acceptance_confirmed_by">
+        <input class="form-control" name="acceptance_confirmed_by">
     </div>
 
 </div>

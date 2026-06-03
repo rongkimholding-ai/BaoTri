@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\MaintenanceReminderMail;   
+use App\Mail\MaintenanceReminderMail;
 class MaintenanceRequestController extends Controller
 {
     /**
@@ -24,7 +24,7 @@ class MaintenanceRequestController extends Controller
         $checks = $this->getChecksData();
 
 
-        return view('maintenance.index', compact('requests', 'stores','checks'));
+        return view('maintenance.index', compact('requests', 'stores', 'checks'));
     }
 
     /**
@@ -35,7 +35,7 @@ class MaintenanceRequestController extends Controller
         $stores = $this->getData();
         $checks = $this->getChecksData();
 
-        return view('maintenance.create',compact('checks','stores'));
+        return view('maintenance.create', compact('checks', 'stores'));
     }
 
     /**
@@ -44,8 +44,7 @@ class MaintenanceRequestController extends Controller
     public function store(
         StoreMaintenanceRequest $request,
         MaintenanceRequestService $service
-        )
-    {
+    ) {
         // MaintenanceRequest::create($request->all());
         $service->create(
             $request->validated()
@@ -138,14 +137,14 @@ class MaintenanceRequestController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Chưa khai báo email kỹ thuật viên'
-            ],422);
+            ], 422);
         }
 
         Mail::to(
             $item->technician_email
         )->send(
-            new MaintenanceReminderMail($item)
-        );
+                new MaintenanceReminderMail($item)
+            );
 
         $item->increment('reminder_count');
 
@@ -164,31 +163,31 @@ class MaintenanceRequestController extends Controller
             auth()->user()->can('confirm maintenance'),
             403
         );
-    
+
         $item = MaintenanceRequest::findOrFail(
             $request->id
         );
-    
+
         $item->is_confirmed = $request->confirmed;
-    
+
         if ($request->confirmed) {
-    
+
             $item->confirmed_at = now();
-    
+
             $item->acceptance_confirmed_by =
                 $this->getApproverByBranch(
                     $item->branch_name
                 ) ?? auth()->user()->name;
-    
+
         } else {
-    
+
             $item->confirmed_at = null;
-    
+
             $item->acceptance_confirmed_by = null;
         }
-    
+
         $item->save();
-    
+
         return response()->json([
             'success' => true,
             'confirmed' => $item->is_confirmed,

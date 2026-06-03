@@ -67,7 +67,7 @@ class RoleController extends Controller
 
         $role->load('permissions');
 
-        return view('roles._form', compact('role','permissions'));
+        return view('roles._form', compact('role', 'permissions'));
     }
 
     /**
@@ -76,20 +76,19 @@ class RoleController extends Controller
     public function update(
         Request $request,
         Role $role
-    )
-    {
+    ) {
         $request->validate([
             'name' => 'required'
         ]);
-    
+
         $role->update([
             'name' => $request->name
         ]);
-    
+
         $role->syncPermissions(
             $request->permissions ?? []
         );
-    
+
         return redirect()
             ->route('roles.index')
             ->with(
