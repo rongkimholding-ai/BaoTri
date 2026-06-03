@@ -27,7 +27,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles = Role::all();
+        return view('users._form', compact('roles'));
     }
 
     /**
@@ -55,7 +56,7 @@ class UserController extends Controller
 
         $user->load('roles');
 
-        return view('users.edit', compact('user', 'roles'));
+        return view('users._form', compact('user','roles'));
     }
 
     /**

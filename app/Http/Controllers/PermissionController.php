@@ -19,7 +19,7 @@ class PermissionController extends Controller
 
     public function create()
     {
-        return view('permissions.create');
+        return view('permissions._form');
     }
 
     public function store(Request $request)
@@ -40,10 +40,7 @@ class PermissionController extends Controller
 
     public function edit(Permission $permission)
     {
-        return view(
-            'permissions.edit',
-            compact('permission')
-        );
+        return view('permissions._form', compact('permission'));
     }
 
     public function update(
