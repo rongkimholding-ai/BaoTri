@@ -40,10 +40,10 @@ class RoleController extends Controller
             'name' => 'required|unique:roles,name',
         ]);
 
-        Role::create([
-            'name' => $request->name,
-            'guard_name' => 'web',
-        ]);
+        $role = new Role();
+        $role->name = $request->name;
+        $role->guard_name = 'web';
+        $role->save();
 
         return redirect()
             ->route('roles.index')

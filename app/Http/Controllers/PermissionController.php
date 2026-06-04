@@ -28,10 +28,10 @@ class PermissionController extends Controller
             'name' => 'required|unique:permissions,name'
         ]);
 
-        Permission::create([
-            'name' => $request->name,
-            'guard_name' => 'web'
-        ]);
+        $permission = new Permission();
+        $permission->name = $request->name;
+        $permission->guard_name = 'web';
+        $permission->save();
 
         return redirect()
             ->route('permissions.index')
