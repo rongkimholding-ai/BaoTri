@@ -288,7 +288,7 @@
                         </td>
 
                         <td>
-
+                        @can('remind maintenance')
                             <button
                                 class="btn btn-warning btn-sm btn-remind"
                                 data-id="{{ $item->id }}">
@@ -296,7 +296,7 @@
                                 Nhắc việc
 
                             </button>
-
+                        @endcan
                             <div>
 
                                 Đã nhắc:
