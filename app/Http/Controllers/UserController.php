@@ -70,10 +70,10 @@ class UserController extends Controller
         ]);
 
         // update info user
-        $user->update([
+        $user->forceFill([
             'name' => $request->name,
             'email' => $request->email,
-        ]);
+        ])->save();
 
         // sync roles
         $user->syncRoles($request->roles ?? []);

@@ -51,9 +51,9 @@ class PermissionController extends Controller
             'name' => 'required'
         ]);
 
-        $permission->update([
-            'name' => $request->name
-        ]);
+        $permission->forceFill([
+            'name' => $request->name,
+        ])->save();
 
         return redirect()
             ->route('permissions.index');
