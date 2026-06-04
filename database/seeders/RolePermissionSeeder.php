@@ -20,6 +20,7 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'delete data']);
         Permission::create(['name' => 'update data']);
         Permission::create(['name' => 'confirm maintenance']);
+        Permission::create(['name' => 'remind maintenance']);
 
         // roles
         $admin = Role::create(['name' => 'admin']);
