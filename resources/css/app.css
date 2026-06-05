@@ -12,19 +12,33 @@ TABLE
 
 #tbData th,
 #tbData td {
-    min-width: 200px;
-    white-space: nowrap;
+    min-width: 120px;
+    white-space: normal;
+    word-break: break-word;
     vertical-align: middle;
 }
 
 #tbData th.branch_name_class,
 #tbData td.branch_name_class {
-    min-width: 250px;
+    min-width: 150px;
 }
 
 #tbData th.item_category_class,
 #tbData td.item_category_class {
-    min-width: 250px;
+    min-width: 200px;
+    max-width: 250px;
+}
+
+#tbData th.textarea-field,
+#tbData td.textarea-field {
+    min-width: 200px;
+    max-width: 250px;
+}
+
+#tbData th.status-field,
+#tbData td.status-field {
+    min-width: 130px;
+    max-width: 150px;
 }
 
 #tbData th.confirm_checked,
@@ -34,13 +48,13 @@ TABLE
 }
 #tbData th:first-child,
 #tbData td:first-child {
-    min-width: 60px;
-    width: 60px;
+    text-align: center;
+    min-width: 50px;
 }
 
 #tbData th:last-child,
 #tbData td:last-child {
-    min-width: 220px;
+    min-width: 70px;
 }
 
 .table-responsive {

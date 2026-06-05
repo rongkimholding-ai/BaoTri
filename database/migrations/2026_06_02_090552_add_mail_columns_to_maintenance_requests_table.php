@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('maintenance_requests', function ($table) {
 
-            $table->string('technician_email')
+            $table->string('technician_mobile')
                 ->nullable();
 
             $table->integer('reminder_count')

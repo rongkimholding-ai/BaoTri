@@ -35,7 +35,7 @@
                     <th>{{ config('maintenance.fields.standard_completion_time') }}</th>
                     <th>{{ config('maintenance.fields.severity') }}</th>
                     <th>{{ config('maintenance.fields.technician_name') }}</th>
-                    <th>{{ config('maintenance.fields.technician_email') }}</th>
+                    <th>{{ config('maintenance.fields.technician_mobile') }}</th>
                     <th>{{ config('maintenance.fields.solution_description') }}</th>
                     <th>{{ config('maintenance.fields.actual_completion_date') }}</th>
                     <th>{{ config('maintenance.fields.actual_duration') }}</th>
@@ -135,7 +135,7 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td class="textarea-field">
                         @if($canUpdate)
                             <textarea class="form-control inline-edit issue-description" data-id="{{ $item->id }}"
                                 data-field="issue_description" rows="3">{{ $item->issue_description }}</textarea>
@@ -164,8 +164,19 @@
 
                         <td>
                         @if($canUpdate)
-                            <input class="form-control inline-edit" data-id="{{ $item->id }}" data-field="technician_name"
-                                value="{{ $item->technician_name }}">
+                        <select class="form-control inline-edit form-technician-name select2-branch" data-id="{{ $item->id }}"
+                                data-field="technician_name">
+                                <option value="">-- Chọn {{ config('maintenance.fields.technician_name') }} --</option>
+                                @foreach($techs as $tech)
+                                    <option value="{{ $tech['name'] }}"
+                                    data-mobile="{{ $tech['mobile'] }}"
+                                    @if($item->technician_name == $tech['name']) selected @endif
+                                    >
+                                        {{ $tech['name'] }}
+                                    </option>
+                                @endforeach
+                                
+                            </select>
                                 @else
                                 {{ $item->technician_name }}
                             @endif
@@ -174,16 +185,16 @@
                         <td>
                         @if($canUpdate)
                             <input
-                                class="form-control inline-edit"
+                                class="form-control inline-edit technician-mobile"
                                 data-id="{{ $item->id }}"
-                                data-field="technician_email"
-                                value="{{ $item->technician_email }}">
+                                data-field="technician_mobile"
+                                value="{{ $item->technician_mobile }}">
                         @else
-                            {{ $item->technician_email }}
+                            {{ $item->technician_mobile }}
                         @endif
                         </td>
 
-                        <td>
+                        <td class="textarea-field">
                         @if($canUpdate)
                             <textarea class="form-control inline-edit solution-description" data-id="{{ $item->id }}"
                                 data-field="solution_description" rows="3">{{ $item->solution_description }}</textarea>
@@ -211,23 +222,25 @@
                             @endif
                             </td>
 
-                        <td>
+                        <td class="status-field">
                             @if($canUpdate)
+                            @php
+                                $sla_status_arr = config('sla_status');
+                            @endphp
                             <select class="form-select inline-edit" data-id="{{ $item->id }}" data-field="sla_status">
-
-                                <option value="Đúng hạn" {{ $item->sla_status == 'Đúng hạn' ? 'selected' : '' }}>
-                                    Đúng hạn
-                                </option>
-
-                                <option value="Trễ hạn" {{ $item->sla_status == 'Trễ hạn' ? 'selected' : '' }}>
-                                    Trễ hạn
-                                </option>
-
+                                @foreach($sla_status_arr as $key => $status)
+                                    <option value="{{ $key }}"
+                                        @if($item->sla_status == $key) selected @endif
+                                    >
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
                             </select>
                             @else
-                                {{ $item->sla_status }}
+                                {{ isset(config('sla_status')[$item->sla_status]) ? config('sla_status')[$item->sla_status] : $item->sla_status }}
                             @endif
                         </td>
+                   
 
                         <td>
                             @if($canUpdate)
@@ -240,7 +253,7 @@
 
                         <td>
                             @if($canUpdate)
-                            <input class="form-control inline-edit" data-id="{{ $item->id }}" data-field="outsourced_provider"
+                            <input class="form-control inline-edit outsourced-provider" data-id="{{ $item->id }}" data-field="outsourced_provider"
                                 value="{{ $item->outsourced_provider }}">
                             @else
                                 {{ $item->outsourced_provider }}

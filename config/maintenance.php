@@ -22,7 +22,7 @@ return [
 
         'technician_name' => 'Kỹ thuật viên',
 
-        'technician_email' => 'Email KTV',
+        'technician_mobile' => 'SĐT KTV',
 
         'reminder' => 'Nhắc việc',
 
@@ -36,7 +36,7 @@ return [
 
         'delay_reason' => 'Lý do trễ',
 
-        'outsourced_provider' => 'Nhà cung cấp thực hiện',
+        'outsourced_provider' => 'Đơn vị xử lý',
 
         'acceptance_result' => 'Nghiệm thu',
 

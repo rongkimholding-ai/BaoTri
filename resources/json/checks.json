@@ -1,346 +1,451 @@
 [
     {
-      "key": "WOOD_DECOR_PANEL",
-      "name": "Vách gỗ decor",
+      "key": "SAN_GO_CONG_NGHIEP",
+      "name": "Sàn gỗ công nghiệp",
       "issues": [
         {
-          "key": "SCREW_LOOSE",
-          "name": "Lỗi nhỏ do bung vít",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "BP. BT thu xếp sửa tại chỗ"
-        },
-        {
-          "key": "UNREPAIRABLE",
-          "name": "Gãy, vỡ, bay màu sơn sai concept",
+          "key": "BONG_ROP_NGAM_NUOC",
+          "name": "Bong rộp do bị ngâm nước",
           "severity": "3B",
           "handler": "Nhà thầu",
           "processing_time": "7-15 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
         }
       ]
     },
     {
-      "key": "INOX_PICTURE_FRAME",
-      "name": "Khung tranh inox",
+      "key": "SAN_VINYL",
+      "name": "Sàn vinyl",
       "issues": [
         {
-          "key": "SCREW_LOOSE_GLUE_OPEN",
-          "name": "Lỗi nhỏ do bung vít, hở keo",
+          "key": "BONG_ROP_NHO",
+          "name": "Bong rộp tiếp giáp do sử dụng bật mép khối lượng nhỏ",
           "severity": "3A",
-          "handler": "BPBT",
+          "handler": "BPBT/Mua hàng",
           "processing_time": "3-5 ngày",
-          "solution": "BP. BT thu xếp sửa tại chỗ"
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
         },
         {
-          "key": "BROKEN_DENTED",
-          "name": "Gãy, dập",
-          "severity": "3A",
-          "handler": "Nhà thầu",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
-        }
-      ]
-    },
-    {
-      "key": "SMALL_WALL_PICTURE",
-      "name": "Tranh nhỏ treo tường",
-      "issues": [
-        {
-          "key": "SCREW_LOOSE_GLUE_OPEN",
-          "name": "Lỗi nhỏ do bung vít, hở keo",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "BP. BT thu xếp sửa tại chỗ"
-        },
-        {
-          "key": "UNREPAIRABLE",
-          "name": "Gãy, vỡ, bay màu sơn sai concept",
+          "key": "BONG_ROP_LON",
+          "name": "Bong rộp tiếp giáp do sử dụng bật mép khối lượng lớn",
           "severity": "3B",
           "handler": "Nhà thầu",
           "processing_time": "7-15 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
         }
       ]
     },
     {
-      "key": "BACKLIT_ADVERTISING_FRAME",
-      "name": "Tranh blacklist biển quảng cáo",
+      "key": "TRANH_TUONG_TUONG_SON",
+      "name": "Tranh tường, Tường sơn, mảng tường bị ẩm mốc, hỏng hóc",
       "issues": [
         {
-          "key": "SCREW_LOOSE_GLUE_OPEN",
-          "name": "Lỗi nhỏ do bung vít, hở keo",
+          "key": "SON_LAI_DIEN_TICH_NHO",
+          "name": "Tường sơn bình thường diện tích nhỏ không phải đục phá chỉ sơn lại",
+          "severity": "3B",
+          "handler": "BPBT/Mua hàng",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+        },
+        {
+          "key": "PHAT_SINH_DUC_TRAT",
+          "name": "Tường sơn bình thường diện tích bất kỳ nhưng phải đục trát lại và sơn hoàn thiện",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        },
+        {
+          "key": "TRANH_VE_TUONG",
+          "name": "Các diện tường tranh vẽ",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "TRAN_THACH_CAO",
+      "name": "Trần thả thạch cao - Tường vách thạch cao",
+      "issues": [
+        {
+          "key": "XUOC_RACH_LOI_NHO",
+          "name": "Xước, rách hoặc lỗi nhỏ",
+          "severity": "3A",
+          "handler": "BPBT/Mua hàng",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+        },
+        {
+          "key": "VO_AM_MOC",
+          "name": "Vỡ mảng - Ẩm mốc phải thay thế",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "TRAN_SON",
+      "name": "Trần sơn",
+      "issues": [
+        {
+          "key": "BAN_O_VET_NHO",
+          "name": "Do bẩn, ố vệt do sử dụng ảnh hưởng thẩm mỹ",
+          "severity": "3A",
+          "handler": "BPBT/Mua hàng",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+        },
+        {
+          "key": "BAN_O_VET_LON",
+          "name": "Khối lượng quá lớn",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "GACH_SAN_BONG",
+      "name": "Gạch sàn và gạch bông",
+      "issues": [
+        {
+          "key": "VO_XUOC_NHO",
+          "name": "Vỡ, xước khối lượng nhỏ",
+          "severity": "3A",
+          "handler": "BPBT/Mua hàng",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+        },
+        {
+          "key": "VO_XUOC_LON",
+          "name": "Vỡ, xước khối lượng lớn",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "DA_OP_BAC_TAM_CAP",
+      "name": "Đá ốp bậc tam cấp",
+      "issues": [
+        {
+          "key": "VO_XUOC",
+          "name": "Vỡ, xước, mất mỹ quan",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "BAN_QUAY",
+      "name": "Bàn quầy",
+      "issues": [
+        {
+          "key": "BUNG_VIT",
+          "name": "Bung vít hở keo, xệ cánh",
           "severity": "3A",
           "handler": "BPBT",
           "processing_time": "3-5 ngày",
-          "solution": "BP. BT thu xếp sửa tại chỗ"
+          "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
         },
         {
-          "key": "LED_OR_POWER_FAILURE",
-          "name": "Tranh không sáng do hỏng led/nguồn",
+          "key": "VAN_MUC_BUNG_VO",
+          "name": "Ván mục, bung vỡ",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "MAT_DA_BAN_QUAY",
+      "name": "Mặt đá bàn quầy",
+      "issues": [
+        {
+          "key": "VO_DA",
+          "name": "Mặt đá bị vỡ",
+          "severity": "3A",
+          "handler": "Nhà thầu",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "BAN_GHE",
+      "name": "Bàn ghế",
+      "issues": [
+        {
+          "key": "BUNG_VIT",
+          "name": "Bung vít hở keo",
+          "severity": "3A",
+          "handler": "BPBT",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        },
+        {
+          "key": "GAY_CHAN",
+          "name": "Bàn ghế bị gãy chân, gãy mộng và khớp nối",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "TU_NGUYEN_LIEU",
+      "name": "Tủ nguyên liệu",
+      "issues": [
+        {
+          "key": "BAN_LE_HONG",
+          "name": "Tủ nguyên liệu bị hỏng bản lề cánh cửa",
+          "severity": "3A",
+          "handler": "BPBT/Mua hàng",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        },
+        {
+          "key": "TU_HONG_NANG",
+          "name": "Tủ nguyên liệu bị mục, hỏng không sử dụng lại được",
+          "severity": "3B",
+          "handler": "Nhà thầu",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "CUA_BAT_2_CHIEU",
+      "name": "Cửa bật 2 chiều",
+      "issues": [
+        {
+          "key": "XEXEP",
+          "name": "Cửa bật bị bung, xệ bản lề, xệ cánh",
+          "severity": "3A",
+          "handler": "BPBT/Mua hàng",
+          "processing_time": "3-5 ngày",
+          "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        }
+      ]
+    },
+    {
+      "key": "KINH_BEPS",
+      "name": "Kính bếp sơn màu",
+      "issues": [
+        {
+          "key": "VO_VA_NO",
+          "name": "Kính ốp bếp bị nứt, vỡ, nổ hạt",
           "severity": "2",
-          "handler": "BPBT/Mua hàng",
+          "handler": "Nhà thầu",
           "processing_time": "1-2 ngày",
-          "material_source": "Xuất kho/Mua sắm",
-          "solution": "BP. BT kiểm tra đề xuất vật tư xử lý"
-        },
-        {
-          "key": "UNREPAIRABLE",
-          "name": "Tranh gãy vỡ, ố, không sửa được",
-          "severity": "3A",
-          "handler": "Nhà thầu",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
         }
       ]
     },
     {
-      "key": "GRAPHIC_POSTER",
-      "name": "Graphic poster treo tường",
+      "key": "CUA_KINH_THUY_LUC",
+      "name": "Cửa kính thủy lực",
       "issues": [
         {
-          "key": "SCREW_LOOSE_GLUE_OPEN",
-          "name": "Lỗi nhỏ do bung vít, hở keo",
-          "severity": "3A",
+          "key": "KINH_VO",
+          "name": "Kính vỡ",
+          "severity": "2",
+          "handler": "Nhà thầu",
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        },
+        {
+          "key": "PHU_KIEN_HONG",
+          "name": "Cửa bị hỏng bản lề, phụ kiện",
+          "severity": "2",
+          "handler": "Nhà thầu",
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "VACH_KINH_THUY_LUC",
+      "name": "Vách kính thủy lực",
+      "issues": [
+        {
+          "key": "KINH_VO",
+          "name": "Kính vỡ",
+          "severity": "2",
+          "handler": "Nhà thầu",
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "CUA_NHOM_KINH_VP",
+      "name": "Cửa nhôm kính Việt Pháp",
+      "issues": [
+        {
+          "key": "KINH_VO",
+          "name": "Kính vỡ",
+          "severity": "2",
+          "handler": "Nhà thầu",
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        },
+        {
+          "key": "PHU_KIEN_HONG",
+          "name": "Cửa bị hỏng bản lề, phụ kiện",
+          "severity": "2",
+          "handler": "Nhà thầu",
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "VACH_NHOM_KINH_VP",
+      "name": "Vách nhôm kính Việt Pháp",
+      "issues": [
+        {
+          "key": "KINH_VO",
+          "name": "Kính vỡ",
+          "severity": "2",
+          "handler": "Nhà thầu",
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "REM",
+      "name": "Rèm",
+      "issues": [
+        {
+          "key": "BUNG_ROI",
+          "name": "Rèm bị bung rơi",
+          "severity": "2",
           "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "BP. BT thu xếp sửa tại chỗ"
+          "processing_time": "1-2 ngày",
+          "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
         },
         {
-          "key": "UNREPAIRABLE",
-          "name": "Rách, gãy, vỡ, bay màu sơn sai concept",
-          "severity": "3A",
+          "key": "REM_RACH",
+          "name": "Rèm bị rách",
+          "severity": "2",
+          "handler": "NCC",
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        }
+      ]
+    },
+    {
+      "key": "LAN_CAN_TAY_VIN",
+      "name": "Lan can, tay vịn cầu thang",
+      "issues": [
+        {
+          "key": "BUNG_GAY",
+          "name": "Bung gãy liên kết, mối hàn",
+          "severity": "3B",
           "handler": "Nhà thầu",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
+          "processing_time": "7-15 ngày",
+          "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), BP.BT trực tiếp làm việc NCC theo danh sách trên"
         }
       ]
     },
     {
-      "key": "SLOGAN_THE_CUP_OF_HAPPINESS",
-      "name": "Slogan : The cup of happiness",
+      "key": "CUA_CUON",
+      "name": "Cửa cuốn",
       "issues": [
         {
-          "key": "LETTER_FALLEN",
-          "name": "Chữ bị bung, rơi mất chữ",
-          "severity": "3A",
+          "key": "HO_TRO_LEN_CUA",
+          "name": "Hỗ trợ lên cửa",
+          "severity": "1A",
           "handler": "BPBT/Mua hàng",
-          "processing_time": "3-5 ngày",
-          "solution": "BP.BT đề xuất vật tư xử lý tại chỗ"
-        }
-      ]
-    },
-    {
-      "key": "TOCOTOCO_COUNTER_LETTERS",
-      "name": "Bộ chữ Tocotoco quầy",
-      "issues": [
-        {
-          "key": "LED_OR_POWER_FAILURE",
-          "name": "Hỏng led hoặc hỏng nguồn",
-          "severity": "3A",
-          "handler": "BPBT/Mua hàng",
-          "processing_time": "3-5 ngày",
-          "material_source": "Xuất kho/Mua sắm",
-          "solution": "BP.BT đề xuất vật tư xử lý tại chỗ"
+          "processing_time": "1-2 tiếng",
+          "solution": "BP.BT kiểm tra motor, xác định nguyên nhân, xử lý tạm; nếu không sửa được thì lập đề xuất trên 1.office"
         },
         {
-          "key": "BROKEN_BY_IMPACT",
-          "name": "Chữ bị vỡ do tác động bên ngoài",
-          "severity": "3A",
-          "handler": "Nhà thầu",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
-        }
-      ]
-    },
-    {
-      "key": "TOCOTOCO_SIGNBOARD_LETTERS",
-      "name": "Bộ chữ Tocotoco biển bảng",
-      "issues": [
-        {
-          "key": "POWER_FAILURE",
-          "name": "Hỏng nguồn",
+          "key": "SUA_CUA_XO_NAN",
+          "name": "Sửa chữa xô nan, lệch nan, kẹt nan, lỗi tín hiệu, bộ tích điện, điều khiển",
           "severity": "1B",
-          "handler": "BPBT",
+          "handler": "Nhà thầu",
           "processing_time": "2-8 tiếng",
-          "material_source": "Xuất kho/Mua sắm",
-          "solution": "BP.BT đề xuất kho vật tư xử lý tại chỗ"
+          "solution": "BP.BT kiểm tra nguyên nhân, sửa chữa; nếu không xử lý được thì lập đề xuất trên 1.office và làm việc NCC"
         },
         {
-          "key": "LED_FAILURE_UNDER_2_CHAR",
-          "name": "Hỏng led dưới 2 ký tự",
-          "severity": "2",
-          "handler": "BPBT",
-          "processing_time": "1-2 ngày",
-          "material_source": "Xuất kho/Mua sắm",
-          "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ"
-        },
-        {
-          "key": "LED_FAILURE_OVER_3_CHAR",
-          "name": "Hỏng led từ 3 ký tự đến toàn bộ bộ chữ",
+          "key": "THAY_NAN",
+          "name": "Thay nan cửa",
           "severity": "2",
           "handler": "Nhà thầu",
           "processing_time": "1-2 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
-        }
-      ]
-    },
-    {
-      "key": "COUNTER_BRAND_LOGO",
-      "name": "Logo thương hiệu quầy",
-      "issues": [
+          "solution": "BP.BT lập đề xuất thay nan cửa trình duyệt trên 1.office"
+        },
         {
-          "key": "PEELING",
-          "name": "Bung tróc",
-          "severity": "2",
-          "handler": "BPBT",
-          "processing_time": "1-2 ngày",
-          "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ"
-        }
-      ]
-    },
-    {
-      "key": "SIGNBOARD_BRAND_LOGO",
-      "name": "Logo thương hiệu biển",
-      "issues": [
-        {
-          "key": "POWER_FAILURE",
-          "name": "Hỏng nguồn",
+          "key": "CUA_KHONG_VAN_HANH",
+          "name": "Cửa cuốn hỏng không vận hành được",
           "severity": "1B",
-          "handler": "BPBT",
+          "handler": "Nhà thầu",
           "processing_time": "2-8 tiếng",
-          "material_source": "Xuất kho/Mua sắm",
-          "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ"
+          "solution": "Nhà thầu phối hợp BP.BT xử lý khẩn (đêm hạ cửa thủ công hoặc ban ngày xác nhận lỗi, báo P.MS chốt giá để xử lý ngay)"
+        }
+      ]
+    },
+    {
+      "key": "HE_THONG_ALU",
+      "name": "Hệ thống Alu biển bảng, ốp bếp, ốp vách",
+      "issues": [
+        {
+          "key": "HO_KEO",
+          "name": "Hở keo",
+          "severity": "3A",
+          "handler": "BPBT",
+          "processing_time": "3-5 ngày",
+          "solution": "PKT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
         },
         {
-          "key": "LED_BOARD_BURNED",
-          "name": "Cháy mâm led",
-          "severity": "2",
-          "handler": "Nhà thầu",
-          "processing_time": "1-2 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
-        }
-      ]
-    },
-    {
-      "key": "DELIVERY_LETTERS",
-      "name": "Bộ chữ Delivery",
-      "issues": [
-        {
-          "key": "LETTER_FALLEN",
-          "name": "Rơi lạc mất ký tự",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office"
-        }
-      ]
-    },
-    {
-      "key": "SIGNBOARD_ICON",
-      "name": "Icon biển bảng",
-      "issues": [
-        {
-          "key": "ICON_FALLEN",
-          "name": "Rơi lạc mất icon",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office"
-        }
-      ]
-    },
-    {
-      "key": "SIGNBOARD_ADDRESS",
-      "name": "Địa chỉ biển bảng",
-      "issues": [
-        {
-          "key": "LETTER_FALLEN",
-          "name": "Rơi lạc mất ký tự",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office"
-        }
-      ]
-    },
-    {
-      "key": "SIGNBOARD_INOX_TRIM",
-      "name": "Nẹp inox biển bảng",
-      "issues": [
-        {
-          "key": "PEELING",
-          "name": "Bung tróc",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch"
-        }
-      ]
-    },
-    {
-      "key": "POSTER_FRAME_INOX_TRIM",
-      "name": "Nẹp inox khung treo poster",
-      "issues": [
-        {
-          "key": "PEELING",
-          "name": "Bung tróc",
-          "severity": "3A",
-          "handler": "BPBT",
-          "processing_time": "3-5 ngày",
-          "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch"
-        }
-      ]
-    },
-    {
-      "key": "DECORATIVE_MIRROR_FRAME",
-      "name": "Khung gương trang trí",
-      "issues": [
-        {
-          "key": "TERMITE_DAMAGE",
-          "name": "Khung bị mối mọt mục",
+          "key": "ALU_GION",
+          "name": "Alu lâu ngày bị giòn",
           "severity": "3B",
           "handler": "Nhà thầu",
           "processing_time": "7-15 ngày",
-          "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp (đã ký HĐ nguyên tắc, có đơn giá), PKT trực tiếp làm việc NCC theo danh sách trên"
-        }
-      ]
-    },
-    {
-      "key": "A3_MENU_BOARD",
-      "name": "Bảng Menu A3",
-      "issues": [
-        {
-          "key": "BROKEN_LED_POWER_FAILURE",
-          "name": "Menu gãy vỡ, mất nguồn, hỏng led",
-          "severity": "2",
-          "handler": "BPBT/Mua hàng",
-          "processing_time": "1-2 ngày",
-          "material_source": "Xuất kho/Mua sắm",
           "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office"
         }
       ]
     },
     {
-      "key": "LED_COUNTER_MENU_BOARD",
-      "name": "Bảng Menu Led đầu quầy",
+      "key": "MAI_TON",
+      "name": "Hệ thống mái tôn",
       "issues": [
         {
-          "key": "LED_POWER_FAILURE",
-          "name": "Bảng led mất nguồn, hỏng led",
+          "key": "BUNG_HO_NHE",
+          "name": "Mái tôn bị bung hở nhẹ gây dột",
           "severity": "2",
-          "handler": "BPBT/Mua hàng",
+          "handler": "BPBT",
           "processing_time": "1-2 ngày",
-          "material_source": "Xuất kho/Mua sắm",
+          "solution": "BP.BT tiếp nhận thông tin và xử lý theo lịch"
+        },
+        {
+          "key": "CU_MUC",
+          "name": "Mái tôn cũ, mục nát gây dột",
+          "severity": "3A",
+          "handler": "Nhà thầu",
+          "processing_time": "3-5 ngày",
           "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office"
         }
       ]
     },
     {
       "key": "OTHER",
-      "name": "Khác",
+      "name": "Các lỗi khác",
       "issues": [
         {
           "key": "OTHER",
@@ -348,7 +453,7 @@
           "severity": null,
           "handler": "BPBT",
           "processing_time": "Theo phương án xử lý",
-          "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý"
+          "solution": "Đơn vị sử dụng liên hệ BP.BT để kiểm tra và lên phương án xử lý"
         }
       ]
     }

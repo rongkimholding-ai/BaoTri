@@ -22,9 +22,10 @@ class MaintenanceRequestController extends Controller
         // $requests = MaintenanceRequest::all();
         $stores = $this->getData();
         $checks = $this->getChecksData();
+        $techs = $this->getTechnicianData();
 
 
-        return view('maintenance.index', compact('requests', 'stores', 'checks'));
+        return view('maintenance.index', compact('requests', 'stores', 'checks','techs'));
     }
 
     /**
@@ -34,8 +35,9 @@ class MaintenanceRequestController extends Controller
     {
         $stores = $this->getData();
         $checks = $this->getChecksData();
+        $techs = $this->getTechnicianData();
 
-        return view('maintenance.create', compact('checks', 'stores'));
+        return view('maintenance.create', compact('checks', 'stores','techs'));
     }
 
     /**
@@ -45,7 +47,6 @@ class MaintenanceRequestController extends Controller
         StoreMaintenanceRequest $request,
         MaintenanceRequestService $service
     ) {
-        // MaintenanceRequest::create($request->all());
         $service->create(
             $request->validated()
         );
@@ -222,6 +223,14 @@ class MaintenanceRequestController extends Controller
     public function getChecksData()
     {
         $jsonPath = resource_path('json/checks.json');
+        $data = json_decode(file_get_contents($jsonPath), true);
+
+        return $data;
+    }
+
+    public function getTechnicianData()
+    {
+        $jsonPath = resource_path('json/technician.json');
         $data = json_decode(file_get_contents($jsonPath), true);
 
         return $data;

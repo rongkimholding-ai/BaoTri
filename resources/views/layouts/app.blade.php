@@ -10,30 +10,57 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+<div class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <header class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg"><img src="{{ asset('images/Logo.jpg') }}"></div>
+                    <span class="font-semibold text-gray-900 text-lg">
+                        {{ config('app.name', 'Laravel') }}
+                    </span>
                 </div>
-            </header>
-        @endisset
 
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
-    </div>
+                <div class="flex items-center gap-4">
+                    @include('layouts.navigation')
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+            <!-- Page Header -->
+            @isset($header)
+                <div class="mb-6">
+                    <div class="bg-white rounded-xl shadow-sm border px-6 py-4">
+                        {{ $header }}
+                    </div>
+                </div>
+            @endisset
+
+            <!-- Main Content Card -->
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                {{ $slot }}
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
 </body>
-
 </html>

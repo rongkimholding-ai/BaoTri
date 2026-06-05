@@ -114,20 +114,45 @@ $(function () {
 
         container.find('.solution-description')
             .val(option.data('solution'));
+
+        container.find('.outsourced-provider')
+            .val(option.data('handler') || '');
     }
 
     $(document).on('change', 'table .issue-selector', function () {
 
         let option = $(this).find(':selected');
         let row = $(this).closest('tr');
-
-        fillIssueData(row, option);
-
+    
+        // ===== ISSUE DATA =====
+        row.find('.issue-description').val(option.data('issue') || '');
+        row.find('.severity-field').val(option.data('severity') || '');
+        row.find('.processing-time').val(option.data('processing') || '');
+        row.find('.solution-description').val(option.data('solution') || '');
+    
+        // ===== FIX MỚI: handler → outsourced_provider =====
+        row.find('.outsourced-provider').val(option.data('handler') || '');
+    
+        // ===== SAVE INLINE =====
         saveInline($(this));
         saveInline(row.find('.issue-description'));
         saveInline(row.find('.severity-field'));
         saveInline(row.find('.processing-time'));
         saveInline(row.find('.solution-description'));
+        saveInline(row.find('.outsourced-provider'));
+    });
+
+    $(document).on('change', 'table .form-technician-name', function () {
+        let option = $(this).find(':selected');
+        let row = $(this).closest('tr');
+        console.log(option.data('mobile'));
+    
+        // fill SĐT từ data-mobile
+        row.find('.technician-mobile')
+            .val(option.data('mobile') || '');
+    
+        saveInline($(this));
+        saveInline(row.find('.technician-mobile'));
     });
 
     $('#createModal').on(
@@ -142,6 +167,14 @@ $(function () {
 
         }
     );
+
+    $('#createModal').on('change', '.form-technician-name', function () {
+
+        let option = $(this).find(':selected');
+    
+        $('#createModal').find('.technician-mobile')
+            .val(option.data('mobile') || '');
+    });
 
     $(document).on(
         'change',

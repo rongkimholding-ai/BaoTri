@@ -31,17 +31,22 @@ class StoreMaintenanceRequest extends FormRequest
             'severity' => 'required|string|max:255',
             'issue_category' => 'nullable|string|max:255',
             'technician_name' => 'required|string|max:255',
-            'technician_email' => 'nullable|email|max:255',
+            'technician_mobile' => 'nullable|string|max:255',
             'standard_completion_time' => 'required',
             'solution_description' => 'required|string|max:255',
-            'request_date' => 'required|date',
-            'actual_completion_date' => 'required|date',
-            'actual_duration' => 'required|string|max:255',
-            'sla_status' => 'required|string|max:255',
+            'request_date' => 'nullable|date',
+            'actual_completion_date' => 'nullable|date',
+            'actual_duration' => 'nullable|string|max:255',
+            'sla_status' => 'nullable|string|max:255',
             'delay_reason' => 'nullable|string|max:255',
             'outsourced_provider' => 'nullable|string|max:255',
             'acceptance_result' => 'nullable|string|max:255',
             'acceptance_confirmed_by' => 'nullable|string|max:255',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        \Log::info('prepareForValidation', $this->all());
     }
 }
