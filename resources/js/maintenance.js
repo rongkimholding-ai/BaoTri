@@ -329,4 +329,23 @@ $(function () {
         form.submit();
 
     });
+
+    $(document).on('click', '.change-status-btn', function () {
+
+        let id = $(this).data('id');
+        let status = $(this).data('status');
+    
+        $.ajax({
+            url: `/maintenance-requests/${id}/status`,
+            type: 'PATCH',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                status: status
+            },
+            success: function () {
+                location.reload();
+            }
+        });
+    });
+    
 });

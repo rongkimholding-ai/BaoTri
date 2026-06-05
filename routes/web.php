@@ -40,6 +40,11 @@ Route::post(
     [MaintenanceRequestController::class, 'remind']
 )->name('maintenance-requests.remind');
 
+Route::patch(
+    '/maintenance-requests/{maintenanceRequest}/status',
+    [MaintenanceRequestController::class, 'changeStatus']
+)->name('maintenance-requests.change-status');
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::resource('users', UserController::class);

@@ -60,11 +60,28 @@ TABLE
 
 #tbData th:last-child,
 #tbData td:last-child {
-    min-width: 70px;
+    min-width: 100px;
+    max-width: 150px;
 }
 
 .table-responsive {
     overflow-x: auto;
+    overflow-y: visible;
+    max-height: 75vh;
+}
+
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+}
+
+.action-column {
+    width: 120px;
+    white-space: nowrap;
+    background: white;
+    z-index: 1;
 }
 
 /* =========================

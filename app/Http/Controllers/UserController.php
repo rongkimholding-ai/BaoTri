@@ -36,7 +36,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:6',
+            'roles' => 'required|array|min:1',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+        ]);
+
+        $user->syncRoles($validated['roles']);
+
+        return redirect()->route('users.index');
     }
 
     /**
@@ -64,23 +79,27 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email'
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|confirmed|min:6',
+            'roles' => 'required|array|min:1',
         ]);
 
-        // update info user
-        $user->forceFill([
-            'name' => $request->name,
-            'email' => $request->email,
-        ])->save();
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ];
 
-        // sync roles
-        $user->syncRoles($request->roles ?? []);
+        if (!empty($validated['password'])) {
+            $data['password'] = $validated['password'];
+        }
 
-        return redirect()
-            ->route('users.index')
-            ->with('success', 'Cập nhật user thành công');
+        $user->update($data);
+
+        $user->syncRoles($validated['roles']);
+
+        return redirect()->route('users.index');
     }
 
     /**

@@ -196,6 +196,31 @@ class MaintenanceRequestController extends Controller
         ]);
     }
 
+    public function changeStatus(
+        Request $request,
+        MaintenanceRequest $maintenanceRequest
+    ) {
+        $allowedStatuses = config('sla_status');
+    
+        $request->validate([
+            'sla_status' => ['string', 'in:' . implode(',', $allowedStatuses)]
+        ]);
+
+        // kiểm tra quyền
+        if (!auth()->user()->can('change-maintenance-status')) {
+            abort(403);
+        }
+    
+        $maintenanceRequest->update([
+            'sla_status' => $request->status
+        ]);
+    
+        return response()->json([
+            'success' => true,
+            'sla_status' => $maintenanceRequest->status
+        ]);
+    }
+
     private function getApproverByBranch($branchName)
     {
         $jsonPath = resource_path('json/stores.json');

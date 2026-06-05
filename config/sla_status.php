@@ -5,6 +5,7 @@ return [
     'PROCESSING' => "Đang thực hiện",
     'PENDING' => "Tạm dừng",
     'WAITING_CONFIRM' => "Chờ xác nhận",
+    'REJECTED' => "Từ chối",
     'CONFIRMED' => "Đã xác nhận",
     'COMPLETED' => "Đúng hạn",
     'LATED' => "Trễ hạn",
