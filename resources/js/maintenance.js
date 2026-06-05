@@ -64,6 +64,10 @@ $(function () {
 
         let value = input.val();
 
+        if (field === 'request_date' && value) {
+            value = value.replace('T', ' ');
+        }
+
         if (input.data('saving')) {
             return;
         }

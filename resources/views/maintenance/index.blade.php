@@ -92,9 +92,9 @@
                         <td>
                             @if($canUpdate)
                             <input class="form-control inline-edit date-field" data-id="{{ $item->id }}"
-                                data-field="request_date" type="date" value="{{ $item->request_date }}">
+                                data-field="request_date" type="datetime-local" value="{{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('Y-m-d\TH:i') : '' }}">
                             @else
-                                {{ $item->request_date ? date('d/m/Y', strtotime($item->request_date)) : $item->request_date }}
+                                {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i') : '' }}
                             @endif
                         </td>
 
@@ -182,7 +182,7 @@
                             @endif
                         </td>
 
-                        <td>
+                        <td class="technician-mobile-field">
                         @if($canUpdate)
                             <input
                                 class="form-control inline-edit technician-mobile"
@@ -207,7 +207,7 @@
                         <td>
                             @if($canUpdate)
                             <input class="form-control inline-edit date-field" data-id="{{ $item->id }}"
-                                data-field="actual_completion_date" type="date" value="{{ $item->actual_completion_date }}">
+                                data-field="actual_completion_date" type="datetime-local" value="{{ $item->actual_completion_date }}">
                             @else
                                 {{ $item->actual_completion_date }}
                             @endif

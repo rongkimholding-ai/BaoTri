@@ -118,7 +118,7 @@ class MaintenanceRequestController extends Controller
 
         // handle date
         if ($field === 'request_date' && $value) {
-            $value = Carbon::parse($value)->format('Y-m-d');
+            $value = Carbon::parse($value);
         }
 
         $item->$field = $value;
