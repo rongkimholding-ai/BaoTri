@@ -8,10 +8,10 @@ return new class extends Migration
     public function up(): void
     {
         // rename column
-        if ($this->columnExists('maintenance_requests', 'technician_mail')) {
+        if ($this->columnExists('maintenance_requests', 'technician_email')) {
             DB::statement("
                 ALTER TABLE maintenance_requests
-                CHANGE technician_mail technician_mobile VARCHAR(255) NULL
+                CHANGE technician_email technician_mobile VARCHAR(255) NULL
             ");
         }
 
@@ -29,10 +29,10 @@ return new class extends Migration
 
     public function down(): void
     {
-        if ($this->columnExists('maintenance_requests', 'technician_mail')) {
+        if ($this->columnExists('maintenance_requests', 'technician_email')) {
             DB::statement("
                 ALTER TABLE maintenance_requests
-                CHANGE technician_mobile technician_mail VARCHAR(255) NULL
+                CHANGE technician_mobile technician_email VARCHAR(255) NULL
             ");
         }
 
