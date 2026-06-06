@@ -212,10 +212,22 @@ class MaintenanceRequestController extends Controller
             abort(403);
         }
         $oldStatus = $maintenanceRequest->sla_status;
-    
-        $maintenanceRequest->update([
+
+        $data = [
             'sla_status' => $request->status
-        ]);
+        ];
+        
+        if ($request->status === 'Chờ xác nhận') {
+            $completedAt = now();
+            $seconds = Carbon::parse($maintenanceRequest->request_date)
+                ->diffInSeconds($completedAt);
+
+            $data['actual_completion_date'] = $completedAt;
+            $data['actual_duration'] = gmdate('H:i:s', $seconds);
+        }
+    
+        $maintenanceRequest->update($data);
+        // dd($maintenanceRequest->update($data));
 
         MaintenanceRequestLog::create([
             'maintenance_request_id' => $maintenanceRequest->id,
