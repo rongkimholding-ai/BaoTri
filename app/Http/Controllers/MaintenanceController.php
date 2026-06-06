@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestsExport;
 use App\Models\TechnicianTarget;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -23,15 +24,30 @@ class MaintenanceController extends Controller
 
     public function exportTechs()
     {
+        $month = request(
+            'month',
+            now()->format('Y-m')
+        );
         $exportName = rand(1, 2000) . date('Ymd') . '_tech_report.xlsx';
         return Excel::download(
-            new TechnicianReportExport(),
+            new TechnicianReportExport($month),
             $exportName
         );
     }
 
     public function index()
     {
+        $month = request(
+            'month',
+            now()->format('Y-m')
+        );
+    
+        $startDate = Carbon::parse($month . '-01')
+            ->startOfMonth();
+    
+        $endDate = Carbon::parse($month . '-01')
+            ->endOfMonth();
+            
         $requests = MaintenanceRequest::query()
             ->leftJoin(
                 'technician_targets',
@@ -93,6 +109,10 @@ class MaintenanceController extends Controller
                     0
                 ) as vuot_dinh_muc
             ")
+            ->whereBetween(
+                'maintenance_requests.request_date',
+                [$startDate, $endDate]
+            )
             ->whereNotNull('maintenance_requests.technician_name')
             ->where('maintenance_requests.technician_name', '<>', '')
             ->groupBy(

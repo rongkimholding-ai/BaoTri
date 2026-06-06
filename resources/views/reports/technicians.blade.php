@@ -3,9 +3,13 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <div class="d-flex justify-content-between mb-3">
             <h3>Báo cáo SLA theo kỹ thuật viên</h3>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 align-items-center">
+                <input type="month" id="month-filter" class="form-control" style="width: 180px"
+                    value="{{ request('month', now()->format('Y-m')) }}">
                 @can('export excel tech')
-                    <a href="{{ route('reports.technician-export') }}" class="btn btn-success">
+                    <a href="{{ route('reports.technician-export', [
+                        'month' => request('month', now()->format('Y-m'))
+                        ]) }}" class="btn btn-success">
                         Xuất Excel
                     </a>
                 @endcan
@@ -74,7 +78,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">
+                            <td colspan="9" class="text-center">
                                 Không có dữ liệu
                             </td>
                         </tr>

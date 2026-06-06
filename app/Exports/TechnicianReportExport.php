@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\MaintenanceRequest;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -13,11 +14,24 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
 {
+    protected $month;
+
+    public function __construct($month)
+    {
+        $this->month = $month;
+    }
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
+        $startDate = Carbon::parse(
+            $this->month . '-01'
+        )->startOfMonth();
+        
+        $endDate = Carbon::parse(
+            $this->month . '-01'
+        )->endOfMonth();
         return MaintenanceRequest::query()
             ->leftJoin(
                 'technician_targets',
@@ -80,6 +94,10 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
                     ELSE COUNT(*) - COALESCE(technician_targets.monthly_target, 0)
                 END as vuot_dinh_muc
             ")
+            ->whereBetween(
+                'maintenance_requests.request_date',
+                [$startDate, $endDate]
+            )
             ->groupBy(
                 'maintenance_requests.technician_name',
                 'technician_targets.store_count',

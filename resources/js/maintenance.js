@@ -464,4 +464,15 @@ $(function () {
         row.find('.vuot-dinh-muc-cell')
             .text(vuotDinhMuc);
     });
+
+    $(document).on('change', '#month-filter', function() {
+
+        let month = $(this).val();
+    
+        let url = new URL(window.location.href);
+    
+        url.searchParams.set('month', month);
+    
+        window.location.href = url;
+    });
 });
