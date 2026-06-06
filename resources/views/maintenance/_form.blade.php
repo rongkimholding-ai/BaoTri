@@ -15,15 +15,14 @@
         <label>{{ config('maintenance.fields.branch_name') }}</label>
 
         <select class="form-control form-branch-name select2-branch" name="branch_name">
-
             <option value="">-- Chọn cơ sở --</option>
 
             @foreach($stores as $store)
-                <option value="{{ $store['name'] }}">
+                <option value="{{ $store['name'] }}"
+                        data-code="{{ $store['code'] }}">
                     {{ $store['name'] }}
                 </option>
             @endforeach
-
         </select>
     </div>
 

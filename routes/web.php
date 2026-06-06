@@ -28,6 +28,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/maintenance-requests/inline-update',[MaintenanceRequestController::class, 'inlineUpdate'])->name('maintenance-requests.inline-update');
     Route::resource('maintenance-requests', MaintenanceRequestController::class);
 
+    Route::get('/reports/technicians',[MaintenanceController::class, 'index'])->name('reports.technicians');
+    Route::post(
+        '/reports/technician-update',
+        [MaintenanceController::class, 'updateTarget']
+    )->name('reports.technician-update');
+    Route::get(
+        '/reports/technician-export',
+        [MaintenanceController::class, 'exportTechs']
+    )->name('reports.technician-export');
+
     Route::post(
         '/maintenance-requests/confirm',
         [MaintenanceRequestController::class, 'confirm']
@@ -45,6 +55,8 @@ Route::patch(
     [MaintenanceRequestController::class, 'changeStatus']
 )->name('maintenance-requests.change-status');
 
+
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::resource('users', UserController::class);
@@ -52,6 +64,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('roles', RoleController::class);
 
     Route::resource('permissions', PermissionController::class);
+
+    Route::get(
+        '/maintenance-requests/{maintenanceRequest}/logs',
+        [MaintenanceRequestController::class, 'logs']
+    )->name('maintenance-requests.logs');
 });
 
 require __DIR__.'/auth.php';

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMaintenanceRequest;
 use App\Models\MaintenanceRequest;
+use App\Models\MaintenanceRequestLog;
 use App\Services\MaintenanceRequestService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -203,22 +204,40 @@ class MaintenanceRequestController extends Controller
         $allowedStatuses = config('sla_status');
     
         $request->validate([
-            'sla_status' => ['string', 'in:' . implode(',', $allowedStatuses)]
+            'status' => ['string', 'in:' . implode(',', $allowedStatuses)]
         ]);
 
         // kiểm tra quyền
         if (!auth()->user()->can('change-maintenance-status')) {
             abort(403);
         }
+        $oldStatus = $maintenanceRequest->sla_status;
     
         $maintenanceRequest->update([
             'sla_status' => $request->status
+        ]);
+
+        MaintenanceRequestLog::create([
+            'maintenance_request_id' => $maintenanceRequest->id,
+            'user_id' => auth()->id(),
+            'old_status' => $oldStatus,
+            'new_status' => $request->status,
+            'note' => $request->note,
         ]);
     
         return response()->json([
             'success' => true,
             'sla_status' => $maintenanceRequest->status
         ]);
+    }
+
+    public function logs(MaintenanceRequest $maintenanceRequest)
+    {
+        return response()->json(
+            $maintenanceRequest->logs()
+                ->with('user')
+                ->get()
+        );
     }
 
     private function getApproverByBranch($branchName)

@@ -67,15 +67,19 @@
                             </td>
                             <td class="branch_name_class">
                             @if($canUpdate)
-                                <select class="form-control inline-edit select2-branch" data-id="{{ $item->id }}"
+                            <select class="form-control inline-edit select2-branch"
+                                    data-id="{{ $item->id }}"
                                     data-field="branch_name">
-                                    <option value="">-- Chọn cơ sở --</option>
-                                    @foreach($stores as $store)
-                                        <option value="{{ $store['name'] }}" @if($item->branch_name == $store['name']) selected @endif>
-                                            {{ $store['name'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <option value="">-- Chọn cơ sở --</option>
+
+                                @foreach($stores as $store)
+                                    <option value="{{ $store['name'] }}"
+                                            data-code="{{ $store['code'] }}"
+                                            @selected($item->branch_name == $store['name'])>
+                                        {{ $store['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
                                 @else
                                     {{ $item->branch_name }}
                                 @endif
@@ -203,8 +207,8 @@
                                 @endphp
                                 <select class="form-select inline-edit" data-id="{{ $item->id }}" data-field="sla_status">
                                     @foreach($sla_status_arr as $key => $status)
-                                        <option value="{{ $key }}"
-                                            @if($item->sla_status == $key) selected @endif
+                                        <option value="{{ $status }}"
+                                            @if($item->sla_status == $status) selected @endif
                                         >
                                             {{ $status }}
                                         </option>
@@ -352,6 +356,15 @@
                                         </li>
                                         @endif
                                         @endcan
+                                        @role('admin')
+                                        <li>
+                                            <a class="dropdown-item view-log-btn"
+                                                href="#"
+                                                data-id="{{ $item->id }}">
+                                                Lịch sử trạng thái
+                                            </a>
+                                        </li>
+                                        @endrole
                                         {{-- Delete --}}
                                         @can('delete data')
                                         @if($item->sla_status == config('sla_status.NEW'))
@@ -383,5 +396,7 @@
     </div>
 
     @include('maintenance.modals.create')
+    @include('maintenance.modals.change_status')
+    @include('maintenance.modals.log')
 
 </x-app-layout>

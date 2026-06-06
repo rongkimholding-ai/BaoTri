@@ -330,22 +330,138 @@ $(function () {
 
     });
 
-    $(document).on('click', '.change-status-btn', function () {
+    $(document).on('change', '.form-branch-name', function () {
 
-        let id = $(this).data('id');
-        let status = $(this).data('status');
+        let code = $(this).find(':selected').data('code') || '';
     
+        $('#createModal')
+            .find('.form-branch-code')
+            .val(code);
+    });
+
+    $(document).on('change', 'table .select2-branch', function () {
+
+        let option = $(this).find(':selected');
+        let row = $(this).closest('tr');
+    
+        let code = option.data('code') || '';
+    
+        let codeInput = row.find('[data-field="branch_code"]');
+    
+        codeInput.val(code);
+    
+        saveInline($(this));      // branch_name
+        saveInline(codeInput);    // branch_code
+    });
+
+    $(document).on('click', '.change-status-btn', function(e){
+        e.preventDefault();
+        $('#statusRequestId').val($(this).data('id'));
+        $('#newStatus').val($(this).data('status'));
+        $('#statusLabel').val($(this).text().trim());
+        $('#statusNote').val('');
+        new bootstrap.Modal(
+            document.getElementById('changeStatusModal')
+        ).show();
+    
+    });
+
+    $('#confirmChangeStatus').on('click', function(){
+        let id = $('#statusRequestId').val();
+        let status = $('#newStatus').val();
+        let note = $('#statusNote').val();
         $.ajax({
             url: `/maintenance-requests/${id}/status`,
             type: 'PATCH',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-                status: status
+                status: status,
+                note: note
             },
-            success: function () {
+            success: function(){
                 location.reload();
             }
         });
     });
+
+    $(document).on('click', '.view-log-btn', function(e){
+        e.preventDefault();
+        console.log('CLICK OK');
     
+        let id = $(this).data('id');
+    
+        $.get(`/maintenance-requests/${id}/logs`, function(data){
+    
+            let html = '';
+    
+            data.forEach(log => {
+                html += `
+                    <tr>
+                        <td>${log.created_at ? new Date(log.created_at).toLocaleString('vi-VN', { hour12: false }) : ''}</td>
+                        <td>${log.user?.name ?? ''}</td>
+                        <td>${log.old_status ?? ''}</td>
+                        <td>${log.new_status}</td>
+                        <td>${log.note ?? ''}</td>
+                    </tr>
+                `;
+            });
+    
+            $('#logTableBody').html(html);
+            
+            new bootstrap.Modal(
+                document.getElementById('logModal')
+            ).show();
+    
+        }, 'json');
+    });
+    
+    $(document).on('change', '.inline-target', function() {
+
+        let row = $(this).closest('tr');
+    
+        $.ajax({
+            url: '/reports/technician-update',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+    
+                technician_name:
+                    $(this).data('tech'),
+    
+                store_count:
+                    row.find('[data-field="store_count"]').val(),
+    
+                daily_target:
+                    row.find('[data-field="daily_target"]').val(),
+    
+                monthly_target:
+                    row.find('[data-field="monthly_target"]').val()
+            },
+    
+            success: function() {
+                console.log('saved');
+            }
+        });
+    });
+
+    $(document).on('input', '[data-field="monthly_target"]', function () {
+
+        let row = $(this).closest('tr');
+    
+        let total = parseInt(
+            row.find('.total-cell').text()
+        ) || 0;
+    
+        let monthlyTarget = parseInt(
+            $(this).val()
+        ) || 0;
+    
+        let vuotDinhMuc = Math.max(
+            total - monthlyTarget,
+            0
+        );
+    
+        row.find('.vuot-dinh-muc-cell')
+            .text(vuotDinhMuc);
+    });
 });

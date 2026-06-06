@@ -27,4 +27,12 @@ class MaintenanceRequest extends Model
         'acceptance_result',
         'acceptance_confirmed_by',
     ];
+
+    
+
+    public function logs()
+    {
+        return $this->hasMany(MaintenanceRequestLog::class)
+            ->latest();
+    }
 }
