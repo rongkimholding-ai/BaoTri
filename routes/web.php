@@ -26,7 +26,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/maintenance-requests',[MaintenanceRequestController::class, 'index'])->name('maintenance-requests.index');
     Route::get('/maintenance-requests/export',[MaintenanceController::class, 'export'])->name('maintenance-requests.export');
     Route::post('/maintenance-requests/inline-update',[MaintenanceRequestController::class, 'inlineUpdate'])->name('maintenance-requests.inline-update');
-    Route::resource('maintenance-requests', MaintenanceRequestController::class);
+    Route::post(
+        '/maintenance-requests/confirm',
+        [MaintenanceRequestController::class, 'confirm']
+    )
+    ->name('maintenance-requests.confirm');
+
 
     Route::get('/reports/technicians',[MaintenanceController::class, 'index'])->name('reports.technicians');
     Route::post(
@@ -38,11 +43,7 @@ Route::middleware('auth')->group(function () {
         [MaintenanceController::class, 'exportTechs']
     )->name('reports.technician-export');
 
-    Route::post(
-        '/maintenance-requests/confirm',
-        [MaintenanceRequestController::class, 'confirm']
-    )
-    ->name('maintenance-requests.confirm');
+    Route::resource('maintenance-requests', MaintenanceRequestController::class);
 });
 
 Route::post(

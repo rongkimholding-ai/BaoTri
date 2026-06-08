@@ -170,7 +170,7 @@ class MaintenanceRequestController extends Controller
             $request->id
         );
 
-        $item->is_confirmed = $request->confirmed;
+        $item->is_confirmed = filter_var($request->confirmed, FILTER_VALIDATE_BOOLEAN);
 
         if ($request->confirmed) {
 

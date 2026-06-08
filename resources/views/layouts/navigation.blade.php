@@ -8,9 +8,11 @@
                     <x-nav-link :href="route('maintenance-requests.index')" :active="request()->routeIs('maintenance-requests.index')">
                         {{ __('Danh sách Bảo trì') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reports.technicians')" :active="request()->routeIs('reports.technicians')">
-                        {{ __('Báo cáo Công việc') }}
-                    </x-nav-link>
+                    @hasanyrole('manager|admin')
+                        <x-nav-link :href="route('reports.technicians')" :active="request()->routeIs('reports.technicians')">
+                            {{ __('Báo cáo Công việc') }}
+                        </x-nav-link>
+                    @endhasanyrole
 
                     @role('admin')
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">

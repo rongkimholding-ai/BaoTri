@@ -197,8 +197,8 @@ $(function () {
                 },
                 success: function (res) {
                     let input = row.find('.confirmer-name input');
-
-                    if (res.confirmed == 'true') {
+                    console.log(res.confirmed);
+                    if (res.confirmed) {
                         if (input.length) {
                             input.val(res.confirmer ?? '');
                         } else {
