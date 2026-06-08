@@ -293,7 +293,7 @@
                                         Thao tác
                                     </button>
                                     <ul class="dropdown-menu">
-                                        @role('technician')
+                                        @hasanyrole('technician|admin')
                                         @if($item->sla_status == config('sla_status.NEW'))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
@@ -313,9 +313,9 @@
                                                 </a>
                                             </li>
                                             @endif
-                                        @endrole
+                                        @endhasanyrole
 
-                                        @role('manager')
+                                        @hasanyrole('manager|admin')
                                         @if($item->sla_status == config('sla_status.WAITING_CONFIRM'))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
@@ -333,8 +333,7 @@
                                                     Từ chối
                                                 </a>
                                             </li>
-                                        @endif
-                                        @if($item->sla_status == config('sla_status.REJECTED'))
+                                        @elseif($item->sla_status == config('sla_status.REJECTED'))
                                             <li>
                                                 <a class="dropdown-item text-danger change-status-btn"
                                                 href=""
@@ -344,7 +343,7 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        @endrole
+                                        @endhasanyrole
                                         @can('remind maintenance')
                                         @if($item->sla_status == config('sla_status.PROCESSING'))
                                         <li>
