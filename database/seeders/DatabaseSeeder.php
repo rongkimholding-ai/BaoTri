@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\MaintenanceSeeder;
 use Database\Seeders\RolePermissionSeeder;
+use Database\Seeders\StoreUserSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MaintenanceSeeder::class,
             RolePermissionSeeder::class,
+            StoreUserSeeder::class,
         ]);
 
         // User::factory()->create([
