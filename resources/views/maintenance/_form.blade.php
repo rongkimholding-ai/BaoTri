@@ -45,7 +45,8 @@
 
                     @foreach($check['issues'] as $issue)
 
-                        <option value="{{ $check['name'] }}" data-category="{{ $check['name'] }}"
+                        <option value="{{ $check['name'] }}" 
+                            data-category="{{ $check['name'] }}" data-key="{{ $issue['key'] }}"  
                             data-issue="{{ $issue['name'] }}" data-severity="{{ $issue['severity'] }}"
                             data-handler="{{ $issue['handler'] }}" data-processing="{{ $issue['processing_time'] }}"
                             data-solution="{{ $issue['solution'] }}">

@@ -485,20 +485,42 @@ $(function () {
         window.location.href = url;
     });
 
-    function lockFormFields() {
-        // Input + textarea
-        $('#createModal')
-            .find('input, textarea')
+    function toggleFormFields() {
+        const modal = $('#createModal');
+        const key = modal.find('.issue-selector option:selected').data('key');
+    
+        // Khóa toàn bộ trước
+        modal.find('input, textarea')
             .not('.form-branch-name, .issue-selector')
             .prop('readonly', true);
-
-            $('#createModal')
-            .find('select')
+    
+        modal.find('select')
             .not('.form-branch-name, .issue-selector')
             .prop('disabled', true);
-    }
-    lockFormFields();
     
+        // Bỏ highlight cũ
+        modal.find('.editable-highlight')
+            .removeClass('editable-highlight');
+    
+        // Nếu là OTHER thì mở các trường được phép sửa
+        if (key === 'OTHER') {
+            modal.find(
+                '.severity-field, .issue-description, .solution-description, .processing-time'
+            )
+            .prop('readonly', false)
+            .prop('disabled', false)
+            .addClass('editable-highlight');
+        }
+    }
+    
+    // Khởi tạo
+    toggleFormFields();
+    
+    // Khi đổi hạng mục
+    $(document).on('change', '#createModal .issue-selector', function () {
+        toggleFormFields();
+    });
+
     function syncScrollWidth() {
         let tableWidth = $('.table-responsive table')[0].scrollWidth;
 

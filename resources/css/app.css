@@ -95,6 +95,17 @@ TABLE
     z-index: 1;
 }
 
+.editable-highlight {
+    background-color: #fff8e1 !important;
+    border: 2px solid #ffc107 !important;
+    box-shadow: 0 0 5px rgba(255, 193, 7, 0.4);
+}
+
+.editable-highlight:focus {
+    border-color: #ff9800 !important;
+    box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+}
+
 /* =========================
 BADGE SLA
 ========================= */
