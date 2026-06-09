@@ -29,7 +29,7 @@ class StoreMaintenanceRequest extends FormRequest
             'item_category' => 'required|string|max:255',
             'issue_description' => 'required|string|max:255',
             'severity' => 'required|string|max:255',
-            'issue_category' => 'nullable|string|max:255',
+            // 'issue_category' => 'nullable|string|max:255',
             'technician_name' => 'required|string|max:255',
             'technician_mobile' => 'nullable|string|max:255',
             'standard_completion_time' => 'required',

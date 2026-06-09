@@ -38,7 +38,8 @@ TABLE
 #tbData th.status-field,
 #tbData td.status-field {
     min-width: 150px;
-    max-width: 170px;
+    max-width: 190px;
+    text-align: center;
 }
 
 #tbData th.technician-mobile-field,
@@ -93,6 +94,11 @@ TABLE
     white-space: nowrap;
     background: white;
     z-index: 1;
+}
+
+.logo-img {
+    width: 8rem;
+    height: auto;
 }
 
 .editable-highlight {

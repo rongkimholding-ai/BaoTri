@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Công việc bảo trì</title>
 
+    <link rel="icon" href="{{ asset('images/favicon-32x32.png') }}" type="image/png">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -25,10 +26,13 @@
             <div class="flex justify-between items-center h-16">
 
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg"><img src="{{ asset('images/Logo.jpg') }}"></div>
-                    <span class="font-semibold text-gray-900 text-lg">
-                        {{ config('app.name', 'Laravel') }}
-                    </span>
+                    <x-nav-link :href="route('maintenance-requests.index')" class="flex items-center gap-3">
+                        <div class="logo-img"><img src="{{ asset('images/Logo.png') }}"></div>
+                        <!-- <span class="font-semibold text-gray-900 text-lg">
+                            {{ config('app.name', 'Laravel') }}
+                        </span> -->
+                    </x-nav-link>
+               
                 </div>
 
                 <div class="flex items-center gap-4">

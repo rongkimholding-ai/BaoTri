@@ -126,7 +126,7 @@
                                 <textarea class="form-control inline-edit issue-description" data-id="{{ $item->id }}"
                                     data-field="issue_description" rows="3">{{ $item->issue_description }}</textarea>
                                 @else
-                                <textarea rows="3" readonly> {{ $item->issue_description }}</textarea>
+                                {{ $item->issue_description }}
                                 @endif
                             </td>
                             <td>
@@ -134,7 +134,15 @@
                                 <input class="form-control inline-edit processing-time" data-id="{{ $item->id }}"
                                     data-field="standard_completion_time" value="{{ $item->standard_completion_time }}">
                                 @else
-                                    {{ $item->standard_completion_time }}
+                                    @php
+                                        $realTimeList = json_decode(file_get_contents(resource_path('json/real_time.json')), true);
+                                        $realTimeMap = collect($realTimeList)->keyBy('key');
+                                        $timeName = isset($item->standard_completion_time) && $item->standard_completion_time
+                                            ? ($realTimeMap[$item->standard_completion_time]['name'] ?? $item->standard_completion_time)
+                                            : '';
+                                    @endphp
+                                    {{ $timeName }}
+                               
                                 @endif
                             </td>
                             <td>
@@ -181,7 +189,7 @@
                                 <textarea class="form-control inline-edit solution-description" data-id="{{ $item->id }}"
                                     data-field="solution_description" rows="3">{{ $item->solution_description }}</textarea>
                                 @else
-                                <textarea rows="3" readonly>{{ $item->solution_description }}</textarea>
+                                {{ $item->solution_description }}
                                 @endif
                             </td>
 
@@ -203,7 +211,7 @@
                                 @endif
                                 </td>
 
-                            <td class="status-field text-center">
+                            <td class="status-field">
                                 @if($canUpdate)
                                 @php
                                     $sla_status_arr = config('sla_status.name');
@@ -338,7 +346,7 @@
                                                 href=""
                                                 data-id="{{ $item->id }}"
                                                 data-status="{{ config('sla_status.code.REJECTED') }}">
-                                                    Từ chối
+                                                    {{ config('sla_status.names.REJECTED') }}
                                                 </a>
                                             </li>
                                         @elseif($item->sla_status == config('sla_status.code.REJECTED'))
@@ -347,7 +355,7 @@
                                                 href=""
                                                 data-id="{{ $item->id }}"
                                                 data-status="{{ config('sla_status.code.REOPEN') }}">
-                                                    Thực hiện lại
+                                                    {{ config('sla_status.names.REOPEN') }}
                                                 </a>
                                             </li>
                                         @endif
@@ -370,7 +378,15 @@
                                             href=""
                                             data-id="{{ $item->id }}"
                                             data-status="{{ config('sla_status.code.PENDING') }}">
-                                                Tạm dừng
+                                                {{ config('sla_status.names.PENDING') }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-warning change-status-btn"
+                                            href=""
+                                            data-id="{{ $item->id }}"
+                                            data-status="{{ config('sla_status.code.PENDING_CONTRACTOR') }}">
+                                                {{ config('sla_status.names.PENDING_CONTRACTOR') }}
                                             </a>
                                         </li>
                                         @endif
@@ -380,7 +396,7 @@
                                             href=""
                                             data-id="{{ $item->id }}"
                                             data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
-                                                Tiếp tục thực hiện
+                                            {{ config('sla_status.names.CONTINUE_PROCESSING') }}
                                             </a>
                                         </li>
                                         @endif
@@ -428,5 +444,8 @@
     @include('maintenance.modals.create')
     @include('maintenance.modals.change_status')
     @include('maintenance.modals.log')
-
+    <script>
+        const slaStatusNames = @json(config('sla_status.names'));
+        const slaStatusBadges = @json(config('sla_status.badge'));
+    </script>
 </x-app-layout>

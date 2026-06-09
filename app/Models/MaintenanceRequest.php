@@ -13,7 +13,7 @@ class MaintenanceRequest extends Model
         'item_category',
         'issue_description',
         'severity',
-        'issue_category',
+        // 'issue_category',
         'technician_name',
         'technician_mobile',
         'standard_completion_time',

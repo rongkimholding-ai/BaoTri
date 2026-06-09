@@ -180,6 +180,14 @@ $(function () {
             .val(option.data('mobile') || '');
     });
 
+    function renderStatus(status) {
+        return `
+            <span class="${slaStatusBadges[status] ?? 'badge badge-default'}">
+                ${slaStatusNames[status] ?? status}
+            </span>
+        `;
+    }
+
     $(document).on(
         'change',
         '.confirm-request',
@@ -187,13 +195,24 @@ $(function () {
 
             let checkbox = $(this);
             let row = checkbox.closest('tr');
+            let checked = checkbox.is(':checked');
+
+            let message = checked
+                ? 'Bạn có chắc chắn muốn xác nhận yêu cầu này?'
+                : 'Bạn có chắc chắn muốn hủy xác nhận yêu cầu này?';
+
+            if (!confirm(message)) {
+                checkbox.prop('checked', !checked);
+                return;
+            }
+
             $.ajax({
                 url: '/maintenance-requests/confirm',
                 type: 'POST',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     id: $(this).data('id'),
-                    confirmed: $(this).is(':checked')
+                    confirmed: checked ? 1 : 0
                 },
                 success: function (res) {
                     let input = row.find('.confirmer-name input');
@@ -214,14 +233,29 @@ $(function () {
                     //             .text('');
                     //     }
                     // }
-                    row.find('.status-field').text(res.status ?? '');
+                    row.find('.status-field').html(renderStatus(res.status));
                     row.find('.confirm_checked').html('');
+                },
+                error: function (xhr) {
+                    // Xử lý lỗi trả về từ server, đặc biệt khi response là JSON với thông báo tùy chỉnh
+                    let message = 'Có lỗi xảy ra';
+                    if (
+                        xhr &&
+                        xhr.responseJSON &&
+                        xhr.responseJSON.message
+                    ) {
+                        message = xhr.responseJSON.message;
+                    }
+                    alert(message);
+
+                    // rollback trạng thái checkbox
+                    checkbox.prop('checked', !checked);
                 }
             });
 
         }
     );
-
+    
     $(document).on(
         'click',
         '.btn-remind',
@@ -396,32 +430,33 @@ $(function () {
 
     $(document).on('click', '.view-log-btn', function (e) {
         e.preventDefault();
-        console.log('CLICK OK');
-
+    
+        const slaStatusNames = window.slaStatusNames || {};
+   
         let id = $(this).data('id');
-
+    
         $.get(`/maintenance-requests/${id}/logs`, function (data) {
-
+    
             let html = '';
-
+    
             data.forEach(log => {
                 html += `
                     <tr>
                         <td>${log.created_at ? new Date(log.created_at).toLocaleString('vi-VN', { hour12: false }) : ''}</td>
                         <td>${log.user?.name ?? ''}</td>
-                        <td>${log.old_status ?? ''}</td>
-                        <td>${log.new_status}</td>
+                        <td>${slaStatusNames[log.old_status] ?? log.old_status ?? ''}</td>
+                        <td>${slaStatusNames[log.new_status] ?? log.new_status ?? ''}</td>
                         <td>${log.note ?? ''}</td>
                     </tr>
                 `;
             });
-
+    
             $('#logTableBody').html(html);
-
+    
             new bootstrap.Modal(
                 document.getElementById('logModal')
             ).show();
-
+    
         }, 'json');
     });
 

@@ -173,11 +173,49 @@ class MaintenanceRequestController extends Controller
         $item->is_confirmed = filter_var($request->confirmed, FILTER_VALIDATE_BOOLEAN);
 
         if ($request->confirmed) {
+            // Lấy giờ thực tế dạng HH:ii:ss và chuyển đổi sang giây
+            $actualDuration = $item->actual_duration; // dạng "HH:ii:ss"
+            $actualSeconds = 0;
+            if ($actualDuration) {
+                list($h, $i, $s) = explode(':', $actualDuration);
+                $actualSeconds = ((int)$h) * 3600 + ((int)$i) * 60 + ((int)$s);
+            }
+
+            // Lấy danh sách thời gian chuẩn từ file json
+            $realTimeList = json_decode(file_get_contents(resource_path('json/real_time.json')), true);
+            $realTimeMap = collect($realTimeList)->keyBy('key');
+
+            $stdKey = $item->standard_completion_time;
+            $minSeconds = null;
+            $maxSeconds = null;
+            if ($stdKey && isset($realTimeMap[$stdKey])) {
+                $minSeconds = $realTimeMap[$stdKey]['min_seconds'];
+                $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
+            }
+
+            // So sánh actualSeconds với min và max (nếu tồn tại)
+            if (!is_null($minSeconds) && !is_null($maxSeconds) && $actualSeconds > 0) {
+                if ($actualSeconds < $minSeconds || $actualSeconds > $maxSeconds) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Thời gian thực hiện thực tế không hợp lệ so với tiêu chuẩn cho công việc này!'
+                    ], 422);
+                }
+            }
+
+
+            MaintenanceRequestLog::create([
+                'maintenance_request_id' => $item->id,
+                'user_id' => auth()->id(),
+                'old_status' => $item->sla_status,
+                'new_status' => config('sla_status.code.COMPLETED'),
+                'note' => 'Xác nhận hoàn thành',
+            ]);
+
             $item->confirmed_at = now();
             $item->delay_reason = '';
             $item->sla_status = config('sla_status.code.COMPLETED');
             $item->acceptance_confirmed_by = auth()->user()->name;
-
         }
         //  else {
         //     $item->confirmed_at = null;
@@ -190,7 +228,7 @@ class MaintenanceRequestController extends Controller
             'success' => true,
             'confirmed' => $item->is_confirmed,
             'confirmer' => $item->acceptance_confirmed_by,
-            'status' => config('sla_status.names.COMPLETED'),
+            'status' => config('sla_status.code.COMPLETED'),
         ]);
     }
 

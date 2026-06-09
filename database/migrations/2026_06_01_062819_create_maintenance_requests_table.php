@@ -20,7 +20,7 @@ return new class extends Migration
         
             $table->string('severity')->nullable();
         
-            $table->string('issue_category')->nullable();
+            // $table->string('issue_category')->nullable();
         
             $table->string('technician_name')->nullable();
         
