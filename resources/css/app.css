@@ -109,21 +109,34 @@ TABLE
 /* =========================
 BADGE SLA
 ========================= */
-
-.badge-sla-success {
-    background: #198754;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
+.badge-default {
+    background-color: #464747;
+    color: #fff;
 }
 
-.badge-sla-danger {
-    background: #dc3545;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
+.badge-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.badge-primary {
+    background-color: #007bff;
+    color: #fff;
 }
 
 /* =========================

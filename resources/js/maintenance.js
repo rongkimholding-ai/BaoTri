@@ -197,7 +197,6 @@ $(function () {
                 },
                 success: function (res) {
                     let input = row.find('.confirmer-name input');
-                    console.log(res.confirmed);
                     if (res.confirmed) {
                         if (input.length) {
                             input.val(res.confirmer ?? '');
@@ -205,16 +204,18 @@ $(function () {
                             row.find('.confirmer-name')
                                 .text(res.confirmer ?? '');
                         }
-                    } else {
-                        let input = row.find('.confirmer-name input');
-
-                        if (input.length) {
-                            input.val('');
-                        } else {
-                            row.find('.confirmer-name')
-                                .text('');
-                        }
-                    }
+                    } 
+                    // else {
+                    //     let input = row.find('.confirmer-name input');
+                    //     if (input.length) {
+                    //         input.val('');
+                    //     } else {
+                    //         row.find('.confirmer-name')
+                    //             .text('');
+                    //     }
+                    // }
+                    row.find('.status-field').text(res.status ?? '');
+                    row.find('.confirm_checked').html('');
                 }
             });
 

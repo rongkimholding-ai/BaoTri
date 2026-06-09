@@ -203,7 +203,7 @@
                                 @endif
                                 </td>
 
-                            <td class="status-field">
+                            <td class="status-field text-center">
                                 @if($canUpdate)
                                 @php
                                     $sla_status_arr = config('sla_status.name');
@@ -218,7 +218,10 @@
                                     @endforeach
                                 </select>
                                 @else
-                                    {{ isset(config('sla_status.names')[$item->sla_status]) ? config('sla_status.names')[$item->sla_status] : $item->sla_status }}
+                                    <!-- <span class="{{ config('sla_status.badge')[$item->sla_status] }}">{{ isset(config('sla_status.names')[$item->sla_status]) ? config('sla_status.names')[$item->sla_status] : $item->sla_status }}</span> -->
+                                    <span class="{{ data_get(config('sla_status.badge'), $item->sla_status, 'badge badge-default') }}">
+                                        {{ data_get(config('sla_status.names'), $item->sla_status, $item->sla_status) }}
+                                    </span>
                                 @endif
                             </td>
                     
@@ -252,11 +255,13 @@
 
                             <td class="confirm_checked">
                                 @can('confirm maintenance')
+                                    @if ($item->sla_status == config('sla_status.code.CONFIRMED'))
                                     <input
                                         type="checkbox"
                                         class="confirm-request"
                                         data-id="{{ $item->id }}"
                                         {{ $item->is_confirmed ? 'checked' : '' }}>
+                                    @endif
                                 @else
                                     @if($item->is_confirmed)
                                         <span class="badge bg-success">
@@ -359,7 +364,7 @@
                                         @endif
                                         @endcan
                                         @role('admin')
-                                        @if ($item->sla_status == 'Mới tạo' || $item->sla_status == 'Đang thực hiện')
+                                        @if (in_array($item->sla_status,[config('sla_status.code.NEW'),config('sla_status.code.PROCESSING')] ))
                                         <li>
                                             <a class="dropdown-item text-warning change-status-btn"
                                             href=""
@@ -369,7 +374,7 @@
                                             </a>
                                         </li>
                                         @endif
-                                        @if ($item->sla_status == 'Tạm dừng')
+                                        @if ($item->sla_status == config('sla_status.code.PENDING'))
                                         <li>
                                             <a class="dropdown-item change-status-btn"
                                             href=""

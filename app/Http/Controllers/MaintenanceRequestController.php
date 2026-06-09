@@ -173,18 +173,16 @@ class MaintenanceRequestController extends Controller
         $item->is_confirmed = filter_var($request->confirmed, FILTER_VALIDATE_BOOLEAN);
 
         if ($request->confirmed) {
-
             $item->confirmed_at = now();
             $item->delay_reason = '';
-
+            $item->sla_status = config('sla_status.code.COMPLETED');
             $item->acceptance_confirmed_by = auth()->user()->name;
 
-        } else {
-
-            $item->confirmed_at = null;
-
-            $item->acceptance_confirmed_by = null;
         }
+        //  else {
+        //     $item->confirmed_at = null;
+        //     $item->acceptance_confirmed_by = null;
+        // }
 
         $item->save();
 
@@ -192,6 +190,7 @@ class MaintenanceRequestController extends Controller
             'success' => true,
             'confirmed' => $item->is_confirmed,
             'confirmer' => $item->acceptance_confirmed_by,
+            'status' => config('sla_status.names.COMPLETED'),
         ]);
     }
 
@@ -212,15 +211,17 @@ class MaintenanceRequestController extends Controller
         $oldStatus = $maintenanceRequest->sla_status;
 
         $data = [
-            'sla_status' => $request->status
+            'sla_status' => $request->status,
+            'delay_reason' => $request->note,
         ];
 
-        if ($request->status === 'Chờ xác nhận') {
+        if ($request->status === config('sla_status.code.WAITING_CONFIRM')) {
             $completedAt = now();
             $seconds = Carbon::parse($maintenanceRequest->request_date)
                 ->diffInSeconds($completedAt);
 
             $data['actual_completion_date'] = $completedAt;
+            $data['delay_reason'] = '';
             if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
 
                 // Có tạm dừng
@@ -254,14 +255,11 @@ class MaintenanceRequestController extends Controller
             );
         }
 
-
-        if ($request->status === 'Tạm dừng') {
+        if (in_array($request->status,[config('sla_status.code.PENDING'),config('sla_status.code.PENDING_CONTRACTOR')])) {
             $data['pending_at'] = now();
-            $data['delay_reason'] = $request->note;
         }
-        if ($request->status === 'Tiếp tục thực hiện') {
+        if ($request->status === config('sla_status.code.CONTINUE_PROCESSING')) {
             $data['processing_at'] = now();
-            $data['delay_reason'] = $request->note;
         }
         $maintenanceRequest->update($data);
         // dd($maintenanceRequest->update($data));

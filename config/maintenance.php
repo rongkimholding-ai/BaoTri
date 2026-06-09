@@ -34,7 +34,7 @@ return [
 
         'sla_status' => 'Tình trạng đáp ứng',
 
-        'delay_reason' => 'Lý do trễ',
+        'delay_reason' => 'Lý do',
 
         'outsourced_provider' => 'Đơn vị xử lý',
 

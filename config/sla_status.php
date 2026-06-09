@@ -26,5 +26,18 @@ return [
         'COMPLETED' => "COMPLETED",
         'LATED' => "LATED",
         'REOPEN' => "REOPEN"
+    ],
+    'badge' => [
+        'NEW' => "badge badge-default",
+        'PROCESSING' => "badge badge-warning",
+        'CONTINUE_PROCESSING' => "badge badge-warning",
+        'PENDING' => "badge badge-info",
+        'PENDING_CONTRACTOR' => "badge badge-info",
+        'WAITING_CONFIRM' => "badge badge-primary",
+        'REJECTED' => "badge badge-danger",
+        'CONFIRMED' => "badge badge-primary",
+        'COMPLETED' => "badge badge-success",
+        'LATED' => "badge badge-danger",
+        'REOPEN' => "badge badge-default"
     ]
 ];
