@@ -111,7 +111,8 @@ $(function () {
             .val(option.data('issue'));
 
         container.find('.severity-field')
-            .val(option.data('severity'));
+            .val(option.data('severity'))
+            .trigger('change');
 
         container.find('.processing-time')
             .val(option.data('processing'));
@@ -122,6 +123,46 @@ $(function () {
         container.find('.outsourced-provider')
             .val(option.data('handler') || '');
     }
+
+    const originalIssueOptions = $('.issue-selector').html();
+    let isUpdating = false;
+
+    $(document).on('change', '.severity-field', function () {
+
+        let severity = String($(this).val()).trim();
+        let issueSelector = $('.issue-selector');
+
+        if (isUpdating) return;
+        isUpdating = true;
+    
+        // khôi phục dữ liệu gốc
+        issueSelector.html(originalIssueOptions);
+    
+        if (severity) {
+    
+            issueSelector.find('option').each(function () {
+    
+                let optionSeverity = String($(this).data('severity')).trim();
+    
+                if (
+                    optionSeverity &&
+                    optionSeverity !== severity
+                ) {
+                    $(this).remove();
+                }
+            });
+    
+            // xoá optgroup rỗng
+            issueSelector.find('optgroup').each(function () {
+                if ($(this).find('option').length === 0) {
+                    $(this).remove();
+                }
+            });
+        }
+    
+        issueSelector.val('').trigger('change');
+        isUpdating = false;
+    });
 
     $(document).on('change', 'table .issue-selector', function () {
 
@@ -149,26 +190,30 @@ $(function () {
     $(document).on('change', 'table .form-technician-name', function () {
         let option = $(this).find(':selected');
         let row = $(this).closest('tr');
-        console.log(option.data('mobile'));
 
         // fill SĐT từ data-mobile
         row.find('.technician-mobile')
             .val(option.data('mobile') || '');
+        row.find('.technician-email')
+            .val(option.data('email') || '');
 
         saveInline($(this));
         saveInline(row.find('.technician-mobile'));
+        saveInline(row.find('.technician-email'));
     });
 
     $('#createModal').on(
         'change',
         '.issue-selector',
         function () {
+            if (isUpdating) return;
+            isUpdating = true;
 
             fillIssueData(
                 $('#createModal'),
                 $(this).find(':selected')
             );
-
+            isUpdating = false;
         }
     );
 
@@ -178,6 +223,8 @@ $(function () {
 
         $('#createModal').find('.technician-mobile')
             .val(option.data('mobile') || '');
+        $('#createModal').find('.technician-email')
+            .val(option.data('email') || '');
     });
 
     function renderStatus(status) {
@@ -531,7 +578,7 @@ $(function () {
             .prop('readonly', true);
     
         modal.find('select')
-            .not('.form-branch-name, .issue-selector')
+            .not('.form-branch-name, .issue-selector, .severity-field')
             .prop('disabled', true);
     
         // Bỏ highlight cũ

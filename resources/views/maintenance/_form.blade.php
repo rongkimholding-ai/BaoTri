@@ -8,7 +8,16 @@
     <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.severity') }}</label>
 
-        <input class="form-control severity-field" name="severity">
+        <select class="form-control severity-field select2-branch" name="severity">
+            <option value="">-- Chọn {{ config('maintenance.fields.severity') }} --</option>
+
+            @foreach($severities as $severity)
+                <option value="{{ $severity['key'] }}"
+                    data-processing_time="{{ $severity['processing_time'] }}">
+                    {{ $severity['name'] }}
+                </option>
+            @endforeach
+        </select>
     </div>
 
     <div class="col-md-6 mb-3">
@@ -68,13 +77,13 @@
         <textarea rows="3" class="form-control issue-description" name="issue_description"></textarea>
     </div>
 
-    <div class="col-md-4 mb-3">
+    <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.standard_completion_time') }}</label>
 
         <input class="form-control processing-time" name="standard_completion_time">
     </div>
 
-    <div class="col-md-4 mb-3">
+    <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.technician_name') }}</label>
 
         <select class="form-control form-technician-name select2-branch" name="technician_name">
@@ -82,7 +91,8 @@
             <option value="">-- {{ config('maintenance.fields.technician_name') }} --</option>
 
             @foreach($techs as $tech)
-                <option value="{{ $tech['name'] }}" data-mobile="{{ $tech['mobile'] }}">
+                <option value="{{ $tech['name'] }}"
+                    data-email="{{ $tech['email'] }}" data-mobile="{{ $tech['mobile'] }}">
                     {{ $tech['name'] }}
                 </option>
             @endforeach
@@ -90,10 +100,16 @@
         </select>
     </div>
 
-    <div class="col-md-4 mb-3">
+    <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.technician_mobile') }}</label>
 
         <input name="technician_mobile" class="form-control technician-mobile">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label>{{ config('maintenance.fields.technician_email') }}</label>
+
+        <input name="technician_email" class="form-control technician-email">
     </div>
 
     <!-- <div class="col-md-3 mb-3">

@@ -24,9 +24,10 @@ class MaintenanceRequestController extends Controller
         $stores = $this->getData();
         $checks = $this->getChecksData();
         $techs = $this->getTechnicianData();
+        $severities = $this->getSeveritiesData();
 
 
-        return view('maintenance.index', compact('requests', 'stores', 'checks', 'techs'));
+        return view('maintenance.index', compact('requests', 'stores', 'checks', 'techs', 'severities'));
     }
 
     /**
@@ -37,8 +38,10 @@ class MaintenanceRequestController extends Controller
         $stores = $this->getData();
         $checks = $this->getChecksData();
         $techs = $this->getTechnicianData();
+        $severities = $this->getSeveritiesData();
+        dd($severities);
 
-        return view('maintenance.create', compact('checks', 'stores', 'techs'));
+        return view('maintenance.create', compact('checks', 'stores', 'techs', 'severities'));
     }
 
     /**
@@ -365,6 +368,13 @@ class MaintenanceRequestController extends Controller
         return $data;
     }
 
+    public function getSeveritiesData()
+    {
+        $jsonPath = resource_path('json/severities.json');
+        $data = json_decode(file_get_contents($jsonPath), true);
+
+        return $data;
+    }
     public function getActualDurationTextAttribute($actual_duration)
     {
         if (!$actual_duration) {

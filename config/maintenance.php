@@ -23,6 +23,8 @@ return [
         'technician_name' => 'Kỹ thuật viên',
 
         'technician_mobile' => 'SĐT KTV',
+        
+        'technician_email' => 'Email KTV',
 
         'reminder' => 'Nhắc việc',
 

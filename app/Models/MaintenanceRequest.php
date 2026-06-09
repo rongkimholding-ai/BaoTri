@@ -16,6 +16,7 @@ class MaintenanceRequest extends Model
         // 'issue_category',
         'technician_name',
         'technician_mobile',
+        'technician_email',
         'standard_completion_time',
         'solution_description',
         'request_date',

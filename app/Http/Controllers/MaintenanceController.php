@@ -70,7 +70,7 @@ class MaintenanceController extends Controller
         
                 SUM(
                     CASE
-                        WHEN maintenance_requests.sla_status = 'Đúng hạn'
+                        WHEN maintenance_requests.sla_status = 'COMPLETED'
                         THEN 1
                         ELSE 0
                     END
@@ -78,7 +78,7 @@ class MaintenanceController extends Controller
         
                 SUM(
                     CASE
-                        WHEN maintenance_requests.sla_status <> 'Đúng hạn'
+                        WHEN maintenance_requests.sla_status <> 'COMPLETED'
                         OR maintenance_requests.sla_status IS NULL
                         THEN 1
                         ELSE 0
@@ -89,7 +89,7 @@ class MaintenanceController extends Controller
                     COALESCE(
                         SUM(
                             CASE
-                                WHEN maintenance_requests.sla_status = 'Đúng hạn'
+                                WHEN maintenance_requests.sla_status = 'COMPLETED'
                                 THEN 1
                                 ELSE 0
                             END
@@ -103,7 +103,7 @@ class MaintenanceController extends Controller
                     COALESCE(
                         SUM(
                             CASE
-                                WHEN maintenance_requests.sla_status <> 'Đúng hạn'
+                                WHEN maintenance_requests.sla_status <> 'COMPLETED'
                                 OR maintenance_requests.sla_status IS NULL
                                 THEN 1
                                 ELSE 0
