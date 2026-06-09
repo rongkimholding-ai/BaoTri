@@ -8,7 +8,7 @@ class MaintenanceRequestService
     public function create(array $data)
     {
         $data['request_date'] = now();
-        $data['sla_status'] = config('sla_status.NEW');
+        $data['sla_status'] = config('sla_status.code.NEW');
 
         return MaintenanceRequest::create($data);
     }

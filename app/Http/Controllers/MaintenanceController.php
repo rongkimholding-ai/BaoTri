@@ -48,75 +48,83 @@ class MaintenanceController extends Controller
         $endDate = Carbon::parse($month . '-01')
             ->endOfMonth();
             
-        $requests = MaintenanceRequest::query()
+            $requests = TechnicianTarget::query()
             ->leftJoin(
-                'technician_targets',
-                'maintenance_requests.technician_name',
-                '=',
-                'technician_targets.technician_name'
+                'maintenance_requests',
+                function ($join) use ($startDate, $endDate) {
+                    $join->on(
+                        'technician_targets.technician_name',
+                        '=',
+                        'maintenance_requests.technician_name'
+                    )
+                    ->whereBetween(
+                        'maintenance_requests.request_date',
+                        [$startDate, $endDate]
+                    );
+                }
             )
             ->selectRaw("
-                maintenance_requests.technician_name,
-
-                COUNT(*) as total,
-
+                technician_targets.technician_name,
+        
+                COUNT(maintenance_requests.id) as total,
+        
                 SUM(
                     CASE
-                        WHEN sla_status = 'Đúng hạn'
+                        WHEN maintenance_requests.sla_status = 'Đúng hạn'
                         THEN 1
                         ELSE 0
                     END
                 ) as dung_han_count,
-
+        
                 SUM(
                     CASE
-                        WHEN sla_status <> 'Đúng hạn'
-                        OR sla_status IS NULL
+                        WHEN maintenance_requests.sla_status <> 'Đúng hạn'
+                        OR maintenance_requests.sla_status IS NULL
                         THEN 1
                         ELSE 0
                     END
                 ) as con_lai_count,
-
+        
                 ROUND(
-                    SUM(
-                        CASE
-                            WHEN sla_status = 'Đúng hạn'
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) * 100 / COUNT(*),
+                    COALESCE(
+                        SUM(
+                            CASE
+                                WHEN maintenance_requests.sla_status = 'Đúng hạn'
+                                THEN 1
+                                ELSE 0
+                            END
+                        ) * 100 / NULLIF(COUNT(maintenance_requests.id), 0),
+                        0
+                    ),
                     2
                 ) as dung_han_percent,
-
+        
                 ROUND(
-                    SUM(
-                        CASE
-                            WHEN sla_status <> 'Đúng hạn'
-                            OR sla_status IS NULL
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) * 100 / COUNT(*),
+                    COALESCE(
+                        SUM(
+                            CASE
+                                WHEN maintenance_requests.sla_status <> 'Đúng hạn'
+                                OR maintenance_requests.sla_status IS NULL
+                                THEN 1
+                                ELSE 0
+                            END
+                        ) * 100 / NULLIF(COUNT(maintenance_requests.id), 0),
+                        0
+                    ),
                     2
                 ) as con_lai_percent,
-
+        
                 technician_targets.store_count,
                 technician_targets.daily_target,
                 technician_targets.monthly_target,
-
+        
                 GREATEST(
-                    COUNT(*) - COALESCE(technician_targets.monthly_target, 0),
+                    COUNT(maintenance_requests.id) - COALESCE(technician_targets.monthly_target, 0),
                     0
                 ) as vuot_dinh_muc
             ")
-            ->whereBetween(
-                'maintenance_requests.request_date',
-                [$startDate, $endDate]
-            )
-            ->whereNotNull('maintenance_requests.technician_name')
-            ->where('maintenance_requests.technician_name', '<>', '')
             ->groupBy(
-                'maintenance_requests.technician_name',
+                'technician_targets.technician_name',
                 'technician_targets.store_count',
                 'technician_targets.daily_target',
                 'technician_targets.monthly_target'

@@ -26,6 +26,8 @@ class MaintenanceRequest extends Model
         'outsourced_provider',
         'acceptance_result',
         'acceptance_confirmed_by',
+        'pending_at',
+        'processing_at',
     ];
 
     

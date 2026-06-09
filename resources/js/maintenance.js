@@ -127,16 +127,16 @@ $(function () {
 
         let option = $(this).find(':selected');
         let row = $(this).closest('tr');
-    
+
         // ===== ISSUE DATA =====
         row.find('.issue-description').val(option.data('issue') || '');
         row.find('.severity-field').val(option.data('severity') || '');
         row.find('.processing-time').val(option.data('processing') || '');
         row.find('.solution-description').val(option.data('solution') || '');
-    
+
         // ===== FIX MỚI: handler → outsourced_provider =====
         row.find('.outsourced-provider').val(option.data('handler') || '');
-    
+
         // ===== SAVE INLINE =====
         saveInline($(this));
         saveInline(row.find('.issue-description'));
@@ -150,11 +150,11 @@ $(function () {
         let option = $(this).find(':selected');
         let row = $(this).closest('tr');
         console.log(option.data('mobile'));
-    
+
         // fill SĐT từ data-mobile
         row.find('.technician-mobile')
             .val(option.data('mobile') || '');
-    
+
         saveInline($(this));
         saveInline(row.find('.technician-mobile'));
     });
@@ -175,7 +175,7 @@ $(function () {
     $('#createModal').on('change', '.form-technician-name', function () {
 
         let option = $(this).find(':selected');
-    
+
         $('#createModal').find('.technician-mobile')
             .val(option.data('mobile') || '');
     });
@@ -288,6 +288,8 @@ $(function () {
     $(document).on('submit', '#createForm', function (e) {
         e.preventDefault();
 
+        $('#createModal select:disabled').prop('disabled', false);
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
@@ -332,29 +334,36 @@ $(function () {
 
     $(document).on('change', '.form-branch-name', function () {
 
-        let code = $(this).find(':selected').data('code') || '';
-    
-        $('#createModal')
-            .find('.form-branch-code')
-            .val(code);
+        let selected = $(this).find(':selected');
+
+        let code = selected.data('code') || '';
+        let technician_name = selected.data('technician_name') || '';
+
+        let modal = $('#createModal');
+
+        modal.find('.form-branch-code').val(code);
+
+        modal.find('.form-technician-name')
+            .val(technician_name)
+            .trigger('change');
     });
 
     $(document).on('change', 'table .select2-branch', function () {
 
         let option = $(this).find(':selected');
         let row = $(this).closest('tr');
-    
+
         let code = option.data('code') || '';
-    
+
         let codeInput = row.find('[data-field="branch_code"]');
-    
+
         codeInput.val(code);
-    
+
         saveInline($(this));      // branch_name
         saveInline(codeInput);    // branch_code
     });
 
-    $(document).on('click', '.change-status-btn', function(e){
+    $(document).on('click', '.change-status-btn', function (e) {
         e.preventDefault();
         $('#statusRequestId').val($(this).data('id'));
         $('#newStatus').val($(this).data('status'));
@@ -363,10 +372,10 @@ $(function () {
         new bootstrap.Modal(
             document.getElementById('changeStatusModal')
         ).show();
-    
+
     });
 
-    $('#confirmChangeStatus').on('click', function(){
+    $('#confirmChangeStatus').on('click', function () {
         let id = $('#statusRequestId').val();
         let status = $('#newStatus').val();
         let note = $('#statusNote').val();
@@ -378,22 +387,22 @@ $(function () {
                 status: status,
                 note: note
             },
-            success: function(){
+            success: function () {
                 location.reload();
             }
         });
     });
 
-    $(document).on('click', '.view-log-btn', function(e){
+    $(document).on('click', '.view-log-btn', function (e) {
         e.preventDefault();
         console.log('CLICK OK');
-    
+
         let id = $(this).data('id');
-    
-        $.get(`/maintenance-requests/${id}/logs`, function(data){
-    
+
+        $.get(`/maintenance-requests/${id}/logs`, function (data) {
+
             let html = '';
-    
+
             data.forEach(log => {
                 html += `
                     <tr>
@@ -405,40 +414,40 @@ $(function () {
                     </tr>
                 `;
             });
-    
+
             $('#logTableBody').html(html);
-            
+
             new bootstrap.Modal(
                 document.getElementById('logModal')
             ).show();
-    
+
         }, 'json');
     });
-    
-    $(document).on('change', '.inline-target', function() {
+
+    $(document).on('change', '.inline-target', function () {
 
         let row = $(this).closest('tr');
-    
+
         $.ajax({
             url: '/reports/technician-update',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-    
+
                 technician_name:
                     $(this).data('tech'),
-    
+
                 store_count:
                     row.find('[data-field="store_count"]').val(),
-    
+
                 daily_target:
                     row.find('[data-field="daily_target"]').val(),
-    
+
                 monthly_target:
                     row.find('[data-field="monthly_target"]').val()
             },
-    
-            success: function() {
+
+            success: function () {
                 console.log('saved');
             }
         });
@@ -447,32 +456,64 @@ $(function () {
     $(document).on('input', '[data-field="monthly_target"]', function () {
 
         let row = $(this).closest('tr');
-    
+
         let total = parseInt(
             row.find('.total-cell').text()
         ) || 0;
-    
+
         let monthlyTarget = parseInt(
             $(this).val()
         ) || 0;
-    
+
         let vuotDinhMuc = Math.max(
             total - monthlyTarget,
             0
         );
-    
+
         row.find('.vuot-dinh-muc-cell')
             .text(vuotDinhMuc);
     });
 
-    $(document).on('change', '#month-filter', function() {
+    $(document).on('change', '#month-filter', function () {
 
         let month = $(this).val();
-    
+
         let url = new URL(window.location.href);
-    
+
         url.searchParams.set('month', month);
-    
+
         window.location.href = url;
+    });
+
+    function lockFormFields() {
+        // Input + textarea
+        $('#createModal')
+            .find('input, textarea')
+            .not('.form-branch-name, .issue-selector')
+            .prop('readonly', true);
+
+            $('#createModal')
+            .find('select')
+            .not('.form-branch-name, .issue-selector')
+            .prop('disabled', true);
+    }
+    lockFormFields();
+    
+    function syncScrollWidth() {
+        let tableWidth = $('.table-responsive table')[0].scrollWidth;
+
+        $('.table-scroll-top div').width(tableWidth);
+    }
+
+    syncScrollWidth();
+
+    $(window).on('resize', syncScrollWidth);
+
+    $('.table-scroll-top').on('scroll', function () {
+        $('.table-responsive').scrollLeft($(this).scrollLeft());
+    });
+
+    $('.table-responsive').on('scroll', function () {
+        $('.table-scroll-top').scrollLeft($(this).scrollLeft());
     });
 });

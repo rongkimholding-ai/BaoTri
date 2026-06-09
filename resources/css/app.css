@@ -64,10 +64,21 @@ TABLE
     max-width: 150px;
 }
 
+.table-scroll-top {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 16px;
+    margin-bottom: 5px;
+}
+
+.table-scroll-top div {
+    height: 1px;
+}
+
 .table-responsive {
     overflow-x: auto;
     overflow-y: visible;
-    max-height: 75vh;
+    max-height: 100vh;
 }
 
 .table-responsive thead th {

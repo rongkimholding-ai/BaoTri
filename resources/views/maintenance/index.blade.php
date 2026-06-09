@@ -19,6 +19,9 @@
     </div>
     </x-slot>
     <div class="py-4">
+        <div class="table-scroll-top">
+            <div></div>
+        </div>
         <div class="table-responsive">
             <table id="tbData" class="table table-bordered table-striped">
                 <thead>
@@ -196,26 +199,26 @@
                                 <input class="form-control inline-edit" data-id="{{ $item->id }}" data-field="actual_duration"
                                     value="{{ $item->actual_duration }}">
                                 @else
-                                    {{ $item->actual_duration }}
+                                    {{ $item->actual_duration ? format_duration($item->actual_duration) : $item->actual_duration }}
                                 @endif
                                 </td>
 
                             <td class="status-field">
                                 @if($canUpdate)
                                 @php
-                                    $sla_status_arr = config('sla_status');
+                                    $sla_status_arr = config('sla_status.name');
                                 @endphp
                                 <select class="form-select inline-edit" data-id="{{ $item->id }}" data-field="sla_status">
                                     @foreach($sla_status_arr as $key => $status)
-                                        <option value="{{ $status }}"
-                                            @if($item->sla_status == $status) selected @endif
+                                        <option value="{{ $key }}"
+                                            @if($item->sla_status == $key) selected @endif
                                         >
                                             {{ $status }}
                                         </option>
                                     @endforeach
                                 </select>
                                 @else
-                                    {{ isset(config('sla_status')[$item->sla_status]) ? config('sla_status')[$item->sla_status] : $item->sla_status }}
+                                    {{ isset(config('sla_status.names')[$item->sla_status]) ? config('sla_status.names')[$item->sla_status] : $item->sla_status }}
                                 @endif
                             </td>
                     
@@ -294,21 +297,21 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         @hasanyrole('technician|admin')
-                                        @if($item->sla_status == config('sla_status.NEW'))
+                                        @if($item->sla_status == config('sla_status.code.NEW'))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
                                                 href=""
                                                 data-id="{{ $item->id }}"
-                                                data-status="{{ config('sla_status.PROCESSING') }}">
+                                                data-status="{{ config('sla_status.code.PROCESSING') }}">
                                                     Tiếp nhận
                                                 </a>
                                             </li>
-                                        @elseif($item->sla_status == config('sla_status.PROCESSING'))
+                                        @elseif(in_array($item->sla_status,[config('sla_status.code.PROCESSING'),config('sla_status.code.CONTINUE_PROCESSING')]))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
                                                 href=""
                                                 data-id="{{ $item->id }}"
-                                                data-status="{{ config('sla_status.WAITING_CONFIRM') }}">
+                                                data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
                                                     Hoàn thành
                                                 </a>
                                             </li>
@@ -316,12 +319,12 @@
                                         @endhasanyrole
 
                                         @hasanyrole('manager|admin')
-                                        @if($item->sla_status == config('sla_status.WAITING_CONFIRM'))
+                                        @if($item->sla_status == config('sla_status.code.WAITING_CONFIRM'))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
                                                 href=""
                                                 data-id="{{ $item->id }}"
-                                                data-status="{{ config('sla_status.CONFIRMED') }}">
+                                                data-status="{{ config('sla_status.code.CONFIRMED') }}">
                                                     Duyệt
                                                 </a>
                                             </li>
@@ -329,23 +332,23 @@
                                                 <a class="dropdown-item text-danger change-status-btn"
                                                 href=""
                                                 data-id="{{ $item->id }}"
-                                                data-status="{{ config('sla_status.REJECTED') }}">
+                                                data-status="{{ config('sla_status.code.REJECTED') }}">
                                                     Từ chối
                                                 </a>
                                             </li>
-                                        @elseif($item->sla_status == config('sla_status.REJECTED'))
+                                        @elseif($item->sla_status == config('sla_status.code.REJECTED'))
                                             <li>
                                                 <a class="dropdown-item text-danger change-status-btn"
                                                 href=""
                                                 data-id="{{ $item->id }}"
-                                                data-status="{{ config('sla_status.REOPEN') }}">
+                                                data-status="{{ config('sla_status.code.REOPEN') }}">
                                                     Thực hiện lại
                                                 </a>
                                             </li>
                                         @endif
                                         @endhasanyrole
                                         @can('remind maintenance')
-                                        @if($item->sla_status == config('sla_status.PROCESSING'))
+                                        @if($item->sla_status == config('sla_status.code.PROCESSING'))
                                         <li>
                                             <a class="dropdown-item remind-btn"
                                             href=""
@@ -356,6 +359,26 @@
                                         @endif
                                         @endcan
                                         @role('admin')
+                                        @if ($item->sla_status == 'Mới tạo' || $item->sla_status == 'Đang thực hiện')
+                                        <li>
+                                            <a class="dropdown-item text-warning change-status-btn"
+                                            href=""
+                                            data-id="{{ $item->id }}"
+                                            data-status="{{ config('sla_status.code.PENDING') }}">
+                                                Tạm dừng
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($item->sla_status == 'Tạm dừng')
+                                        <li>
+                                            <a class="dropdown-item change-status-btn"
+                                            href=""
+                                            data-id="{{ $item->id }}"
+                                            data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
+                                                Tiếp tục thực hiện
+                                            </a>
+                                        </li>
+                                        @endif
                                         <li>
                                             <a class="dropdown-item view-log-btn"
                                                 href="#"
@@ -366,7 +389,7 @@
                                         @endrole
                                         {{-- Delete --}}
                                         @can('delete data')
-                                        @if($item->sla_status == config('sla_status.NEW'))
+                                        @if($item->sla_status == config('sla_status.code.NEW'))
                                             <li>
                                                 <form
                                                     action="{{ route('maintenance-requests.destroy', $item->id) }}"
@@ -391,6 +414,9 @@
                     @endif
                 </tbody>
             </table>
+        </div>
+        <div class="mt-3">
+            {{ $requests->links() }}
         </div>
     </div>
 

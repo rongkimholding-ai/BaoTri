@@ -18,7 +18,7 @@ class MaintenanceRequestController extends Controller
      */
     public function index()
     {
-        $requests = MaintenanceRequest::latest()->get();
+        $requests = MaintenanceRequest::latest()->paginate(20);;
 
         // $requests = MaintenanceRequest::all();
         $stores = $this->getData();
@@ -26,7 +26,7 @@ class MaintenanceRequestController extends Controller
         $techs = $this->getTechnicianData();
 
 
-        return view('maintenance.index', compact('requests', 'stores', 'checks','techs'));
+        return view('maintenance.index', compact('requests', 'stores', 'checks', 'techs'));
     }
 
     /**
@@ -38,7 +38,7 @@ class MaintenanceRequestController extends Controller
         $checks = $this->getChecksData();
         $techs = $this->getTechnicianData();
 
-        return view('maintenance.create', compact('checks', 'stores','techs'));
+        return view('maintenance.create', compact('checks', 'stores', 'techs'));
     }
 
     /**
@@ -175,11 +175,9 @@ class MaintenanceRequestController extends Controller
         if ($request->confirmed) {
 
             $item->confirmed_at = now();
+            $item->delay_reason = '';
 
-            $item->acceptance_confirmed_by =
-                $this->getApproverByBranch(
-                    $item->branch_name
-                ) ?? auth()->user()->name;
+            $item->acceptance_confirmed_by = auth()->user()->name;
 
         } else {
 
@@ -201,8 +199,8 @@ class MaintenanceRequestController extends Controller
         Request $request,
         MaintenanceRequest $maintenanceRequest
     ) {
-        $allowedStatuses = config('sla_status');
-    
+        $allowedStatuses = config('sla_status.code');
+
         $request->validate([
             'status' => ['string', 'in:' . implode(',', $allowedStatuses)]
         ]);
@@ -216,16 +214,55 @@ class MaintenanceRequestController extends Controller
         $data = [
             'sla_status' => $request->status
         ];
-        
+
         if ($request->status === 'Chờ xác nhận') {
             $completedAt = now();
             $seconds = Carbon::parse($maintenanceRequest->request_date)
                 ->diffInSeconds($completedAt);
 
             $data['actual_completion_date'] = $completedAt;
-            $data['actual_duration'] = gmdate('H:i:s', $seconds);
+            if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
+
+                // Có tạm dừng
+                $totalSeconds =
+                    Carbon::parse($maintenanceRequest->request_date)
+                        ->diffInSeconds($maintenanceRequest->pending_at)
+                    +
+                    Carbon::parse($maintenanceRequest->processing_at)
+                        ->diffInSeconds(
+                            $maintenanceRequest->actual_completion_date ?? now()
+                        );
+
+            } else {
+
+                // Không tạm dừng
+                $totalSeconds =
+                    Carbon::parse($maintenanceRequest->request_date)
+                        ->diffInSeconds(
+                            $item->actual_completion_date ?? now()
+                        );
+            }
+            $hours = floor($totalSeconds / 3600);
+            $minutes = floor(($totalSeconds % 3600) / 60);
+            $seconds = $totalSeconds % 60;
+
+            $data['actual_duration'] = sprintf(
+                '%02d:%02d:%02d',
+                $hours,
+                $minutes,
+                $seconds
+            );
         }
-    
+
+
+        if ($request->status === 'Tạm dừng') {
+            $data['pending_at'] = now();
+            $data['delay_reason'] = $request->note;
+        }
+        if ($request->status === 'Tiếp tục thực hiện') {
+            $data['processing_at'] = now();
+            $data['delay_reason'] = $request->note;
+        }
         $maintenanceRequest->update($data);
         // dd($maintenanceRequest->update($data));
 
@@ -236,7 +273,7 @@ class MaintenanceRequestController extends Controller
             'new_status' => $request->status,
             'note' => $request->note,
         ]);
-    
+
         return response()->json([
             'success' => true,
             'sla_status' => $maintenanceRequest->status
@@ -290,5 +327,37 @@ class MaintenanceRequestController extends Controller
         $data = json_decode(file_get_contents($jsonPath), true);
 
         return $data;
+    }
+
+    public function getActualDurationTextAttribute($actual_duration)
+    {
+        if (!$actual_duration) {
+            return null;
+        }
+
+        [$hours, $minutes, $seconds] = explode(':', $actual_duration);
+
+        $days = floor($hours / 24);
+        $hours = $hours % 24;
+
+        $parts = [];
+
+        if ($days > 0) {
+            $parts[] = "{$days} ngày";
+        }
+
+        if ($hours > 0) {
+            $parts[] = "{$hours} giờ";
+        }
+
+        if ($minutes > 0) {
+            $parts[] = "{$minutes} phút";
+        }
+
+        if ($seconds > 0) {
+            $parts[] = "{$seconds} giây";
+        }
+
+        return implode(' ', $parts);
     }
 }

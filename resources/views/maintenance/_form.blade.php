@@ -4,7 +4,7 @@
         <label>{{ config('maintenance.fields.branch_code') }}</label>
         <input class="form-control form-branch-code" name="branch_code">
     </div>
-    
+
     <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.severity') }}</label>
 
@@ -18,8 +18,8 @@
             <option value="">-- Chọn cơ sở --</option>
 
             @foreach($stores as $store)
-                <option value="{{ $store['name'] }}"
-                        data-code="{{ $store['code'] }}">
+                <option value="{{ $store['name'] }}" data-technician_name="{{ $store['technician_name'] ?? '' }}"
+                    data-code="{{ $store['code'] }}">
                     {{ $store['name'] }}
                 </option>
             @endforeach
@@ -47,8 +47,8 @@
 
                         <option value="{{ $check['name'] }}" data-category="{{ $check['name'] }}"
                             data-issue="{{ $issue['name'] }}" data-severity="{{ $issue['severity'] }}"
-                            data-handler="{{ $issue['handler'] }}"
-                            data-processing="{{ $issue['processing_time'] }}" data-solution="{{ $issue['solution'] }}">
+                            data-handler="{{ $issue['handler'] }}" data-processing="{{ $issue['processing_time'] }}"
+                            data-solution="{{ $issue['solution'] }}">
                             {{ $check['name'] }} - {{ $issue['name'] }}
                         </option>
 
