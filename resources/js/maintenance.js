@@ -236,56 +236,80 @@ $(function () {
     }
 
     $(document).on(
-        'change',
-        '.confirm-request',
+        'click',
+        '.confirm-request-btn',
         function () {
-
-            let checkbox = $(this);
-            let row = checkbox.closest('tr');
-            let checked = checkbox.is(':checked');
-
-            let message = checked
+    
+            let button = $(this);
+            let row = button.closest('tr');
+    
+            let currentConfirmed = Number(
+                button.data('confirmed')
+            );
+    
+            let newConfirmed = currentConfirmed ? 0 : 1;
+    
+            let message = newConfirmed
                 ? 'Bạn có chắc chắn muốn xác nhận yêu cầu này?'
                 : 'Bạn có chắc chắn muốn hủy xác nhận yêu cầu này?';
-
+    
             if (!confirm(message)) {
-                checkbox.prop('checked', !checked);
                 return;
             }
-
+    
             $.ajax({
                 url: '/maintenance-requests/confirm',
                 type: 'POST',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
-                    id: $(this).data('id'),
-                    confirmed: checked ? 1 : 0
+                    id: button.data('id'),
+                    confirmed: newConfirmed
                 },
                 success: function (res) {
+    
                     let input = row.find('.confirmer-name input');
+    
                     if (res.confirmed) {
+    
                         if (input.length) {
                             input.val(res.confirmer ?? '');
                         } else {
                             row.find('.confirmer-name')
                                 .text(res.confirmer ?? '');
                         }
-                    } 
-                    // else {
-                    //     let input = row.find('.confirmer-name input');
-                    //     if (input.length) {
-                    //         input.val('');
-                    //     } else {
-                    //         row.find('.confirmer-name')
-                    //             .text('');
-                    //     }
-                    // }
-                    row.find('.status-field').html(renderStatus(res.status));
-                    row.find('.confirm_checked').html('');
+    
+                    } else {
+    
+                        if (input.length) {
+                            input.val('');
+                        } else {
+                            row.find('.confirmer-name')
+                                .text('');
+                        }
+                    }
+    
+                    let confirmHtml = `
+                        <span class="status_badge ${res.badge_class || 'badge badge-default'}">
+                            ${res.status_name || ''}
+                        </span><br>
+                        ${res.confirmed ? `
+                            <span class="badge bg-success">
+                                Đã xác nhận
+                            </span>
+                        ` : `
+                            <span class="badge bg-secondary">
+                                Chưa xác nhận
+                            </span>
+                        `}
+                    `;
+
+                    row.find('.confirm_checked').html(confirmHtml);
+               
                 },
                 error: function (xhr) {
-                    // Xử lý lỗi trả về từ server, đặc biệt khi response là JSON với thông báo tùy chỉnh
+    
                     let message = 'Có lỗi xảy ra';
+    
                     if (
                         xhr &&
                         xhr.responseJSON &&
@@ -293,13 +317,11 @@ $(function () {
                     ) {
                         message = xhr.responseJSON.message;
                     }
+    
                     alert(message);
-
-                    // rollback trạng thái checkbox
-                    checkbox.prop('checked', !checked);
                 }
             });
-
+    
         }
     );
     

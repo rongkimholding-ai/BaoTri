@@ -18,34 +18,32 @@ TABLE
     vertical-align: middle;
 }
 
-#tbData th.branch_name_class,
-#tbData td.branch_name_class {
-    min-width: 150px;
-}
-
-#tbData th.item_category_class,
-#tbData td.item_category_class {
-    min-width: 200px;
-    max-width: 250px;
-}
-
-#tbData th.textarea-field,
-#tbData td.textarea-field {
-    min-width: 200px;
-    max-width: 250px;
-}
-
-#tbData th.status-field,
-#tbData td.status-field {
+#tbData th.status_field,
+#tbData td.status_field {
     min-width: 150px;
     max-width: 190px;
     text-align: center;
 }
 
-#tbData th.technician-mobile-field,
-#tbData td.technician-mobile-field {
-    min-width: 150px;
-    max-width: 170px;
+#tbData th.branch_data,
+#tbData td.branch_data,
+#tbData th.tech_data,
+#tbData td.tech_data,
+#tbData th.textarea-field,
+#tbData td.textarea-field,
+#tbData th.item_category_class,
+#tbData td.item_category_class
+ {
+    min-width: 200px;
+    max-width: 250px;
+}
+
+
+#tbData th.time_field,
+#tbData td.time_field
+ {
+    min-width: 300px;
+    max-width: 400px;
 }
 
 #tbData th.confirm_checked,
@@ -112,6 +110,15 @@ TABLE
     box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
 }
 
+.overdue-row {
+    background: #ffe5e5 !important;
+}
+
+.overdue-row td {
+    border-top: 2px solid #dc3545;
+    border-bottom: 2px solid #dc3545;
+}
+
 /* =========================
 BADGE SLA
 ========================= */
@@ -145,6 +152,32 @@ BADGE SLA
     color: #fff;
 }
 
+
+/* Select2 giống Bootstrap */
+
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 38px !important;
+    border: 1px solid #ced4da !important;
+    border-radius: .375rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px !important;
+    padding-left: .75rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    display: flex;
+    align-items: center;
+}
 /* =========================
 MODAL
 ========================= */

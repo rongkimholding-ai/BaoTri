@@ -16,9 +16,42 @@ class MaintenanceRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $requests = MaintenanceRequest::latest()->paginate(20);;
+        $baseQuery = MaintenanceRequest::query();
+
+        if ($request->filled('branch_code')) {
+            $baseQuery->where('branch_code', 'like', '%' . $request->branch_code . '%');
+        }
+
+        if ($request->filled('branch_name')) {
+            $baseQuery->where('branch_name', 'like', '%' . $request->branch_name . '%');
+        }
+
+        if ($request->filled('issue_type')) {
+            $baseQuery->where('severity', $request->issue_type);
+        }
+
+        if ($request->filled('status')) {
+            $baseQuery->where('sla_status', $request->status);
+        }
+
+        $allRequests = (clone $baseQuery)
+            ->latest()
+            ->paginate(20, ['*'], 'all_page')
+            ->withQueryString();
+
+        $processingRequests = (clone $baseQuery)
+            ->where('sla_status', '!=', config('sla_status.code.COMPLETED'))
+            ->latest()
+            ->paginate(20, ['*'], 'processing_page')
+            ->withQueryString();
+
+        $completedRequests = (clone $baseQuery)
+            ->where('sla_status', config('sla_status.code.COMPLETED'))
+            ->latest()
+            ->paginate(20, ['*'], 'completed_page')
+            ->withQueryString();
 
         // $requests = MaintenanceRequest::all();
         $stores = $this->getData();
@@ -27,7 +60,15 @@ class MaintenanceRequestController extends Controller
         $severities = $this->getSeveritiesData();
 
 
-        return view('maintenance.index', compact('requests', 'stores', 'checks', 'techs', 'severities'));
+        return view('maintenance.index', compact(
+            'allRequests',
+            'processingRequests',
+            'completedRequests',
+            'stores',
+            'checks',
+            'techs',
+            'severities'
+        ));
     }
 
     /**
@@ -181,7 +222,7 @@ class MaintenanceRequestController extends Controller
             $actualSeconds = 0;
             if ($actualDuration) {
                 list($h, $i, $s) = explode(':', $actualDuration);
-                $actualSeconds = ((int)$h) * 3600 + ((int)$i) * 60 + ((int)$s);
+                $actualSeconds = ((int) $h) * 3600 + ((int) $i) * 60 + ((int) $s);
             }
 
             // Lấy danh sách thời gian chuẩn từ file json
@@ -231,7 +272,8 @@ class MaintenanceRequestController extends Controller
             'success' => true,
             'confirmed' => $item->is_confirmed,
             'confirmer' => $item->acceptance_confirmed_by,
-            'status' => config('sla_status.code.COMPLETED'),
+            'status_name' => config('sla_status.names.COMPLETED'),
+            'badge_class' => config('sla_status.badge.COMPLETED'),
         ]);
     }
 
@@ -296,7 +338,7 @@ class MaintenanceRequestController extends Controller
             );
         }
 
-        if (in_array($request->status,[config('sla_status.code.PENDING'),config('sla_status.code.PENDING_CONTRACTOR')])) {
+        if (in_array($request->status, [config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
             $data['pending_at'] = now();
         }
         if ($request->status === config('sla_status.code.CONTINUE_PROCESSING')) {

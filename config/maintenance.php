@@ -50,6 +50,23 @@ return [
 
         'updated_at' => 'Ngày cập nhật',
 
+    ],
+
+    'tbl_fields' => [
+        'id' => 'ID',
+        'branch' => 'Cơ sở',
+        'item_category' => 'Hạng mục',
+        'issue_description' => 'Diễn giải sự cố',
+        // 'severity' => 'Loại sự cố',
+        'solution_description' => 'Khắc phục',
+        'technician' => 'Kỹ thuật viên',
+        'time' => 'Thời gian',
+        'delay_reason' => 'Lý do',
+        'status' => 'Trạng thái',
+        'outsourced_provider' => 'Đơn vị xử lý',
+        'acceptance_result' => 'Nghiệm thu',
+        // 'confirmed_checked' => 'Xác nhận',
+        'acceptance_confirmed_by' => 'Người xác nhận',
     ]
 
 ];
