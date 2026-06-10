@@ -214,7 +214,7 @@
                             <td class="status-field">
                                 @if($canUpdate)
                                 @php
-                                    $sla_status_arr = config('sla_status.name');
+                                    $sla_status_arr = config('sla_status.names');
                                 @endphp
                                 <select class="form-select inline-edit" data-id="{{ $item->id }}" data-field="sla_status">
                                     @foreach($sla_status_arr as $key => $status)
