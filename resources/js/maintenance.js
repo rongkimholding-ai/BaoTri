@@ -367,6 +367,12 @@ $(function () {
 
     });
 
+    $('#createModal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    
+        $(this).find('.select2').val(null).trigger('change');
+    });
+
     $(document).on('submit', '#createForm', function (e) {
         e.preventDefault();
 

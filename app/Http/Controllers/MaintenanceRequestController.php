@@ -196,9 +196,9 @@ class MaintenanceRequestController extends Controller
                 $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
             }
 
-            // So sánh actualSeconds với min và max (nếu tồn tại)
-            if (!is_null($minSeconds) && !is_null($maxSeconds) && $actualSeconds > 0) {
-                if ($actualSeconds < $minSeconds || $actualSeconds > $maxSeconds) {
+            // So sánh actualSeconds với max (nếu tồn tại)
+            if (!is_null($maxSeconds) && $actualSeconds > 0) {
+                if ($actualSeconds > $maxSeconds) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Thời gian thực hiện thực tế không hợp lệ so với tiêu chuẩn cho công việc này!'

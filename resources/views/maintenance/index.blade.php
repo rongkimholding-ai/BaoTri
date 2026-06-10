@@ -1,8 +1,11 @@
-<x-app-layout>
+@php
+    $title = 'Danh sách công việc bảo trì';
+@endphp
+<x-app-layout :title="$title">
     <x-slot name="header">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="d-flex justify-content-between mb-3">
-        <h3>Danh sách bảo trì</h3>
+        <h3>{{ $title }}</h3>
         <div class="d-flex gap-2">
             @can('export excel')
             <a href="{{ route('maintenance-requests.export') }}" class="btn btn-success">
@@ -363,7 +366,7 @@
                                         @can('remind maintenance')
                                         @if($item->sla_status == config('sla_status.code.PROCESSING'))
                                         <li>
-                                            <a class="dropdown-item remind-btn"
+                                            <a class="dropdown-item btn-remind"
                                             href=""
                                             data-id="{{ $item->id }}">
                                                 Gửi nhắc việc
