@@ -28,8 +28,8 @@ return new class extends Migration
         
             $table->text('solution_description')->nullable();
         
-            $table->date('request_date')->nullable();
-            $table->date('actual_completion_date')->nullable();
+            $table->dateTime('request_date')->nullable();
+            $table->dateTime('actual_completion_date')->nullable();
         
             $table->string('actual_duration')->nullable();
         
