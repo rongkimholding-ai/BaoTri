@@ -500,6 +500,8 @@ $(function () {
         $('#statusRequestId').val($(this).data('id'));
         $('#newStatus').val($(this).data('status'));
         $('#statusLabel').val($(this).text().trim());
+        $('#statusSelectWrapper').addClass('d-none');
+        $('#statusLabel').closest('.mb-3').removeClass('d-none');
         $('#statusNote').val('');
         new bootstrap.Modal(
             document.getElementById('changeStatusModal')
@@ -509,8 +511,17 @@ $(function () {
 
     $('#confirmChangeStatus').on('click', function () {
         let id = $('#statusRequestId').val();
-        let status = $('#newStatus').val();
         let note = $('#statusNote').val();
+        let status;
+        if (
+            $('#statusSelectWrapper')
+                .hasClass('d-none')
+        ) {
+            status = $('#newStatus').val();
+        } else {
+            status = $('#statusSelect').val();
+        }
+        
         $.ajax({
             url: `/maintenance-requests/${id}/status`,
             type: 'PATCH',
@@ -524,6 +535,53 @@ $(function () {
             }
         });
     });
+
+    $(document).on(
+        'click',
+        '.admin-change-status-btn',
+        function (e) {
+    
+            e.preventDefault();
+    
+            $('#statusRequestId')
+                .val($(this).data('id'));
+    
+            let currentStatus =
+                $(this).data('current-status');
+    
+            let options = '';
+    
+            Object.entries(
+                window.slaStatusNames
+            ).forEach(([key, value]) => {
+    
+                options += `
+                    <option
+                        value="${key}"
+                        ${key === currentStatus ? 'selected' : ''}>
+                        ${value}
+                    </option>
+                `;
+            });
+    
+            $('#statusSelect').html(options);
+    
+            $('#statusLabel')
+                .closest('.mb-3')
+                .addClass('d-none');
+    
+            $('#statusSelectWrapper')
+                .removeClass('d-none');
+    
+            $('#statusNote').val('');
+    
+            new bootstrap.Modal(
+                document.getElementById(
+                    'changeStatusModal'
+                )
+            ).show();
+        }
+    );
 
     $(document).on('click', '.view-log-btn', function (e) {
         e.preventDefault();
@@ -692,4 +750,68 @@ $(function () {
             Loading.hide();
         }, 3000);
     });
+
+    $(document).on(
+        'click',
+        '.acceptance-btn',
+        function () {
+    
+            $('#acceptance_request_id')
+                .val($(this).data('id'));
+    
+            $('#acceptance_result').val('');
+    
+            $('#acceptance_note').val('');
+    
+            $('#acceptance-error')
+                .addClass('d-none')
+                .html('');
+        }
+    );
+
+    $('#acceptanceModal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
+
+    $('#submitAcceptance').on(
+        'click',
+        function () {
+            
+            $.ajax({
+    
+                url: '/maintenance-request/acceptance',
+    
+                type: 'POST',
+    
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+    
+                    id: $('#acceptance_request_id').val(),
+    
+                    result: $('#acceptance_result').val(),
+    
+                    note: $('#acceptance_note').val()
+                },
+    
+                success: function (response) {
+    
+                    if (response.success) {
+    
+                        location.reload();
+                    }
+                },
+    
+                error: function (xhr) {
+    
+                    let msg =
+                        xhr.responseJSON?.message
+                        ?? 'Có lỗi xảy ra';
+    
+                    $('#acceptance-error')
+                        .removeClass('d-none')
+                        .html(msg);
+                }
+            });
+        }
+    );
 });

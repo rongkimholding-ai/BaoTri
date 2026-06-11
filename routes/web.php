@@ -31,6 +31,10 @@ Route::middleware('auth')->group(function () {
         [MaintenanceRequestController::class, 'confirm']
     )
     ->name('maintenance-requests.confirm');
+    Route::post(
+        '/maintenance-request/acceptance',
+        [MaintenanceRequestController::class, 'acceptance']
+    )->name('maintenance-requests.acceptance');
 
 
     Route::get('/reports/technicians',[MaintenanceController::class, 'index'])->name('reports.technicians');

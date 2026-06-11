@@ -192,8 +192,5 @@
     @include('maintenance.modals.create')
     @include('maintenance.modals.change_status')
     @include('maintenance.modals.log')
-    <script>
-        const slaStatusNames = @json(config('sla_status.names'));
-        const slaStatusBadges = @json(config('sla_status.badge'));
-    </script>
+    @include('maintenance.modals.acceptance')
 </x-app-layout>

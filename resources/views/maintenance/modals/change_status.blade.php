@@ -26,7 +26,17 @@
                         id="statusLabel"
                         class="form-control"
                         readonly>
+                </div>
 
+                <div class="mb-3 d-none" id="statusSelectWrapper">
+                    <label class="form-label">
+                        Chọn trạng thái
+                    </label>
+
+                    <select
+                        id="statusSelect"
+                        class="form-select">
+                    </select>
                 </div>
 
                 <div class="mb-3">
@@ -35,10 +45,7 @@
                         Ghi chú
                     </label>
 
-                    <textarea
-                        id="statusNote"
-                        rows="4"
-                        class="form-control"></textarea>
+                    <textarea id="statusNote" rows="4" class="form-control"></textarea>
 
                 </div>
 
@@ -46,17 +53,11 @@
 
             <div class="modal-footer">
 
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Hủy
                 </button>
 
-                <button
-                    type="button"
-                    id="confirmChangeStatus"
-                    class="btn btn-primary">
+                <button type="button" id="confirmChangeStatus" class="btn btn-primary">
                     Xác nhận
                 </button>
 

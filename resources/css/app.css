@@ -29,8 +29,6 @@ TABLE
 #tbData td.branch_data,
 #tbData th.tech_data,
 #tbData td.tech_data,
-#tbData th.textarea-field,
-#tbData td.textarea-field,
 #tbData th.item_category_class,
 #tbData td.item_category_class
  {
@@ -38,6 +36,12 @@ TABLE
     max-width: 250px;
 }
 
+#tbData th.textarea-field,
+#tbData td.textarea-field
+ {
+    min-width: 300px;
+    max-width: 350px;
+}
 
 #tbData th.time_field,
 #tbData td.time_field

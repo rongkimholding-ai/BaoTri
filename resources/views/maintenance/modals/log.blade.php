@@ -1,6 +1,6 @@
 <div class="modal fade" id="logModal">
 
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
 
         <div class="modal-content">
 

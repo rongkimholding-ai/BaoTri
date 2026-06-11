@@ -8,6 +8,7 @@ use App\Models\MaintenanceRequestLog;
 use App\Services\MaintenanceRequestService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MaintenanceReminderMail;
@@ -260,6 +261,7 @@ class MaintenanceRequestController extends Controller
             $item->delay_reason = '';
             $item->sla_status = config('sla_status.code.COMPLETED');
             $item->acceptance_confirmed_by = auth()->user()->name;
+            $item->acceptance_result = 'accepted';
         }
         //  else {
         //     $item->confirmed_at = null;
@@ -337,12 +339,23 @@ class MaintenanceRequestController extends Controller
                 $seconds
             );
         }
+        if ($request->status === config('sla_status.code.CONFIRMED')) {
+            $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
+        }
 
         if (in_array($request->status, [config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
             $data['pending_at'] = now();
         }
         if ($request->status === config('sla_status.code.CONTINUE_PROCESSING')) {
             $data['processing_at'] = now();
+        }
+
+        if ($request->status === config('sla_status.code.REOPEN')) {
+            $data['acceptance_result'] = null;
+            $data['acceptance_note'] = null;
+            $data['acceptance_confirmed_by'] = null;
+            $data['confirmed_at'] = null;
+            $data['is_confirmed'] = false;
         }
         $maintenanceRequest->update($data);
         // dd($maintenanceRequest->update($data));
@@ -358,6 +371,106 @@ class MaintenanceRequestController extends Controller
         return response()->json([
             'success' => true,
             'sla_status' => $maintenanceRequest->status
+        ]);
+    }
+
+    public function acceptance(Request $request)
+    {
+        abort_unless(
+            auth()->user()->can('confirm maintenance'),
+            403
+        );
+
+        $request->validate([
+            'id' => 'required',
+            'result' => 'required|in:accepted,rejected',
+            'note' => 'nullable|string|max:1000'
+        ]);
+
+        $item = MaintenanceRequest::findOrFail(
+            $request->id
+        );
+
+        if (
+            !in_array(
+                $item->sla_status,
+                [
+                    config('sla_status.code.COMPLETED'),
+                    config('sla_status.code.LATED')
+                ]
+            )
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' =>
+                    'Yêu cầu chưa đủ điều kiện nghiệm thu.'
+            ], 422);
+        }
+
+        if (
+            $request->result === 'rejected'
+            && blank($request->note)
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' =>
+                    'Vui lòng nhập lý do không đạt.'
+            ], 422);
+        }
+
+        DB::transaction(function () use ($request, $item) {
+
+            $item->acceptance_result =
+                $request->result;
+
+            $item->acceptance_note =
+                $request->note;
+
+            $item->acceptance_confirmed_by =
+                auth()->user()->name;
+
+            $item->confirmed_at = now();
+
+            $item->is_confirmed =
+                $request->result === 'accepted';
+
+            if (
+                $request->result === 'rejected'
+            ) {
+                $item->is_confirmed = false;
+                $item->acceptance_result = null;
+                $item->acceptance_note = null;
+                $item->acceptance_confirmed_by = null;
+                $item->confirmed_at = null;
+                $item->sla_status =
+                    config('sla_status.code.REOPEN');
+            }
+
+            $item->save();
+
+            MaintenanceRequestLog::create([
+                'maintenance_request_id'
+                => $item->id,
+
+                'user_id'
+                => auth()->id(),
+
+                'old_status'
+                => $item->sla_status,
+
+                'new_status'
+                => $item->sla_status,
+
+                'note'
+                => $request->result === 'accepted'
+                    ? 'Nghiệm thu đạt'
+                    : 'Nghiệm thu không đạt: '
+                    . $request->note,
+            ]);
+        });
+
+        return response()->json([
+            'success' => true
         ]);
     }
 
@@ -447,5 +560,47 @@ class MaintenanceRequestController extends Controller
         }
 
         return implode(' ', $parts);
+    }
+
+    private function determineSlaStatus(
+        MaintenanceRequest $item
+    ): string {
+
+        if (!$item->actual_duration) {
+            return config('sla_status.code.LATED');
+        }
+
+        [$h, $i, $s] = explode(':', $item->actual_duration);
+
+        $actualSeconds =
+            ((int) $h * 3600)
+            + ((int) $i * 60)
+            + (int) $s;
+
+        $realTimeList = json_decode(
+            file_get_contents(
+                resource_path('json/real_time.json')
+            ),
+            true
+        );
+
+        $realTimeMap = collect($realTimeList)
+            ->keyBy('key');
+
+        $stdKey = $item->standard_completion_time;
+
+        if (
+            !$stdKey ||
+            !isset($realTimeMap[$stdKey])
+        ) {
+            return config('sla_status.code.LATED');
+        }
+
+        $maxSeconds =
+            $realTimeMap[$stdKey]['max_seconds'];
+
+        return $actualSeconds <= $maxSeconds
+            ? config('sla_status.code.COMPLETED')
+            : config('sla_status.code.LATED');
     }
 }
