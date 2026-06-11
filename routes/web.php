@@ -42,6 +42,10 @@ Route::middleware('auth')->group(function () {
         '/reports/technician-export',
         [MaintenanceController::class, 'exportTechs']
     )->name('reports.technician-export');
+    Route::get(
+        '/maintenance/export',
+        [MaintenanceController::class, 'exportFromTo']
+    )->name('maintenance.export-fromto');
 
     Route::resource('maintenance-requests', MaintenanceRequestController::class);
 });

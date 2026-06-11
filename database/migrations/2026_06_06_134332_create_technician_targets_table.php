@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('technician_name')->unique();
+            $table->string('technician_email');
 
             $table->integer('store_count')->nullable();
             $table->integer('daily_target')->nullable();

@@ -12,6 +12,14 @@
                         ]) }}" class="btn btn-success">
                         Xuất Excel
                     </a>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exportModal">
+                        <i class="fas fa-file-excel"></i>
+                        Báo cáo theo ngày
+                    </button>
                 @endcan
             </div>
         </div>
@@ -97,4 +105,6 @@
             </table>
         </div>
     </div>
+    
+    @include('reports.modals.export_by_date')
 </x-app-layout>

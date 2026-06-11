@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::table('maintenance_requests', function ($table) {
 
             $table->string('technician_mobile')
-                ->nullable();
+                ->nullable()
+                ->after('technician_name');
 
             $table->integer('reminder_count')
                 ->default(0);

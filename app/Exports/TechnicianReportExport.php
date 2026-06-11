@@ -11,8 +11,10 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
+class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithColumnFormatting
 {
     protected $month;
 
@@ -21,14 +23,14 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
         $this->month = $month;
     }
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $startDate = Carbon::parse(
             $this->month . '-01'
         )->startOfMonth();
-        
+
         $endDate = Carbon::parse(
             $this->month . '-01'
         )->endOfMonth();
@@ -42,11 +44,21 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             ->selectRaw("
                 maintenance_requests.technician_name,
 
-                COUNT(*) as total,
+                technician_targets.store_count,
+                technician_targets.daily_target,
+                technician_targets.monthly_target,
 
                 SUM(
                     CASE
-                        WHEN sla_status = 'Đúng hạn'
+                        WHEN actual_completion_date IS NOT NULL
+                        THEN 1
+                        ELSE 0
+                    END
+                ) as total_completed,
+
+                SUM(
+                    CASE
+                        WHEN sla_status = '" . config('sla_status.code.COMPLETED') . "'
                         THEN 1
                         ELSE 0
                     END
@@ -54,45 +66,31 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
 
                 SUM(
                     CASE
-                        WHEN sla_status <> 'Đúng hạn'
-                        OR sla_status IS NULL
+                        WHEN actual_completion_date IS NOT NULL
+                        AND (
+                            sla_status <> '" . config('sla_status.code.COMPLETED') . "'
+                            OR sla_status IS NULL
+                        )
                         THEN 1
                         ELSE 0
                     END
-                ) as con_lai_count,
+                ) as khong_dung_han_count,
 
-                ROUND(
-                    SUM(
-                        CASE
-                            WHEN sla_status = 'Đúng hạn'
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) * 100 / COUNT(*),
-                    2
-                ) as dung_han_percent,
+                SUM(
+                    CASE
+                        WHEN acceptance_result = 'Đạt'
+                        THEN 1
+                        ELSE 0
+                    END
+                ) as quality_pass_count,
 
-                ROUND(
-                    SUM(
-                        CASE
-                            WHEN sla_status <> 'Đúng hạn'
-                            OR sla_status IS NULL
-                            THEN 1
-                            ELSE 0
-                        END
-                    ) * 100 / COUNT(*),
-                    2
-                ) as con_lai_percent,
-
-                technician_targets.store_count,
-                technician_targets.daily_target,
-                technician_targets.monthly_target,
-
-                CASE
-                    WHEN COUNT(*) - COALESCE(technician_targets.monthly_target, 0) < 0
-                    THEN 0
-                    ELSE COUNT(*) - COALESCE(technician_targets.monthly_target, 0)
-                END as vuot_dinh_muc
+                SUM(
+                    CASE
+                        WHEN acceptance_result = 'Không đạt'
+                        THEN 1
+                        ELSE 0
+                    END
+                ) as quality_fail_count
             ")
             ->whereBetween(
                 'maintenance_requests.request_date',
@@ -106,22 +104,60 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             )
             ->get()
             ->map(function ($item) {
+
+                $monthlyTarget = (int) $item->monthly_target;
+
+                $totalCompleted = (int) $item->total_completed;
+
                 return [
-                    'Kỹ thuật viên' => $item->technician_name,
-                    
-                    'Số CH phụ trách' => $item->store_count,
-                    'ĐM/ngày' => $item->daily_target,
-                    'ĐM/tháng' => $item->monthly_target,
 
-                    'Tổng yêu cầu' => $item->total,
-                    'Vượt định mức' => $item->vuot_dinh_muc,
+                    'Kỹ thuật viên'
+                    => $item->technician_name,
 
-                    'Đúng hạn' => $item->dung_han_count,
-                    '% Đúng hạn' => $item->dung_han_percent,
+                    'Số CH phụ trách'
+                    => $item->store_count,
 
-                    'Không đúng hạn' => $item->con_lai_count,
-                    '% Không đúng hạn' => $item->con_lai_percent,
+                    'Định mức/ngày'
+                    => $item->daily_target,
 
+                    'Định mức/tháng'
+                    => $item->monthly_target,
+
+                    'Tổng số vụ hoàn thành'
+                    => $item->total_completed,
+
+                    'Tỷ lệ hoàn thành/ĐM'
+                    => $this->percent($item->total_completed, $monthlyTarget),
+
+                    'Đạt thời gian'
+                    => $item->dung_han_count,
+
+                    'Tỷ lệ đạt TG/ĐM tháng'
+                    => $this->percent($item->dung_han_count, $monthlyTarget),
+
+                    'Tỷ lệ đạt TG/Tổng TH'
+                    => $this->percent($item->dung_han_count, $totalCompleted),
+
+                    'Không đạt thời gian'
+                    => $item->khong_dung_han_count,
+
+                    'Tỷ lệ không đạt TG/Tổng TH'
+                    => $this->percent($item->khong_dung_han_count, $totalCompleted),
+
+                    'Đạt nghiệm thu'
+                    => $item->quality_pass_count,
+
+                    'Tỷ lệ đạt CL/ĐM tháng'
+                    => $this->percent($item->quality_pass_count, $monthlyTarget),
+
+                    'Tỷ lệ đạt CL/Tổng TH'
+                    => $this->percent($item->quality_pass_count, $totalCompleted),
+
+                    'Không đạt nghiệm thu'
+                    => $item->quality_fail_count,
+
+                    'Tỷ lệ không đạt CL/Tổng TH'
+                    => $this->percent($item->quality_fail_count, $totalCompleted),
                 ];
             });
     }
@@ -135,14 +171,22 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             'Định mức/ngày',
             'Định mức/tháng',
 
-            'Tổng yêu cầu',
-            'Vượt định mức',
+            'Tổng số vụ hoàn thành',
+            'Tỷ lệ hoàn thành/ĐM',
 
-            'Đúng hạn',
-            '% Đúng hạn',
+            'Đạt thời gian',
+            'Tỷ lệ đạt TG/ĐM tháng',
+            'Tỷ lệ đạt TG/Tổng TH',
 
-            'Không đúng hạn',
-            '% Không đúng hạn',
+            'Không đạt thời gian',
+            'Tỷ lệ không đạt TG/Tổng TH',
+
+            'Đạt nghiệm thu',
+            'Tỷ lệ đạt CL/ĐM tháng',
+            'Tỷ lệ đạt CL/Tổng TH',
+
+            'Không đạt nghiệm thu',
+            'Tỷ lệ không đạt CL/Tổng TH',
         ];
     }
 
@@ -165,7 +209,7 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => 'FFD700'], // vàng tiêu chuẩn
             ],
-       
+
         ]);
 
         // ===== Border toàn bảng =====
@@ -184,5 +228,27 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             $sheet->getRowDimension($row)->setRowHeight(18);
         }
         return [];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'F' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'H' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'I' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'K' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'M' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'N' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'O' => NumberFormat::FORMAT_PERCENTAGE_00,
+        ];
+    }
+
+    private function percent($value, $base)
+    {
+        if (!$base || $base == 0) {
+            return 0;
+        }
+    
+        return round($value / $base, 6); // giữ precision tốt cho BI
     }
 }

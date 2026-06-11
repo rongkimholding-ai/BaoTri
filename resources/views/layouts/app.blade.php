@@ -63,7 +63,17 @@
             <div class="bg-white rounded-xl shadow-sm border p-6">
                 {{ $slot }}
             </div>
+            <div id="global-loading" class="loading-overlay d-none">
+                <div class="text-center">
+                    <div class="spinner-border text-primary"
+                        style="width:4rem;height:4rem;">
+                    </div>
 
+                    <div class="mt-3 fw-bold loading-message">
+                        Đang xử lý...
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 

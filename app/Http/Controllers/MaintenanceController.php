@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaintenanceByBranchExport;
 use App\Exports\TechnicianReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\MaintenanceRequest;
@@ -37,6 +38,7 @@ class MaintenanceController extends Controller
 
     public function index()
     {
+        
         $month = request(
             'month',
             now()->format('Y-m')
@@ -70,7 +72,7 @@ class MaintenanceController extends Controller
         
                 SUM(
                     CASE
-                        WHEN maintenance_requests.sla_status = 'COMPLETED'
+                        WHEN maintenance_requests.sla_status = '".config('sla_status.code.COMPLETED')."'
                         THEN 1
                         ELSE 0
                     END
@@ -78,7 +80,7 @@ class MaintenanceController extends Controller
         
                 SUM(
                     CASE
-                        WHEN maintenance_requests.sla_status <> 'COMPLETED'
+                        WHEN maintenance_requests.sla_status <> '".config('sla_status.code.COMPLETED')."'
                         OR maintenance_requests.sla_status IS NULL
                         THEN 1
                         ELSE 0
@@ -89,7 +91,7 @@ class MaintenanceController extends Controller
                     COALESCE(
                         SUM(
                             CASE
-                                WHEN maintenance_requests.sla_status = 'COMPLETED'
+                                WHEN maintenance_requests.sla_status = '".config('sla_status.code.COMPLETED')."'
                                 THEN 1
                                 ELSE 0
                             END
@@ -103,7 +105,7 @@ class MaintenanceController extends Controller
                     COALESCE(
                         SUM(
                             CASE
-                                WHEN maintenance_requests.sla_status <> 'COMPLETED'
+                                WHEN maintenance_requests.sla_status <> '".config('sla_status.code.COMPLETED')."'
                                 OR maintenance_requests.sla_status IS NULL
                                 THEN 1
                                 ELSE 0
@@ -150,5 +152,25 @@ class MaintenanceController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function exportFromTo(Request $request)
+    {
+        $request->validate([
+            'from_date' => ['required', 'date'],
+            'to_date'   => ['required', 'date'],
+        ]);
+        $fromDate = $request->from_date;
+        $toDate = $request->to_date;
+
+        $fileName = 'THỐNG KÊ TỪ '.$fromDate.' ĐẾN '.$toDate;
+
+        return Excel::download(
+            new MaintenanceByBranchExport(
+                $fromDate,
+                $toDate
+            ),
+            $fileName.'.xlsx'
+        );
     }
 }

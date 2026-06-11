@@ -2,6 +2,36 @@ import $ from 'jquery';
 
 $(function () {
     initSelect2();
+    window.Loading = {
+        show(message = 'Đang xử lý...') {
+            $('.loading-message').text(message);
+            $('#global-loading').removeClass('d-none');
+        },
+    
+        hide() {
+            $('#global-loading').addClass('d-none');
+        }
+    };
+    
+    $(document)
+        .ajaxStart(function () {
+            Loading.show();
+        })
+        .ajaxStop(function () {
+            Loading.hide();
+        });
+    
+    $(document).on(
+        'submit',
+        '.js-loading-form:not(.export-form)',
+        function () {
+    
+            Loading.show(
+                $(this).data('loading-text')
+                || 'Đang xử lý...'
+            );
+        }
+    );
 
     let typingTimer;
 
@@ -134,16 +164,16 @@ $(function () {
 
         if (isUpdating) return;
         isUpdating = true;
-    
+
         // khôi phục dữ liệu gốc
         issueSelector.html(originalIssueOptions);
-    
+
         if (severity) {
-    
+
             issueSelector.find('option').each(function () {
-    
+
                 let optionSeverity = String($(this).data('severity')).trim();
-    
+
                 if (
                     optionSeverity &&
                     optionSeverity !== severity
@@ -151,7 +181,7 @@ $(function () {
                     $(this).remove();
                 }
             });
-    
+
             // xoá optgroup rỗng
             issueSelector.find('optgroup').each(function () {
                 if ($(this).find('option').length === 0) {
@@ -159,7 +189,7 @@ $(function () {
                 }
             });
         }
-    
+
         issueSelector.val('').trigger('change');
         isUpdating = false;
     });
@@ -227,36 +257,28 @@ $(function () {
             .val(option.data('email') || '');
     });
 
-    function renderStatus(status) {
-        return `
-            <span class="${slaStatusBadges[status] ?? 'badge badge-default'}">
-                ${slaStatusNames[status] ?? status}
-            </span>
-        `;
-    }
-
     $(document).on(
         'click',
         '.confirm-request-btn',
         function () {
-    
+
             let button = $(this);
             let row = button.closest('tr');
-    
+
             let currentConfirmed = Number(
                 button.data('confirmed')
             );
-    
+
             let newConfirmed = currentConfirmed ? 0 : 1;
-    
+
             let message = newConfirmed
                 ? 'Bạn có chắc chắn muốn xác nhận yêu cầu này?'
                 : 'Bạn có chắc chắn muốn hủy xác nhận yêu cầu này?';
-    
+
             if (!confirm(message)) {
                 return;
             }
-    
+
             $.ajax({
                 url: '/maintenance-requests/confirm',
                 type: 'POST',
@@ -266,20 +288,20 @@ $(function () {
                     confirmed: newConfirmed
                 },
                 success: function (res) {
-    
+
                     let input = row.find('.confirmer-name input');
-    
+
                     if (res.confirmed) {
-    
+
                         if (input.length) {
                             input.val(res.confirmer ?? '');
                         } else {
                             row.find('.confirmer-name')
                                 .text(res.confirmer ?? '');
                         }
-    
+
                     } else {
-    
+
                         if (input.length) {
                             input.val('');
                         } else {
@@ -287,7 +309,7 @@ $(function () {
                                 .text('');
                         }
                     }
-    
+
                     let confirmHtml = `
                         <span class="status_badge ${res.badge_class || 'badge badge-default'}">
                             ${res.status_name || ''}
@@ -304,12 +326,12 @@ $(function () {
                     `;
 
                     row.find('.confirm_checked').html(confirmHtml);
-               
+
                 },
                 error: function (xhr) {
-    
+
                     let message = 'Có lỗi xảy ra';
-    
+
                     if (
                         xhr &&
                         xhr.responseJSON &&
@@ -317,14 +339,14 @@ $(function () {
                     ) {
                         message = xhr.responseJSON.message;
                     }
-    
+
                     alert(message);
                 }
             });
-    
+
         }
     );
-    
+
     $(document).on(
         'click',
         '.btn-remind',
@@ -391,7 +413,7 @@ $(function () {
 
     $('#createModal').on('hidden.bs.modal', function () {
         $(this).find('form')[0].reset();
-    
+
         $(this).find('.select2').val(null).trigger('change');
     });
 
@@ -505,15 +527,15 @@ $(function () {
 
     $(document).on('click', '.view-log-btn', function (e) {
         e.preventDefault();
-    
+
         const slaStatusNames = window.slaStatusNames || {};
-   
+
         let id = $(this).data('id');
-    
+
         $.get(`/maintenance-requests/${id}/logs`, function (data) {
-    
+
             let html = '';
-    
+
             data.forEach(log => {
                 html += `
                     <tr>
@@ -525,13 +547,13 @@ $(function () {
                     </tr>
                 `;
             });
-    
+
             $('#logTableBody').html(html);
-    
+
             new bootstrap.Modal(
                 document.getElementById('logModal')
             ).show();
-    
+
         }, 'json');
     });
 
@@ -599,34 +621,34 @@ $(function () {
     function toggleFormFields() {
         const modal = $('#createModal');
         const key = modal.find('.issue-selector option:selected').data('key');
-    
+
         // Khóa toàn bộ trước
         modal.find('input, textarea')
             .not('.form-branch-name, .issue-selector')
             .prop('readonly', true);
-    
+
         modal.find('select')
             .not('.form-branch-name, .issue-selector, .severity-field')
             .prop('disabled', true);
-    
+
         // Bỏ highlight cũ
         modal.find('.editable-highlight')
             .removeClass('editable-highlight');
-    
+
         // Nếu là OTHER thì mở các trường được phép sửa
         if (key === 'OTHER') {
             modal.find(
                 '.severity-field, .issue-description, .solution-description, .processing-time'
             )
-            .prop('readonly', false)
-            .prop('disabled', false)
-            .addClass('editable-highlight');
+                .prop('readonly', false)
+                .prop('disabled', false)
+                .addClass('editable-highlight');
         }
     }
-    
+
     // Khởi tạo
     toggleFormFields();
-    
+
     // Khi đổi hạng mục
     $(document).on('change', '#createModal .issue-selector', function () {
         toggleFormFields();
@@ -648,5 +670,26 @@ $(function () {
 
     $('.table-responsive').on('scroll', function () {
         $('.table-scroll-top').scrollLeft($(this).scrollLeft());
+    });
+
+    $('#exportModal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
+
+    $(document).on('submit', '#exportForm', function () {
+
+        console.log('submit export');
+    
+        bootstrap.Modal
+        .getOrCreateInstance(
+            document.getElementById('exportModal')
+        )
+        .hide();
+    
+        Loading.show('Đang xuất báo cáo...');
+    
+        setTimeout(function () {
+            Loading.hide();
+        }, 3000);
     });
 });

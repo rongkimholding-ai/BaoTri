@@ -14,7 +14,7 @@
                 <a href="{{ route('maintenance-requests.export') }}"
                 class="btn btn-success">
                     <i class="bi bi-file-earmark-excel"></i>
-                    Xuất Excel
+                    Xuất báo cáo
                 </a>
             @endcan
 
@@ -102,6 +102,27 @@
             </form>
         </div>
     </div>
+    <!-- <div class="card mb-3">
+        <div class="card-body">
+        <form method="GET"
+            action="{{ route('maintenance.export-fromto') }}"
+            class="d-inline">
+
+            <input type="date"
+                name="from_date"
+                value="{{ request('from_date') }}">
+
+            <input type="date"
+                name="to_date"
+                value="{{ request('to_date') }}">
+
+            <button type="submit"
+                    class="btn btn-success">
+                Xuất Excel
+            </button>
+        </form>
+        </div>
+    </div> -->
     </x-slot>
     <ul class="nav nav-tabs mb-3" id="requestTabs">
         <li class="nav-item">
