@@ -665,13 +665,17 @@ $(function () {
             .text(vuotDinhMuc);
     });
 
-    $(document).on('change', '#month-filter', function () {
-
-        let month = $(this).val();
-
+    $(document).on('change', '#from-date, #to-date', function () {
+        let fromDate = $('#from-date').val();
+        let toDate = $('#to-date').val();
         let url = new URL(window.location.href);
 
-        url.searchParams.set('month', month);
+        if (fromDate) {
+            url.searchParams.set('from-date', fromDate);
+        }
+        if (toDate) {
+            url.searchParams.set('to-date', toDate);
+        }
 
         window.location.href = url;
     });

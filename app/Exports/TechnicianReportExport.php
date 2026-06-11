@@ -3,163 +3,134 @@
 namespace App\Exports;
 
 use App\Models\MaintenanceRequest;
+use App\Models\TechnicianTarget;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-
-class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithColumnFormatting
+class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithStrictNullComparison
 {
-    protected $month;
+    protected $from_date;
+    protected $to_date;
 
-    public function __construct($month)
+    public function __construct($from_date, $to_date)
     {
-        $this->month = $month;
+        $this->from_date = $from_date;
+        $this->to_date = $to_date;
     }
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        $startDate = Carbon::parse(
-            $this->month . '-01'
-        )->startOfMonth();
+        // Lấy danh sách technicians từ technician_targets (mỗi người 1 record)
+        $technicians = TechnicianTarget::all();
 
-        $endDate = Carbon::parse(
-            $this->month . '-01'
-        )->endOfMonth();
-        return MaintenanceRequest::query()
-            ->leftJoin(
-                'technician_targets',
-                'maintenance_requests.technician_name',
-                '=',
-                'technician_targets.technician_name'
-            )
-            ->selectRaw("
-                maintenance_requests.technician_name,
+        // Lấy maintenance_requests với mọi technician (không group chung tên)
+        $requestsRaw = MaintenanceRequest::query()
+            ->whereBetween('request_date', [$this->from_date, $this->to_date])
+            ->get();
+        // dd($this->from_date, $this->to_date);
 
-                technician_targets.store_count,
-                technician_targets.daily_target,
-                technician_targets.monthly_target,
+        // Group đúng từng technician theo unique key (ưu tiên id hoặc sử dụng tên/email nếu unique)
+        // Ở đây sẽ group theo technician_name + (technician_email nếu có để chính xác)
+        $keyBy = function ($item) {
+            // Nếu có field email, dùng cả tên+email, nếu không chỉ technician_name
+            return $item->technician_name . '|' . ($item->technician_email ?? '');
+        };
 
-                SUM(
-                    CASE
-                        WHEN actual_completion_date IS NOT NULL
-                        THEN 1
-                        ELSE 0
-                    END
-                ) as total_completed,
+        $requestsByTech = $requestsRaw->groupBy($keyBy);
 
-                SUM(
-                    CASE
-                        WHEN sla_status = '" . config('sla_status.code.COMPLETED') . "'
-                        THEN 1
-                        ELSE 0
-                    END
-                ) as dung_han_count,
+        // Map theo technician_targets: mỗi record chỉ thống kê cho đúng person
+        $requests = $technicians->map(function ($tech) use ($requestsByTech) {
+            $key = $tech->technician_name . '|' . ($tech->technician_email ?? '');
 
-                SUM(
-                    CASE
-                        WHEN actual_completion_date IS NOT NULL
-                        AND (
-                            sla_status <> '" . config('sla_status.code.COMPLETED') . "'
-                            OR sla_status IS NULL
-                        )
-                        THEN 1
-                        ELSE 0
-                    END
-                ) as khong_dung_han_count,
+            $requests = $requestsByTech->get($key, collect());
+            $totalCompleted = $requests->count();
 
-                SUM(
-                    CASE
-                        WHEN acceptance_result = 'Đạt'
-                        THEN 1
-                        ELSE 0
-                    END
-                ) as quality_pass_count,
+            $monthlyTarget = (int) $tech->monthly_target;
 
-                SUM(
-                    CASE
-                        WHEN acceptance_result = 'Không đạt'
-                        THEN 1
-                        ELSE 0
-                    END
-                ) as quality_fail_count
-            ")
-            ->whereBetween(
-                'maintenance_requests.request_date',
-                [$startDate, $endDate]
-            )
-            ->groupBy(
-                'maintenance_requests.technician_name',
-                'technician_targets.store_count',
-                'technician_targets.daily_target',
-                'technician_targets.monthly_target'
-            )
-            ->get()
-            ->map(function ($item) {
+            // Số đúng hạn (sla_status COMPLETED): 
+            $dung_han_count = $requests
+                ->where('sla_status', config('sla_status.code.COMPLETED'))->count();
 
-                $monthlyTarget = (int) $item->monthly_target;
+            // Số KHÔNG đúng hạn: tất cả bản ghi completion nhưng sla_status != COMPLETED
+            $khong_dung_han_count = $requests
+                ->where('sla_status', '!=', config('sla_status.code.COMPLETED'))->count();
 
-                $totalCompleted = (int) $item->total_completed;
+            $quality_pass_count = $requests->where('acceptance_result', 'accepted')->count();
+            $quality_fail_count = $requests->where(function ($item) {
+                return $item->acceptance_result === 'rejected' || is_null($item->acceptance_result);
+            })->count();
 
-                return [
+            $completion_percent =
+                $monthlyTarget > 0
+                ? round($totalCompleted * 100 / $monthlyTarget, 2)
+                : 0;
 
-                    'Kỹ thuật viên'
-                    => $item->technician_name,
+            $dung_han_dm_percent =
+                $monthlyTarget > 0
+                ? round($dung_han_count * 100 / $monthlyTarget, 2)
+                : 0;
 
-                    'Số CH phụ trách'
-                    => $item->store_count,
+            $dung_han_total_percent =
+                $totalCompleted > 0
+                ? round($dung_han_count * 100 / $totalCompleted, 2)
+                : 0;
 
-                    'Định mức/ngày'
-                    => $item->daily_target,
+            $khong_dung_han_percent =
+                $totalCompleted > 0
+                ? round($khong_dung_han_count * 100 / $totalCompleted, 2)
+                : 0;
 
-                    'Định mức/tháng'
-                    => $item->monthly_target,
+            $quality_pass_dm_percent =
+                $monthlyTarget > 0
+                ? round($quality_pass_count * 100 / $monthlyTarget, 2)
+                : 0;
 
-                    'Tổng số vụ hoàn thành'
-                    => $item->total_completed,
+            $quality_pass_total_percent =
+                $totalCompleted > 0
+                ? round($quality_pass_count * 100 / $totalCompleted, 2)
+                : 0;
 
-                    'Tỷ lệ hoàn thành/ĐM'
-                    => $this->percent($item->total_completed, $monthlyTarget),
+            $quality_fail_total_percent =
+                $totalCompleted > 0
+                ? round($quality_fail_count * 100 / $totalCompleted, 2)
+                : 0;
 
-                    'Đạt thời gian'
-                    => $item->dung_han_count,
+            return (object) [
+                'technician_name' => $tech->technician_name,
+                'store_count' => (int) $tech->store_count,
+                'daily_target' => (int) $tech->daily_target,
+                'monthly_target' => (int) $tech->monthly_target,
 
-                    'Tỷ lệ đạt TG/ĐM tháng'
-                    => $this->percent($item->dung_han_count, $monthlyTarget),
+                'total_completed' => (int) $totalCompleted,
+                'completion_percent' => (float) $completion_percent,
 
-                    'Tỷ lệ đạt TG/Tổng TH'
-                    => $this->percent($item->dung_han_count, $totalCompleted),
+                'dung_han_count' => (int) $dung_han_count,
+                'dung_han_dm_percent' => (float) $dung_han_dm_percent,
+                'dung_han_total_percent' => (float) $dung_han_total_percent,
 
-                    'Không đạt thời gian'
-                    => $item->khong_dung_han_count,
+                'khong_dung_han_count' => (int) $khong_dung_han_count,
+                'khong_dung_han_percent' => (float) $khong_dung_han_percent,
 
-                    'Tỷ lệ không đạt TG/Tổng TH'
-                    => $this->percent($item->khong_dung_han_count, $totalCompleted),
+                'quality_pass_count' => (int) $quality_pass_count,
+                'quality_pass_dm_percent' => (float) $quality_pass_dm_percent,
+                'quality_pass_total_percent' => (float) $quality_pass_total_percent,
 
-                    'Đạt nghiệm thu'
-                    => $item->quality_pass_count,
+                'quality_fail_count' => (int) $quality_fail_count,
+                'quality_fail_total_percent' => (float) $quality_fail_total_percent,
+            ];
+        });
 
-                    'Tỷ lệ đạt CL/ĐM tháng'
-                    => $this->percent($item->quality_pass_count, $monthlyTarget),
+        // dd($requests->toArray());
 
-                    'Tỷ lệ đạt CL/Tổng TH'
-                    => $this->percent($item->quality_pass_count, $totalCompleted),
-
-                    'Không đạt nghiệm thu'
-                    => $item->quality_fail_count,
-
-                    'Tỷ lệ không đạt CL/Tổng TH'
-                    => $this->percent($item->quality_fail_count, $totalCompleted),
-                ];
-            });
+        return $requests;
     }
 
     public function headings(): array
@@ -171,22 +142,22 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             'Định mức/ngày',
             'Định mức/tháng',
 
-            'Tổng số vụ hoàn thành',
-            'Tỷ lệ hoàn thành/ĐM',
+            'Tổng sự vụ',
+            'Tỷ lệ sự vụ/ĐM (%)',
 
-            'Đạt thời gian',
-            'Tỷ lệ đạt TG/ĐM tháng',
-            'Tỷ lệ đạt TG/Tổng TH',
+            'Đúng hạn',
+            'Tỷ lệ Đúng hạn/ĐM tháng (%)',
+            'Tỷ lệ Đúng hạn/Tổng TH (%)',
 
-            'Không đạt thời gian',
-            'Tỷ lệ không đạt TG/Tổng TH',
+            'Trễ hạn',
+            'Tỷ lệ Trễ hạn/Tổng TH (%)',
 
             'Đạt nghiệm thu',
-            'Tỷ lệ đạt CL/ĐM tháng',
-            'Tỷ lệ đạt CL/Tổng TH',
+            'Tỷ lệ đạt CL/ĐM tháng (%)',
+            'Tỷ lệ đạt CL/Tổng TH (%)',
 
             'Không đạt nghiệm thu',
-            'Tỷ lệ không đạt CL/Tổng TH',
+            'Tỷ lệ không đạt CL/Tổng TH (%)',
         ];
     }
 
@@ -228,27 +199,5 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             $sheet->getRowDimension($row)->setRowHeight(18);
         }
         return [];
-    }
-
-    public function columnFormats(): array
-    {
-        return [
-            'F' => NumberFormat::FORMAT_PERCENTAGE_00,
-            'H' => NumberFormat::FORMAT_PERCENTAGE_00,
-            'I' => NumberFormat::FORMAT_PERCENTAGE_00,
-            'K' => NumberFormat::FORMAT_PERCENTAGE_00,
-            'M' => NumberFormat::FORMAT_PERCENTAGE_00,
-            'N' => NumberFormat::FORMAT_PERCENTAGE_00,
-            'O' => NumberFormat::FORMAT_PERCENTAGE_00,
-        ];
-    }
-
-    private function percent($value, $base)
-    {
-        if (!$base || $base == 0) {
-            return 0;
-        }
-    
-        return round($value / $base, 6); // giữ precision tốt cho BI
     }
 }

@@ -54,6 +54,19 @@ class MaintenanceRequestController extends Controller
             ->paginate(20, ['*'], 'completed_page')
             ->withQueryString();
 
+        $totalCount = (clone $baseQuery)->count();
+
+        $processingCount = (clone $baseQuery)
+            ->whereNotNull('technician_name')
+            ->whereNotIn('sla_status', [
+                config('sla_status.code.COMPLETED')
+            ])
+            ->count();
+
+        $completedCount = (clone $baseQuery)
+            ->where('sla_status', config('sla_status.code.COMPLETED'))
+            ->count();
+
         // $requests = MaintenanceRequest::all();
         $stores = $this->getData();
         $checks = $this->getChecksData();
@@ -68,7 +81,10 @@ class MaintenanceRequestController extends Controller
             'stores',
             'checks',
             'techs',
-            'severities'
+            'severities',
+            'totalCount',
+            'processingCount',
+            'completedCount'
         ));
     }
 

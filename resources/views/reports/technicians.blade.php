@@ -4,22 +4,20 @@
         <div class="d-flex justify-content-between mb-3">
             <h3>Báo cáo SLA theo kỹ thuật viên</h3>
             <div class="d-flex gap-2 align-items-center">
-                <input type="month" id="month-filter" class="form-control" style="width: 180px"
-                    value="{{ request('month', now()->format('Y-m')) }}">
+                <input type="date" id="from-date" class="form-control" style="width: 180px"
+                    value="{{ request('from-date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')) }}">
+                <input type="date" id="to-date" class="form-control" style="width: 180px"
+                    value="{{ request('to-date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d')) }}">
+                <a href="{{ route('reports.technicians') }}" class="btn btn-outline-secondary">
+                    Bỏ lọc
+                </a>
                 @can('export excel tech')
                     <a href="{{ route('reports.technician-export', [
-                        'month' => request('month', now()->format('Y-m'))
+                        'from-date' => request('from-date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')),
+                        'to-date' => request('to-date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'))
                         ]) }}" class="btn btn-success">
                         Xuất Excel
                     </a>
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exportModal">
-                        <i class="fas fa-file-excel"></i>
-                        Báo cáo theo ngày
-                    </button>
                 @endcan
             </div>
         </div>
@@ -28,83 +26,194 @@
 
     <div class="py-4">
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead>
+            <table class="table table-bordered table-striped table-report">
+                <thead class="table-dark align-middle text-center">
                     <tr>
-                        <th>STT</th>
-                        <th>Kỹ thuật viên</th>
-                        <th>Số CH phụ trách</th>
-                        <th>Định mức sửa/ngày</th>
-                        <th>Định mức sửa/tháng</th>
-                        <th>Tổng yêu cầu</th>
-                        <th>Vượt định mức</th>
-                        <th>Đúng hạn</th>
-                        <th>Không đúng hạn</th>
+                        <th rowspan="2">STT</th>
+                        <th rowspan="2">Kỹ thuật viên</th>
+                        <th rowspan="2">Số Y/C</th>
+                        <th rowspan="2">ĐM/ngày</th>
+                        <th rowspan="2">ĐM/tháng</th>
+
+                        <th colspan="2">Tổng yêu cầu</th>
+                        <th colspan="3">Đúng hạn</th>
+                        <th colspan="2">Trễ hạn</th>
+                        <th colspan="3">Chất lượng</th>
+                        <th colspan="2">Không đạt</th>
+                    </tr>
+
+                    <tr>
+                        <th>SL</th>
+                        <th>%/ĐM</th>
+
+                        <th>Đạt</th>
+                        <th>%/ĐM</th>
+                        <th>%/TH</th>
+
+                        <th>SL</th>
+                        <th>%/TH</th>
+
+                        <th>Đạt</th>
+                        <th>%/ĐM</th>
+                        <th>%/TH</th>
+
+                        <th>SL</th>
+                        <th>%/TH</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @forelse($requests as $index => $item)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-
-                            <td>{{ $item->technician_name }}</td>
+                        <tr class="align-middle">
+                            <td class="text-center">{{ $index + 1 }}</td>
 
                             <td>
-                                <input type="number" class="form-control inline-target"
+                                <strong>{{ $item->technician_name }}</strong>
+                            </td>
+
+                            <td style="width:90px">
+                                <input type="number" class="form-control form-control-sm inline-target"
                                     data-tech="{{ $item->technician_name }}" data-field="store_count"
                                     value="{{ $item->store_count }}">
                             </td>
 
-                            <td>
-                                <input type="number" class="form-control inline-target"
+                            <td style="width:100px">
+                                <input type="number" class="form-control form-control-sm inline-target"
                                     data-tech="{{ $item->technician_name }}" data-field="daily_target"
                                     value="{{ $item->daily_target }}">
                             </td>
 
-                            <td>
-                                <input type="number" class="form-control inline-target"
+                            <td style="width:100px">
+                                <input type="number" class="form-control form-control-sm inline-target"
                                     data-tech="{{ $item->technician_name }}" data-field="monthly_target"
                                     value="{{ $item->monthly_target }}">
                             </td>
 
-                            <td class="total-cell">
-                                <strong>{{ $item->total }}</strong>
+                            <td class="text-center fw-bold">
+                                {{ $item->total_completed }}
                             </td>
 
-                            <th class="vuot-dinh-muc-cell">{{ $item->vuot_dinh_muc }}</th>
-
-                            <td>
-                                {{ $item->dung_han_count }}/{{ $item->total }}
-                                ({{ $item->dung_han_percent }}%)
+                            <td class="text-center">
+                                <span class="badge bg-primary">
+                                    {{ $item->completion_percent }}%
+                                </span>
                             </td>
 
-                            <td>
-                                {{ $item->con_lai_count }}/{{ $item->total }}
-                                ({{ $item->con_lai_percent }}%)
+                            <td class="text-center text-success fw-bold">
+                                {{ $item->dung_han_count }}
+                            </td>
+
+                            <td class="text-center">
+                                {{ $item->dung_han_dm_percent }}%
+                            </td>
+
+                            <td class="text-center">
+                                {{ $item->dung_han_total_percent }}%
+                            </td>
+
+                            <td class="text-center text-danger fw-bold">
+                                {{ $item->khong_dung_han_count }}
+                            </td>
+
+                            <td class="text-center">
+                                {{ $item->khong_dung_han_percent }}%
+                            </td>
+
+                            <td class="text-center text-success fw-bold">
+                                {{ $item->quality_pass_count }}
+                            </td>
+
+                            <td class="text-center">
+                                {{ $item->quality_pass_dm_percent }}%
+                            </td>
+
+                            <td class="text-center">
+                                {{ $item->quality_pass_total_percent }}%
+                            </td>
+
+                            <td class="text-center text-danger fw-bold">
+                                {{ $item->quality_fail_count }}
+                            </td>
+
+                            <td class="text-center">
+                                {{ $item->quality_fail_total_percent }}%
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center">
+                            <td colspan="17" class="text-center">
                                 Không có dữ liệu
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-
-                <tfoot>
+                <!-- <tfoot>
                     <tr>
                         <th colspan="5">Tổng cộng</th>
-                        <th>{{ $requests->sum('total') }}</th>
-                        <th>{{ $requests->sum('vuot_dinh_muc') }}</th>
+
+                        <th>{{ $requests->sum('total_completed') }}</th>
+                        <th></th>
+
                         <th>{{ $requests->sum('dung_han_count') }}</th>
-                        <th>{{ $requests->sum('con_lai_count') }}</th>
+                        <th></th>
+                        <th></th>
+
+                        <th>{{ $requests->sum('khong_dung_han_count') }}</th>
+                        <th></th>
+
+                        <th>{{ $requests->sum('quality_pass_count') }}</th>
+                        <th></th>
+                        <th></th>
+
+                        <th>{{ $requests->sum('quality_fail_count') }}</th>
+                        <th></th>
+                    </tr>
+                </tfoot> -->
+                <tfoot class="table-secondary fw-bold">
+                    <tr>
+                        <td colspan="5" class="text-end">
+                            Tổng cộng
+                        </td>
+
+                        <td class="text-center">
+                            {{ $requests->sum('total_completed') }}
+                        </td>
+
+                        <td></td>
+
+                        <td class="text-center text-success">
+                            {{ $requests->sum('dung_han_count') }}
+                        </td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td class="text-center text-danger">
+                            {{ $requests->sum('khong_dung_han_count') }}
+                        </td>
+
+                        <td></td>
+
+                        <td class="text-center text-success">
+                            {{ $requests->sum('quality_pass_count') }}
+                        </td>
+
+                        <td></td>
+                        <td></td>
+
+                        <td class="text-center text-danger">
+                            {{ $requests->sum('quality_fail_count') }}
+                        </td>
+
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>
+            <small class="text-mute">Ghi chú:<br>
+                    - <i><b>ĐM</b>: Định mức</i> <br>
+                    - <i><b>TH</b>: Tổng hoàn thành</i>
+                </small>
         </div>
     </div>
-    
+
     @include('reports.modals.export_by_date')
 </x-app-layout>

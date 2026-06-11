@@ -123,6 +123,25 @@ TABLE
     border-bottom: 2px solid #dc3545;
 }
 
+/* table tech */
+.table-report th {
+    white-space: nowrap;
+    vertical-align: middle;
+    background: #212529 !important;
+}
+
+.table-report td {
+    white-space: nowrap;
+}
+
+.table-report .badge {
+    min-width: 60px;
+}
+
+.table-report tbody tr:hover {
+    background: #f8fafc;
+}
+
 /* =========================
 BADGE SLA
 ========================= */
