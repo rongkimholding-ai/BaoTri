@@ -22,7 +22,15 @@ class MaintenanceReminderMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Nhắc việc bảo trì quá hạn')
+            ->subject('Nhắc việc Yêu cầu bảo trì')
             ->view('emails.maintenance-reminder');
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Yêu cầu bảo trì mới',
+            cc: config('mail.notification_cc', []),
+        );
     }
 }

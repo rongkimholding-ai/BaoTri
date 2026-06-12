@@ -1,6 +1,6 @@
 @php
     $title = 'Danh sách công việc bảo trì';
-    $realTimeList = json_decode(file_get_contents(resource_path('json/real_time.json')), true);
+    $realTimeList = config('real_time');
     $realTimeMap = collect($realTimeList)->keyBy('key');
 @endphp
 <x-app-layout :title="$title">

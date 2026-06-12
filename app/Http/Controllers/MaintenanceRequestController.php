@@ -97,7 +97,6 @@ class MaintenanceRequestController extends Controller
         $checks = $this->getChecksData();
         $techs = $this->getTechnicianData();
         $severities = $this->getSeveritiesData();
-        dd($severities);
 
         return view('maintenance.create', compact('checks', 'stores', 'techs', 'severities'));
     }
@@ -242,8 +241,8 @@ class MaintenanceRequestController extends Controller
                 $actualSeconds = ((int) $h) * 3600 + ((int) $i) * 60 + ((int) $s);
             }
 
-            // Lấy danh sách thời gian chuẩn từ file json
-            $realTimeList = json_decode(file_get_contents(resource_path('json/real_time.json')), true);
+            // Lấy danh sách thời gian chuẩn từ config
+            $realTimeList = config('real_time');
             $realTimeMap = collect($realTimeList)->keyBy('key');
 
             $stdKey = $item->standard_completion_time;
@@ -533,16 +532,16 @@ class MaintenanceRequestController extends Controller
 
     public function getTechnicianData()
     {
-        $jsonPath = resource_path('json/technician.json');
-        $data = json_decode(file_get_contents($jsonPath), true);
+        $data = config('technician');
+   
 
         return $data;
     }
 
     public function getSeveritiesData()
     {
-        $jsonPath = resource_path('json/severities.json');
-        $data = json_decode(file_get_contents($jsonPath), true);
+        $data = config('severities');
+   
 
         return $data;
     }
@@ -593,13 +592,7 @@ class MaintenanceRequestController extends Controller
             + ((int) $i * 60)
             + (int) $s;
 
-        $realTimeList = json_decode(
-            file_get_contents(
-                resource_path('json/real_time.json')
-            ),
-            true
-        );
-
+        $realTimeList = config('real_time');
         $realTimeMap = collect($realTimeList)
             ->keyBy('key');
 

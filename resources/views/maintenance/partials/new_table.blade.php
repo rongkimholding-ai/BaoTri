@@ -24,7 +24,7 @@
                         if ($sla && !empty($item->request_date)) {
                             $createdAt = \Carbon\Carbon::parse($item->request_date);
                             $elapsedSeconds = $createdAt->diffInSeconds(now());
-                            $isOverdue = $elapsedSeconds > (int) $sla['max_seconds'] && $item->sla_status <> config('sla_status.badge.CONFIRMED');
+                            $isOverdue = $elapsedSeconds > (int) $sla['max_seconds'] && $item->sla_status <> config('sla_status.badge.CONFIRMED') && empty($item->acceptance_result);
                         }
                     @endphp
                     <tr data-id="{{ $item->id }}" class="{{ $isOverdue ? 'table-danger' : '' }}">
@@ -35,7 +35,11 @@
                         </td>
                         <td class="item_category_class">
                             Tên: {{ $item->item_category }} <br>
-                            Loại sự cố: {{ $item->severity }} <br>
+                            @php
+                                $severities = collect(config('severities'))->keyBy('key');
+                                $severityName = isset($severities[$item->severity]) ? $severities[$item->severity]['name'] : $item->severity;
+                            @endphp
+                            Loại sự cố: {{ $severityName }} <br>
                             Trạng thái: <span class="{{ data_get(config('sla_status.badge'), $item->sla_status, 'badge badge-default') }}">
                                 {{ data_get(config('sla_status.names'), $item->sla_status, $item->sla_status) }}
                             </span>

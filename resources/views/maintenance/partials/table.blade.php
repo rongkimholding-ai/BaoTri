@@ -115,7 +115,7 @@
                                     data-field="standard_completion_time" value="{{ $item->standard_completion_time }}">
                                 @else
                                     @php
-                                        $realTimeList = json_decode(file_get_contents(resource_path('json/real_time.json')), true);
+                                        $realTimeList = config('real_time');
                                         $realTimeMap = collect($realTimeList)->keyBy('key');
                                         $timeName = isset($item->standard_completion_time) && $item->standard_completion_time
                                             ? ($realTimeMap[$item->standard_completion_time]['name'] ?? $item->standard_completion_time)
