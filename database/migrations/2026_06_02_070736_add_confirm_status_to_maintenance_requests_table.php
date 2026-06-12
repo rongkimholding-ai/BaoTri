@@ -12,11 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('maintenance_requests', function (Blueprint $table) {
-
             $table->boolean('is_confirmed')
                 ->default(false)
                 ->after('acceptance_confirmed_by');
-    
             $table->timestamp('confirmed_at')
                 ->nullable()
                 ->after('is_confirmed');

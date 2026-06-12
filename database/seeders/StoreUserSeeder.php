@@ -60,6 +60,6 @@ class StoreUserSeeder extends Seeder
             $count++;
         }
 
-        $this->command->info("Đã xử lý {$count} tài khoản.");
+        $this->command->info("Da xu ly {$count} tai khoan.");
     }
 }

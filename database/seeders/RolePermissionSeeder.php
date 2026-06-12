@@ -13,40 +13,60 @@ class RolePermissionSeeder extends Seeder
      */
     public function run()
     {
-        // permissions
-        Permission::create(['name' => 'view data']);
-        Permission::create(['name' => 'create data']);
-        Permission::create(['name' => 'export excel']);
-        Permission::create(['name' => 'export excel tech']);
-        Permission::create(['name' => 'delete data']);
-        // Permission::create(['name' => 'update data']);
-        Permission::create(['name' => 'confirm maintenance']);
-        Permission::create(['name' => 'remind maintenance']);
-        Permission::create(['name' => 'change-maintenance-status']);
-
-        // roles
-        $admin = Role::create(['name' => 'admin']);
-        $user = Role::create(['name' => 'user']);
-        $manager = Role::create(['name' => 'manager']);
-        $technician = Role::create(['name' => 'technician']);
-
-        $admin->givePermissionTo(Permission::all());
-
-        $user->givePermissionTo([
-            'view data'
-        ]);
-
-        $technician->givePermissionTo([
+        // Danh sách permission
+        $permissions = [
             'view data',
-            'change-maintenance-status'
-        ]);
-
-        $manager->givePermissionTo([
-            'confirm maintenance',
+            'create data',
             'export excel',
             'export excel tech',
+            'delete data',
+            // 'update data',
+            'confirm maintenance',
+            'remind maintenance',
             'change-maintenance-status',
-            'remind maintenance'
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::updateOrCreate(
+                ['name' => $permission],
+                ['guard_name' => 'web']
+            );
+        }
+
+        // Danh sách role
+        $roles = [
+            'admin',
+            'user',
+            'manager',
+            'technician',
+        ];
+
+        $roleInstances = [];
+        foreach ($roles as $role) {
+            $roleInstances[$role] = Role::updateOrCreate(
+                ['name' => $role],
+                ['guard_name' => 'web']
+            );
+        }
+
+        // Gán permission cho role
+        $roleInstances['admin']->syncPermissions(Permission::all());
+
+        $roleInstances['user']->syncPermissions([
+            Permission::where('name', 'view data')->first()
+        ]);
+
+        $roleInstances['technician']->syncPermissions([
+            Permission::where('name', 'view data')->first(),
+            Permission::where('name', 'change-maintenance-status')->first(),
+        ]);
+
+        $roleInstances['manager']->syncPermissions([
+            Permission::where('name', 'confirm maintenance')->first(),
+            Permission::where('name', 'export excel')->first(),
+            Permission::where('name', 'export excel tech')->first(),
+            Permission::where('name', 'change-maintenance-status')->first(),
+            Permission::where('name', 'remind maintenance')->first(),
         ]);
     }
 }

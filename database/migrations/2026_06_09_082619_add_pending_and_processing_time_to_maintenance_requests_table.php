@@ -12,7 +12,6 @@ return new class extends Migration
             $table->timestamp('pending_at')
                 ->nullable()
                 ->after('last_reminded_at');
-
             $table->timestamp('processing_at')
                 ->nullable()
                 ->after('pending_at');

@@ -12,24 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('maintenance_request_logs', function (Blueprint $table) {
-
             $table->id();
-        
             $table->foreignId('maintenance_request_id')
                 ->constrained()
                 ->cascadeOnDelete();
-        
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
-        
             $table->string('old_status')->nullable();
-        
             $table->string('new_status');
-        
             $table->text('note')->nullable();
-        
             $table->timestamps();
         });
     }

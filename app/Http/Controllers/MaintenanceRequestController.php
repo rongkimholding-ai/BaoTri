@@ -9,9 +9,9 @@ use App\Services\MaintenanceRequestService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MaintenanceReminderMail;
+
 class MaintenanceRequestController extends Controller
 {
     /**
@@ -21,70 +21,56 @@ class MaintenanceRequestController extends Controller
     {
         $baseQuery = MaintenanceRequest::query();
 
-        if ($request->filled('branch_code')) {
-            $baseQuery->where('branch_code', 'like', '%' . $request->branch_code . '%');
+        $filters = [
+            'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
+            'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
+            'severity'    => fn($q, $v) => $q->where('severity', $v),
+            'status'      => fn($q, $v) => $q->where('sla_status', $v),
+        ];
+
+        foreach ($filters as $field => $closure) {
+            if ($request->filled($field)) {
+                $closure($baseQuery, $request->$field);
+            }
         }
 
-        if ($request->filled('branch_name')) {
-            $baseQuery->where('branch_name', 'like', '%' . $request->branch_name . '%');
-        }
+        $completedStatus = config('sla_status.code.COMPLETED');
+        $newStatus = config('sla_status.code.NEW');
 
-        if ($request->filled('issue_type')) {
-            $baseQuery->where('severity', $request->issue_type);
-        }
-
-        if ($request->filled('status')) {
-            $baseQuery->where('sla_status', $request->status);
-        }
-
-        $allRequests = (clone $baseQuery)
-            ->latest()
-            ->paginate(20, ['*'], 'all_page')
-            ->withQueryString();
+        // Pagination queries
+        $allRequests = (clone $baseQuery)->latest()->paginate(20, ['*'], 'all_page')->withQueryString();
 
         $processingRequests = (clone $baseQuery)
-            ->where('sla_status', '!=', config('sla_status.code.COMPLETED'))
-            ->latest()
-            ->paginate(20, ['*'], 'processing_page')
-            ->withQueryString();
+            ->where('sla_status', '!=', $completedStatus)
+            ->where('sla_status', '!=', $newStatus)
+            ->where('is_confirmed', '!=', true)
+            ->latest()->paginate(20, ['*'], 'processing_page')->withQueryString();
 
         $completedRequests = (clone $baseQuery)
-            ->where('sla_status', config('sla_status.code.COMPLETED'))
-            ->latest()
-            ->paginate(20, ['*'], 'completed_page')
-            ->withQueryString();
+            ->where('is_confirmed', true)
+            ->latest()->paginate(20, ['*'], 'completed_page')->withQueryString();
 
+        // Counts
         $totalCount = (clone $baseQuery)->count();
 
         $processingCount = (clone $baseQuery)
             ->whereNotNull('technician_name')
-            ->whereNotIn('sla_status', [
-                config('sla_status.code.COMPLETED')
-            ])
-            ->count();
+            ->where('sla_status', '!=', $completedStatus)
+            ->where('sla_status', '!=', $newStatus)
+            ->where('is_confirmed', '!=', true)->count();
 
-        $completedCount = (clone $baseQuery)
-            ->where('sla_status', config('sla_status.code.COMPLETED'))
-            ->count();
+        $completedCount = (clone $baseQuery)->where('is_confirmed', true)->count();
 
-        // $requests = MaintenanceRequest::all();
-        $stores = $this->getData();
-        $checks = $this->getChecksData();
-        $techs = $this->getTechnicianData();
+        // Data for selects
+        $stores     = $this->getData();
+        $checks     = $this->getChecksData();
+        $techs      = $this->getTechnicianData();
         $severities = $this->getSeveritiesData();
 
-
         return view('maintenance.index', compact(
-            'allRequests',
-            'processingRequests',
-            'completedRequests',
-            'stores',
-            'checks',
-            'techs',
-            'severities',
-            'totalCount',
-            'processingCount',
-            'completedCount'
+            'allRequests', 'processingRequests', 'completedRequests',
+            'stores', 'checks', 'techs', 'severities',
+            'totalCount', 'processingCount', 'completedCount'
         ));
     }
 
@@ -93,12 +79,14 @@ class MaintenanceRequestController extends Controller
      */
     public function create()
     {
-        $stores = $this->getData();
-        $checks = $this->getChecksData();
-        $techs = $this->getTechnicianData();
-        $severities = $this->getSeveritiesData();
+        $data = [
+            'stores'     => $this->getData(),
+            'checks'     => $this->getChecksData(),
+            'techs'      => $this->getTechnicianData(),
+            'severities' => $this->getSeveritiesData(),
+        ];
 
-        return view('maintenance.create', compact('checks', 'stores', 'techs', 'severities'));
+        return view('maintenance.create', $data);
     }
 
     /**
@@ -190,33 +178,34 @@ class MaintenanceRequestController extends Controller
 
     public function remind(Request $request)
     {
-        $item = MaintenanceRequest::findOrFail(
-            $request->id
-        );
+        $item = MaintenanceRequest::findOrFail($request->id);
 
-        if (!$item->technician_email) {
-
+        if (empty($item->technician_email)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Chưa khai báo email kỹ thuật viên'
             ], 422);
         }
 
-        Mail::to(
-            $item->technician_email
-        )->send(
-            new MaintenanceReminderMail($item)
-        );
+        try {
+            $email = $item->technician_email;
+            // $email = env('MAIL_NOTIFICATION_CC');
+            Mail::to($email)->send(new MaintenanceReminderMail($item));
+            $item->increment('reminder_count', 1, ['last_reminded_at' => now()]);
 
-        $item->increment('reminder_count');
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send maintenance reminder email', [
+                'id' => $item->id,
+                'email' => $item->technician_email,
+                'error' => $e->getMessage(),
+            ]);
 
-        $item->update([
-            'last_reminded_at' => now()
-        ]);
-
-        return response()->json([
-            'success' => true
-        ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gửi email thất bại. Vui lòng thử lại.'
+            ], 500);
+        }
     }
 
     public function confirm(Request $request)
@@ -294,193 +283,158 @@ class MaintenanceRequestController extends Controller
         ]);
     }
 
-    public function changeStatus(
-        Request $request,
-        MaintenanceRequest $maintenanceRequest
-    ) {
+    public function changeStatus(Request $request, MaintenanceRequest $maintenanceRequest)
+    {
         $allowedStatuses = config('sla_status.code');
 
         $request->validate([
-            'status' => ['string', 'in:' . implode(',', $allowedStatuses)]
+            'status' => ['string', 'in:' . implode(',', $allowedStatuses)],
         ]);
 
-        // kiểm tra quyền
-        if (!auth()->user()->can('change-maintenance-status')) {
-            abort(403);
-        }
+        // Kiểm tra quyền
+        abort_unless(auth()->user()->can('change-maintenance-status'), 403);
+
         $oldStatus = $maintenanceRequest->sla_status;
+        $status    = $request->status;
+        $now = now();
 
         $data = [
-            'sla_status' => $request->status,
+            'sla_status'   => $status,
             'delay_reason' => $request->note,
         ];
 
-        if ($request->status === config('sla_status.code.WAITING_CONFIRM')) {
-            $completedAt = now();
-            $seconds = Carbon::parse($maintenanceRequest->request_date)
-                ->diffInSeconds($completedAt);
+        switch ($status) {
+            case config('sla_status.code.WAITING_CONFIRM'):
+                $completedAt = $now;
+                $data['actual_completion_date'] = $completedAt;
+                $data['delay_reason'] = '';
 
-            $data['actual_completion_date'] = $completedAt;
-            $data['delay_reason'] = '';
-            if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
+                // Xác định tổng thời gian thực hiện
+                if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
+                    // Có tạm dừng
+                    $totalSeconds =
+                        Carbon::parse($maintenanceRequest->request_date)
+                            ->diffInSeconds($maintenanceRequest->pending_at)
+                        +
+                        Carbon::parse($maintenanceRequest->processing_at)
+                            ->diffInSeconds($maintenanceRequest->actual_completion_date ?? $completedAt);
+                } else {
+                    // Không tạm dừng
+                    $totalSeconds =
+                        Carbon::parse($maintenanceRequest->request_date)
+                            ->diffInSeconds($maintenanceRequest->actual_completion_date ?? $completedAt);
+                }
 
-                // Có tạm dừng
-                $totalSeconds =
-                    Carbon::parse($maintenanceRequest->request_date)
-                        ->diffInSeconds($maintenanceRequest->pending_at)
-                    +
-                    Carbon::parse($maintenanceRequest->processing_at)
-                        ->diffInSeconds(
-                            $maintenanceRequest->actual_completion_date ?? now()
-                        );
+                $data['actual_duration'] = gmdate('H:i:s', $totalSeconds);
+                break;
 
-            } else {
-
-                // Không tạm dừng
-                $totalSeconds =
-                    Carbon::parse($maintenanceRequest->request_date)
-                        ->diffInSeconds(
-                            $item->actual_completion_date ?? now()
-                        );
-            }
-            $hours = floor($totalSeconds / 3600);
-            $minutes = floor(($totalSeconds % 3600) / 60);
-            $seconds = $totalSeconds % 60;
-
-            $data['actual_duration'] = sprintf(
-                '%02d:%02d:%02d',
-                $hours,
-                $minutes,
-                $seconds
-            );
-        }
-        if ($request->status === config('sla_status.code.CONFIRMED')) {
-            $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
+            case config('sla_status.code.CONFIRMED'):
+                $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
+                break;
         }
 
-        if (in_array($request->status, [config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
-            $data['pending_at'] = now();
-        }
-        if ($request->status === config('sla_status.code.CONTINUE_PROCESSING')) {
-            $data['processing_at'] = now();
+        if (in_array($status,[config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
+            $data['pending_at'] = $now;
         }
 
-        if ($request->status === config('sla_status.code.REOPEN')) {
-            $data['acceptance_result'] = null;
-            $data['acceptance_note'] = null;
-            $data['acceptance_confirmed_by'] = null;
-            $data['confirmed_at'] = null;
-            $data['is_confirmed'] = false;
+        if ($status === config('sla_status.code.CONTINUE_PROCESSING')) {
+            $data['processing_at'] = $now;
         }
+
+        if ($status === config('sla_status.code.REOPEN')) {
+            $data = array_merge($data, [
+                'acceptance_result' => null,
+                'acceptance_note' => null,
+                'acceptance_confirmed_by' => null,
+                'confirmed_at' => null,
+                'is_confirmed' => false,
+            ]);
+        }
+
         $maintenanceRequest->update($data);
-        // dd($maintenanceRequest->update($data));
 
         MaintenanceRequestLog::create([
             'maintenance_request_id' => $maintenanceRequest->id,
-            'user_id' => auth()->id(),
-            'old_status' => $oldStatus,
-            'new_status' => $request->status,
-            'note' => $request->note,
+            'user_id'                => auth()->id(),
+            'old_status'             => $oldStatus,
+            'new_status'             => $status,
+            'note'                   => $request->note,
         ]);
 
         return response()->json([
-            'success' => true,
-            'sla_status' => $maintenanceRequest->status
+            'success'    => true,
+            'sla_status' => $maintenanceRequest->status,
         ]);
     }
 
     public function acceptance(Request $request)
     {
-        abort_unless(
-            auth()->user()->can('confirm maintenance'),
-            403
-        );
+        abort_unless(auth()->user()->can('confirm maintenance'),403);
 
         $request->validate([
-            'id' => 'required',
+            'id'     => 'required',
             'result' => 'required|in:accepted,rejected',
-            'note' => 'nullable|string|max:1000'
+            'note'   => 'nullable|string|max:1000'
         ]);
 
-        $item = MaintenanceRequest::findOrFail(
-            $request->id
-        );
+        $item = MaintenanceRequest::findOrFail($request->id);
 
-        if (
-            !in_array(
-                $item->sla_status,
-                [
-                    config('sla_status.code.COMPLETED'),
-                    config('sla_status.code.LATED')
-                ]
-            )
+        if (!in_array($item->sla_status,[
+                config('sla_status.code.COMPLETED'),
+                config('sla_status.code.LATED')
+            ])
         ) {
             return response()->json([
                 'success' => false,
-                'message' =>
-                    'Yêu cầu chưa đủ điều kiện nghiệm thu.'
+                'message' =>'Yêu cầu chưa đủ điều kiện nghiệm thu.'
             ], 422);
         }
 
-        if (
-            $request->result === 'rejected'
-            && blank($request->note)
-        ) {
+        if ($request->result === 'rejected' && blank($request->note)) {
             return response()->json([
                 'success' => false,
-                'message' =>
-                    'Vui lòng nhập lý do không đạt.'
+                'message' => 'Vui lòng nhập lý do không đạt.'
             ], 422);
         }
 
         DB::transaction(function () use ($request, $item) {
+            $item->acceptance_result       = $request->result;
+            $item->acceptance_note         = $request->note;
+            $item->acceptance_confirmed_by = auth()->user()->name;
+            $item->confirmed_at            = now();
+            $item->is_confirmed            = ($request->result === 'accepted');
 
-            $item->acceptance_result =
-                $request->result;
-
-            $item->acceptance_note =
-                $request->note;
-
-            $item->acceptance_confirmed_by =
-                auth()->user()->name;
-
-            $item->confirmed_at = now();
-
-            $item->is_confirmed =
-                $request->result === 'accepted';
-
-            if (
-                $request->result === 'rejected'
-            ) {
-                $item->is_confirmed = false;
-                $item->acceptance_result = null;
-                $item->acceptance_note = null;
-                $item->acceptance_confirmed_by = null;
-                $item->confirmed_at = null;
-                $item->sla_status =
-                    config('sla_status.code.REOPEN');
+            if ($request->result === 'rejected') {
+                // Lấy danh sách thời gian chuẩn từ config
+                $realTimeList   = config('real_time');
+                $realTimeMap    = collect($realTimeList)->keyBy('key');
+                $sla            = $realTimeMap[$item->standard_completion_time] ?? null;
+                $createdAt      = Carbon::parse($item->request_date);
+                $elapsedSeconds = $createdAt->diffInSeconds(now());
+                $isOverdue      = $elapsedSeconds > (int) $sla['max_seconds'];
+                if ($isOverdue) {
+                    $item->is_confirmed            = ($request->result === 'rejected');
+                    $item->sla_status              = config('sla_status.code.LATED');
+                } else {
+                    $item->is_confirmed            = false;
+                    $item->acceptance_result       = null;
+                    $item->acceptance_note         = null;
+                    $item->acceptance_confirmed_by = null;
+                    $item->confirmed_at            = null;
+                    $item->sla_status              = config('sla_status.code.REOPEN');
+                }
             }
 
             $item->save();
 
             MaintenanceRequestLog::create([
-                'maintenance_request_id'
-                => $item->id,
-
-                'user_id'
-                => auth()->id(),
-
-                'old_status'
-                => $item->sla_status,
-
-                'new_status'
-                => $item->sla_status,
-
-                'note'
-                => $request->result === 'accepted'
-                    ? 'Nghiệm thu đạt'
-                    : 'Nghiệm thu không đạt: '
-                    . $request->note,
+                'maintenance_request_id' => $item->id,
+                'user_id'                => auth()->id(),
+                'old_status'             => $item->sla_status,
+                'new_status'             => $item->sla_status,
+                'note'                   => $request->result === 'accepted' 
+                                            ? 'Nghiệm thu đạt' 
+                                            : 'Nghiệm thu không đạt: ' . $request->note,
             ]);
         });
 
@@ -496,22 +450,6 @@ class MaintenanceRequestController extends Controller
                 ->with('user')
                 ->get()
         );
-    }
-
-    private function getApproverByBranch($branchName)
-    {
-        $jsonPath = resource_path('json/stores.json');
-        $data = json_decode(file_get_contents($jsonPath), true);
-
-        // Lặp qua từng phần tử trong $data để tìm name == $branchName và lấy om_name
-        $mapping = [];
-        foreach ($data as $store) {
-            if (isset($store['name']) && isset($store['om_name'])) {
-                $mapping[$store['name']] = $store['om_name'];
-            }
-        }
-
-        return $mapping[$branchName] ?? null;
     }
 
     public function getData()
@@ -533,16 +471,12 @@ class MaintenanceRequestController extends Controller
     public function getTechnicianData()
     {
         $data = config('technician');
-   
-
         return $data;
     }
 
     public function getSeveritiesData()
     {
         $data = config('severities');
-   
-
         return $data;
     }
     public function getActualDurationTextAttribute($actual_duration)
@@ -577,9 +511,7 @@ class MaintenanceRequestController extends Controller
         return implode(' ', $parts);
     }
 
-    private function determineSlaStatus(
-        MaintenanceRequest $item
-    ): string {
+    private function determineSlaStatus(MaintenanceRequest $item): string {
 
         if (!$item->actual_duration) {
             return config('sla_status.code.LATED');
@@ -587,26 +519,17 @@ class MaintenanceRequestController extends Controller
 
         [$h, $i, $s] = explode(':', $item->actual_duration);
 
-        $actualSeconds =
-            ((int) $h * 3600)
-            + ((int) $i * 60)
-            + (int) $s;
+        $actualSeconds = ((int) $h * 3600) + ((int) $i * 60) + (int) $s;
 
         $realTimeList = config('real_time');
-        $realTimeMap = collect($realTimeList)
-            ->keyBy('key');
-
+        $realTimeMap = collect($realTimeList)->keyBy('key');
         $stdKey = $item->standard_completion_time;
 
-        if (
-            !$stdKey ||
-            !isset($realTimeMap[$stdKey])
-        ) {
+        if (!$stdKey || !isset($realTimeMap[$stdKey])) {
             return config('sla_status.code.LATED');
         }
 
-        $maxSeconds =
-            $realTimeMap[$stdKey]['max_seconds'];
+        $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
 
         return $actualSeconds <= $maxSeconds
             ? config('sla_status.code.COMPLETED')

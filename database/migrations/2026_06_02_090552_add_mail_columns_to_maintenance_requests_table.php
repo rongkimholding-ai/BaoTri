@@ -12,14 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('maintenance_requests', function ($table) {
-
             $table->string('technician_mobile')
                 ->nullable()
                 ->after('technician_name');
-
             $table->integer('reminder_count')
                 ->default(0);
-
             $table->timestamp('last_reminded_at')
                 ->nullable();
 

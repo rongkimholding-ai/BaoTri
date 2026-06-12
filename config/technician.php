@@ -20,6 +20,6 @@ return [
         "name" => "Vũ Mạnh Hoà",
         "position" => "NV Bảo Trì",
         "mobile" => "0961601851",
-        "email" => "hoangnguyen.support@tocotocotea.com"
+        "email" => "hoavu.support@tocotocotea.com"
     ],
 ];

@@ -127,23 +127,23 @@ class MaintenanceController extends Controller
                     : 0;
 
             return (object)[
-                'technician_name' => $tech->technician_name,
-                'technician_email' => $tech->technician_email ?? '',
-                'store_count'      => $tech->store_count,
-                'daily_target'     => $tech->daily_target,
-                'monthly_target'   => $tech->monthly_target,
+                'technician_name'            => $tech->technician_name,
+                'technician_email'           => $tech->technician_email ?? '',
+                'store_count'                => $tech->store_count,
+                'daily_target'               => $tech->daily_target,
+                'monthly_target'             => $tech->monthly_target,
 
-                'total_completed'  => $totalCompleted,
-                'dung_han_count'   => $dung_han_count,
-                'khong_dung_han_count' => $khong_dung_han_count,
-                'quality_pass_count' => $quality_pass_count,
-                'quality_fail_count' => $quality_fail_count,
+                'total_completed'            => $totalCompleted,
+                'dung_han_count'             => $dung_han_count,
+                'khong_dung_han_count'       => $khong_dung_han_count,
+                'quality_pass_count'         => $quality_pass_count,
+                'quality_fail_count'         => $quality_fail_count,
 
-                'completion_percent' => $completion_percent,
-                'dung_han_dm_percent' => $dung_han_dm_percent,
-                'dung_han_total_percent' => $dung_han_total_percent,
-                'khong_dung_han_percent' => $khong_dung_han_percent,
-                'quality_pass_dm_percent' => $quality_pass_dm_percent,
+                'completion_percent'         => $completion_percent,
+                'dung_han_dm_percent'        => $dung_han_dm_percent,
+                'dung_han_total_percent'     => $dung_han_total_percent,
+                'khong_dung_han_percent'     => $khong_dung_han_percent,
+                'quality_pass_dm_percent'    => $quality_pass_dm_percent,
                 'quality_pass_total_percent' => $quality_pass_total_percent,
                 'quality_fail_total_percent' => $quality_fail_total_percent,
             ];
@@ -159,9 +159,9 @@ class MaintenanceController extends Controller
                 'technician_name' => $request->technician_name,
             ],
             [
-                'store_count' => $request->store_count,
-                'daily_target' => $request->daily_target,
-                'monthly_target' => $request->monthly_target,
+                'store_count'     => $request->store_count,
+                'daily_target'    => $request->daily_target,
+                'monthly_target'  => $request->monthly_target,
             ]
         );
 

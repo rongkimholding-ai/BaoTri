@@ -28,9 +28,9 @@ class DefaultUsersSeeder extends Seeder
 
         // Admin
         $admin = User::updateOrCreate(
-            ['email' => 'admin@tea.com'],
+            ['email' => 'baotri.notification@tocotocotea.com'],
             [
-                'name' => 'Administrator',
+                'name' => 'Admin BaoTri',
                 'password' => Hash::make('abcd@1234'),
             ]
         );
