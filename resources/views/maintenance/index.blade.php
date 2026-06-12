@@ -2,6 +2,8 @@
     $title = 'Danh sách công việc bảo trì';
     $realTimeMap = collect(config('real_time'))->keyBy('key');
     $statuses = config('sla_status.names');
+    $fromDate = request('from_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
+    $toDate = request('to_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
 @endphp
 
 <x-app-layout :title="$title">
@@ -16,7 +18,10 @@
                     </button>
                 @endcan
                 @can('export excel')
-                    <a href="{{ route('maintenance-requests.export') }}" class="btn btn-outline-success flex-fill mt-2 mt-md-0">
+                    <a href="{{ route('maintenance-requests.export', [
+                        'from-date' => $fromDate,
+                        'to-date' => $toDate
+                    ]) }}" class="btn btn-outline-success flex-fill mt-2 mt-md-0">
                         <i class="bi bi-file-earmark-excel"></i> Xuất báo cáo
                     </a>
                 @endcan
@@ -46,10 +51,6 @@
         <div class="card mb-3">
             <div class="card-body">
                 <form method="GET" action="{{ route('maintenance-requests.index') }}">
-                    @php
-                        $fromDate = request('from_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
-                        $toDate = request('to_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
-                    @endphp
                     <div class="row g-2 align-items-end">
                         <div class="col-md-3">
                             <label for="from-date" class="form-label mb-1">Ngày yêu cầu (Từ)</label>
@@ -83,11 +84,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                             <label for="branch_code" class="form-label mb-1">Mã cơ sở</label>
                             <input type="text" name="branch_code" id="branch_code" class="form-control"
                                 placeholder="Nhập mã cơ sở" value="{{ request('branch_code') }}">
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                             <label for="branch_name" class="form-label mb-1">Tên cơ sở</label>
                             <select class="form-control select2-branch" name="branch_name" id="branch_name" data-field="branch_name">

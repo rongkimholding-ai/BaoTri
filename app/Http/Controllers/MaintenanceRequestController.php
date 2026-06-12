@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BusinessTimeHelper;
 use App\Http\Requests\StoreMaintenanceRequest;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestLog;
@@ -22,12 +23,12 @@ class MaintenanceRequestController extends Controller
         $baseQuery = MaintenanceRequest::query();
 
         $filters = [
-            'from_date' => function($q, $v) {
+            'from_date' => function ($q, $v) {
                 if (!empty($v)) {
                     $q->whereDate('request_date', '>=', $v);
                 }
             },
-            'to_date' => function($q, $v) {
+            'to_date' => function ($q, $v) {
                 if (!empty($v)) {
                     $q->whereDate('request_date', '<=', $v);
                 }
@@ -318,24 +319,38 @@ class MaintenanceRequestController extends Controller
                 $completedAt = $now;
                 $data['actual_completion_date'] = $completedAt;
                 $data['delay_reason'] = '';
-
-                // Xác định tổng thời gian thực hiện
                 if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
-                    // Có tạm dừng
-                    $totalSeconds =
-                        Carbon::parse($maintenanceRequest->request_date)
-                            ->diffInSeconds($maintenanceRequest->pending_at)
-                        +
-                        Carbon::parse($maintenanceRequest->processing_at)
-                            ->diffInSeconds($maintenanceRequest->actual_completion_date ?? $completedAt);
-                } else {
-                    // Không tạm dừng
-                    $totalSeconds =
-                        Carbon::parse($maintenanceRequest->request_date)
-                            ->diffInSeconds($maintenanceRequest->actual_completion_date ?? $completedAt);
-                }
+                    // Trước khi tạm dừng
+                    $beforePendingSeconds =
+                        BusinessTimeHelper::diffInBusinessSeconds(
+                            $maintenanceRequest->request_date,
+                            $maintenanceRequest->pending_at
+                        );
 
-                $data['actual_duration'] = gmdate('H:i:s', $totalSeconds);
+                    // Sau khi tiếp tục xử lý
+                    $afterResumeSeconds =
+                        BusinessTimeHelper::diffInBusinessSeconds(
+                            $maintenanceRequest->processing_at,
+                            $maintenanceRequest->actual_completion_date ?? $completedAt
+                        );
+                    $totalSeconds = $beforePendingSeconds + $afterResumeSeconds;
+                } else {
+                    $totalSeconds =
+                        BusinessTimeHelper::diffInBusinessSeconds(
+                            $maintenanceRequest->request_date,
+                            $maintenanceRequest->actual_completion_date ?? $completedAt
+                        );
+                }
+                $hours = floor($totalSeconds / 3600);
+                $minutes = floor(($totalSeconds % 3600) / 60);
+                $seconds = $totalSeconds % 60;
+
+                $data['actual_duration'] = sprintf(
+                    '%02d:%02d:%02d',
+                    $hours,
+                    $minutes,
+                    $seconds
+                );
                 break;
 
             case config('sla_status.code.CONFIRMED'):
@@ -343,7 +358,7 @@ class MaintenanceRequestController extends Controller
                 break;
         }
 
-        if (in_array($status,[config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
+        if (in_array($status, [config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
             $data['pending_at'] = $now;
         }
 
@@ -379,7 +394,7 @@ class MaintenanceRequestController extends Controller
 
     public function acceptance(Request $request)
     {
-        abort_unless(auth()->user()->can('confirm maintenance'),403);
+        abort_unless(auth()->user()->can('confirm maintenance'), 403);
 
         $request->validate([
             'id'     => 'required',
@@ -396,7 +411,7 @@ class MaintenanceRequestController extends Controller
         ) {
             return response()->json([
                 'success' => false,
-                'message' =>'Yêu cầu chưa đủ điều kiện nghiệm thu.'
+                'message' => 'Yêu cầu chưa đủ điều kiện nghiệm thu.'
             ], 422);
         }
 
@@ -521,7 +536,8 @@ class MaintenanceRequestController extends Controller
         return implode(' ', $parts);
     }
 
-    private function determineSlaStatus(MaintenanceRequest $item): string {
+    private function determineSlaStatus(MaintenanceRequest $item): string
+    {
 
         if (!$item->actual_duration) {
             return config('sla_status.code.LATED');

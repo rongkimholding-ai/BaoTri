@@ -1,6 +1,6 @@
 <div class="modal fade" id="createModal">
 
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
 
         <form id="createForm" action="{{ route('maintenance-requests.store') }}" method="POST">
 

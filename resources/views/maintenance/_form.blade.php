@@ -1,11 +1,11 @@
 <div class="row">
 
-    <div class="col-md-6 mb-3">
+    <div class="col-md-6 mb-3 hidden">
         <label>{{ config('maintenance.fields.branch_code') }}</label>
         <input class="form-control form-branch-code" name="branch_code">
     </div>
 
-    <div class="col-md-6 mb-3">
+    <div class="col-md-6 mb-3 hidden">
         <label>{{ config('maintenance.fields.severity') }}</label>
 
         <select class="form-control severity-field select2-branch" name="severity">
