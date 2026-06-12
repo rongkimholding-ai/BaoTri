@@ -13,6 +13,14 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithStrictNullComparison, WithMapping
 {
+    protected $from_date;
+    protected $to_date;
+
+    public function __construct($from_date, $to_date)
+    {
+        $this->from_date = $from_date;
+        $this->to_date = $to_date;
+    }
     public function collection()
     {
         return MaintenanceRequest::select([
@@ -35,7 +43,7 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             'acceptance_confirmed_by',
             // 'created_at',
             // 'updated_at',
-        ])->get();
+        ])->whereBetween('request_date', [$this->from_date, $this->to_date])->get();
     }
 
     public function map($row): array

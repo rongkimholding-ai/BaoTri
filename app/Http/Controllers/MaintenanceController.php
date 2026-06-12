@@ -16,9 +16,17 @@ class MaintenanceController extends Controller
 {
     public function export()
     {
+        $startDate = request(
+            'from-date',
+            Carbon::now()->startOfMonth()->format('Y-m-d')
+        );
+        $endDate = request(
+            'to-date',
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
         $exportName = rand(1, 2000) . date('Ymd') . '_report.xlsx';
         return Excel::download(
-            new MaintenanceRequestsExport(),
+            new MaintenanceRequestsExport($startDate,$endDate),
             $exportName
         );
     }
