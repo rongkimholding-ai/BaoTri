@@ -22,6 +22,16 @@ class MaintenanceRequestController extends Controller
         $baseQuery = MaintenanceRequest::query();
 
         $filters = [
+            'from_date' => function($q, $v) {
+                if (!empty($v)) {
+                    $q->whereDate('request_date', '>=', $v);
+                }
+            },
+            'to_date' => function($q, $v) {
+                if (!empty($v)) {
+                    $q->whereDate('request_date', '<=', $v);
+                }
+            },
             'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
             'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
             'severity'    => fn($q, $v) => $q->where('severity', $v),

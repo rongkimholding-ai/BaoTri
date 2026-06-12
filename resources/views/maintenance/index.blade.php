@@ -10,15 +10,15 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-0">{{ $title }}</h3>
             <div class="d-flex gap-2">
-                @can('export excel')
-                    <a href="{{ route('maintenance-requests.export') }}" class="btn btn-success">
-                        <i class="bi bi-file-earmark-excel"></i> Xuất báo cáo
-                    </a>
-                @endcan
                 @can('create data')
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <button class="btn btn-outline-primary flex-fill mt-2 mt-md-0" data-bs-toggle="modal" data-bs-target="#createModal">
                         <i class="bi bi-plus-circle"></i> Thêm mới
                     </button>
+                @endcan
+                @can('export excel')
+                    <a href="{{ route('maintenance-requests.export') }}" class="btn btn-outline-success flex-fill mt-2 mt-md-0">
+                        <i class="bi bi-file-earmark-excel"></i> Xuất báo cáo
+                    </a>
                 @endcan
                 <!-- <div class="card mb-3">
                 <div class="card-body">
@@ -46,13 +46,51 @@
         <div class="card mb-3">
             <div class="card-body">
                 <form method="GET" action="{{ route('maintenance-requests.index') }}">
-                    <div class="row g-2">
-                        <div class="col-md-2">
-                            <input type="text" name="branch_code" class="form-control" placeholder="Mã cơ sở"
-                                value="{{ request('branch_code') }}">
+                    @php
+                        $fromDate = request('from_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
+                        $toDate = request('to_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
+                    @endphp
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label for="from-date" class="form-label mb-1">Ngày yêu cầu (Từ)</label>
+                            <input type="date" id="fromDate" name="from_date" class="form-control"
+                                value="{{ $fromDate }}">
                         </div>
                         <div class="col-md-3">
-                            <select class="form-control select2-branch" name="branch_name" data-field="branch_name">
+                            <label for="to-date" class="form-label mb-1">Ngày yêu cầu (Đến)</label>
+                            <input type="date" id="toDate" name="to_date" class="form-control"
+                                value="{{ $toDate }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="severity" class="form-label mb-1">Loại sự cố</label>
+                            <select name="severity" id="severity" class="form-control select2-branch">
+                                <option value="">-- Loại sự cố --</option>
+                                @foreach($severities as $type)
+                                    <option value="{{ $type['key'] }}" @selected(request('severity') == $type['key'])>
+                                        {{ $type['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label mb-1">Trạng thái</label>
+                            <select name="status" id="status" class="form-control select2-branch">
+                                <option value="">-- Trạng thái --</option>
+                                @foreach($statuses as $key => $status)
+                                    <option value="{{ $key }}" @selected(request('status') == $key)>
+                                        {{ $status }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="branch_code" class="form-label mb-1">Mã cơ sở</label>
+                            <input type="text" name="branch_code" id="branch_code" class="form-control"
+                                placeholder="Nhập mã cơ sở" value="{{ request('branch_code') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="branch_name" class="form-label mb-1">Tên cơ sở</label>
+                            <select class="form-control select2-branch" name="branch_name" id="branch_name" data-field="branch_name">
                                 <option value="">-- Chọn cơ sở --</option>
                                 @foreach($stores as $store)
                                     <option value="{{ $store['name'] }}" data-code="{{ $store['code'] }}"
@@ -62,29 +100,9 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <select name="severity" class="form-control select2-branch">
-                                <option value="">-- Loại sự cố --</option>
-                                @foreach($severities as $type)
-                                    <option value="{{ $type['key'] }}" @selected(request('severity') == $type['key'])>
-                                        {{ $type['name'] }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="status" class="form-control select2-branch">
-                                <option value="">-- Trạng thái --</option>
-                                @foreach($statuses as $key => $status)
-                                    <option value="{{ $key }}" @selected(request('status') == $key)>
-                                        {{ $status }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary flex-fill">Tìm kiếm</button>
-                            <a href="{{ route('maintenance-requests.index') }}" class="btn btn-outline-secondary">Bỏ lọc</a>
+                        <div class="col-md-3 d-flex gap-2 pt-md-3">
+                            <button type="submit" class="btn btn-primary flex-fill mt-2 mt-md-0">Tìm kiếm</button>
+                            <a href="{{ route('maintenance-requests.index') }}" class="btn btn-outline-secondary flex-fill mt-2 mt-md-0">Bỏ lọc</a>
                         </div>
                     </div>
                 </form>

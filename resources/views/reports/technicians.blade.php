@@ -19,8 +19,8 @@
                     <a href="{{ route('reports.technician-export', [
                         'from-date' => $fromDate,
                         'to-date' => $toDate
-                    ]) }}" class="btn btn-success">
-                        Xuất Excel
+                    ]) }}" class="btn btn-outline-success">
+                        Xuất báo cáo
                     </a>
                 @endcan
             </div>
@@ -48,14 +48,14 @@
                         <th>%/ĐM</th>
                         <th>Đạt</th>
                         <th>%/ĐM</th>
-                        <th>%/TH</th>
+                        <th>%/YC</th>
                         <th>SL</th>
-                        <th>%/TH</th>
+                        <th>%/YC</th>
                         <th>Đạt</th>
                         <th>%/ĐM</th>
-                        <th>%/TH</th>
+                        <th>%/YC</th>
                         <th>SL</th>
-                        <th>%/TH</th>
+                        <th>%/YC</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -139,7 +139,7 @@
             </table>
             <small class="text-muted">Ghi chú:<br>
                 - <i><b>ĐM</b>: Định mức</i> <br>
-                - <i><b>TH</b>: Tổng hoàn thành</i>
+                - <i><b>YC</b>: Tổng số yêu cầu</i>
             </small>
         </div>
     </div>

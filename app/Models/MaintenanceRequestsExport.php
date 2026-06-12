@@ -6,11 +6,12 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithStrictNullComparison
+class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithStrictNullComparison, WithMapping
 {
     public function collection()
     {
@@ -35,6 +36,36 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             // 'created_at',
             // 'updated_at',
         ])->get();
+    }
+
+    public function map($row): array
+    {
+        $sla_status = config('sla_status.names');
+        $severities = collect(config('severities'))->keyBy('key')->map(function($item) { return $item['name']; });
+        $acceptance = collect(config('acceptance'))->keyBy('key')->map(function($item) { return $item['name']; });
+        $real_time = collect(config('real_time'))->keyBy('key')->map(function($item) { return $item['name']; });
+
+        return [
+            $row->id,
+            $row->branch_code,
+            $row->branch_name,
+            $row->request_date,
+            $row->item_category,
+            $row->issue_description,
+            $real_time[$row->standard_completion_time]?? $row->standard_completion_time,
+            $severities[$row->severity] ?? $row->severity,
+            $row->technician_name,
+            $row->solution_description,
+            $row->actual_completion_date,
+            $row->actual_duration,
+            $sla_status[$row->sla_status] ?? $row->sla_status,
+            $row->delay_reason,
+            $row->outsourced_provider,
+            $acceptance[$row->acceptance_result] ?? $row->acceptance_result,
+            $row->acceptance_confirmed_by,
+            // $row->created_at,
+            // $row->updated_at,
+        ];
     }
 
     public function headings(): array
