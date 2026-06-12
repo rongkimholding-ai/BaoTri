@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('technician_targets', function (Blueprint $table) {
             $table->id();
-            $table->string('technician_name')->unique();
+            $table->string('technician_name');
             $table->string('technician_email');
+            $table->unique(['technician_name', 'technician_email']);
             $table->integer('store_count')->nullable();
             $table->integer('daily_target')->nullable();
             $table->integer('monthly_target')->nullable();
