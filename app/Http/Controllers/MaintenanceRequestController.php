@@ -203,8 +203,7 @@ class MaintenanceRequestController extends Controller
         }
 
         Mail::to(
-            // $item->technician_email
-            env("MAIL_NOTIFICATION_CC")
+            $item->technician_email
         )->send(
             new MaintenanceReminderMail($item)
         );
