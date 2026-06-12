@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Models\MaintenanceRequest;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
@@ -18,8 +19,9 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
 
     public function __construct($from_date, $to_date)
     {
-        $this->from_date = $from_date;
-        $this->to_date = $to_date;
+        $this->from_date = Carbon::parse($from_date)->startOfDay();
+        $this->to_date = Carbon::parse($to_date)->endOfDay();
+   
     }
     public function collection()
     {

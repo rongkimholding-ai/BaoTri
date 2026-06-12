@@ -20,8 +20,8 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
 
     public function __construct($from_date, $to_date)
     {
-        $this->from_date = $from_date;
-        $this->to_date = $to_date;
+        $this->from_date = Carbon::parse($from_date)->startOfDay();
+        $this->to_date = Carbon::parse($to_date)->endOfDay();
     }
     /**
      * @return \Illuminate\Support\Collection

@@ -50,14 +50,13 @@ class MaintenanceController extends Controller
 
     public function index()
     {
-        $startDate = request(
-            'from-date',
-            Carbon::now()->startOfMonth()->format('Y-m-d')
-        );
-        $endDate = request(
-            'to-date',
-            Carbon::now()->endOfMonth()->format('Y-m-d')
-        );
+        $startDate = Carbon::parse(
+            request('from-date', Carbon::now()->startOfMonth()->format('Y-m-d'))
+        )->startOfDay()->format('Y-m-d H:i:s');
+        $endDate = Carbon::parse(
+            request('to-date', Carbon::now()->endOfMonth()->format('Y-m-d'))
+        )->endOfDay()->format('Y-m-d H:i:s');
+   
 
         // Lấy danh sách technicians từ technician_targets (mỗi người 1 record)
         $technicians = TechnicianTarget::all();

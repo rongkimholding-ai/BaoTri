@@ -25,12 +25,14 @@ class MaintenanceRequestController extends Controller
         $filters = [
             'from_date' => function ($q, $v) {
                 if (!empty($v)) {
-                    $q->whereDate('request_date', '>=', $v);
+                    $startOfDay = Carbon::parse($v)->startOfDay();
+                    $q->where('request_date', '>=', $startOfDay);
                 }
             },
             'to_date' => function ($q, $v) {
                 if (!empty($v)) {
-                    $q->whereDate('request_date', '<=', $v);
+                    $endOfDay = Carbon::parse($v)->endOfDay();
+                    $q->whereDate('request_date', '<=', $endOfDay);
                 }
             },
             'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
