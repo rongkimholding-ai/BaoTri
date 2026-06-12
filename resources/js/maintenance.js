@@ -716,10 +716,58 @@ $(function () {
         toggleFormFields();
     });
 
-    function syncScrollWidth() {
-        let tableWidth = $('.table-responsive table')[0].scrollWidth;
+    const requestTabs = document.getElementById('requestTabs');
+    if (requestTabs) {
+        const STORAGE_KEY = 'active_tab_' + window.location.pathname;
 
-        $('.table-scroll-top div').width(tableWidth);
+        // Khôi phục tab
+        const savedTab = sessionStorage.getItem(STORAGE_KEY);
+
+        if (savedTab) {
+
+            const tabButton = requestTabs.querySelector(
+                `[data-bs-target="${savedTab}"]`
+            );
+
+            if (
+                tabButton &&
+                typeof bootstrap !== 'undefined'
+            ) {
+                bootstrap.Tab
+                    .getOrCreateInstance(tabButton)
+                    .show();
+            }
+        }
+
+        // Lưu tab
+        requestTabs
+            .querySelectorAll('[data-bs-toggle="tab"]')
+            .forEach(tab => {
+
+                tab.addEventListener(
+                    'shown.bs.tab',
+                    function (e) {
+
+                        sessionStorage.setItem(
+                            STORAGE_KEY,
+                            e.target.getAttribute(
+                                'data-bs-target'
+                            )
+                        );
+                        syncScrollWidth();
+                    }
+                );
+            });
+    }
+
+    function syncScrollWidth() {
+        let table = $('.tab-pane.active .table-responsive table')[0];
+        if (!table) {
+            return;
+        }
+        $('.table-scroll-top div').width(
+            table.scrollWidth
+        );
     }
 
     syncScrollWidth();

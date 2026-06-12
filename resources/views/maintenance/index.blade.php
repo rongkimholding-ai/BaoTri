@@ -145,31 +145,4 @@
     @include('maintenance.modals.change_status')
     @include('maintenance.modals.log')
     @include('maintenance.modals.acceptance')
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const STORAGE_KEY = 'active_tab_' + window.location.pathname;
-        // Khôi phục tab
-        const savedTab = sessionStorage.getItem(STORAGE_KEY);
-
-        if (savedTab) {
-            const tabButton = document.querySelector(
-                `#requestTabs button[data-bs-target="${savedTab}"]`
-            );
-            if (tabButton) {
-                bootstrap.Tab.getOrCreateInstance(tabButton).show();
-            }
-        }
-
-        // Lưu tab hiện tại
-        document.querySelectorAll('#requestTabs button[data-bs-toggle="tab"]')
-            .forEach(tab => {
-                tab.addEventListener('shown.bs.tab', function (e) {
-                    sessionStorage.setItem(
-                        STORAGE_KEY,
-                        e.target.getAttribute('data-bs-target')
-                    );
-                });
-            });
-    });
-    </script>
 </x-app-layout>
