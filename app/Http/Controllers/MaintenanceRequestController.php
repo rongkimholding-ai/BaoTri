@@ -20,7 +20,20 @@ class MaintenanceRequestController extends Controller
      */
     public function index(Request $request)
     {
+        $user = auth()->user();
+
         $baseQuery = MaintenanceRequest::query();
+
+        // Phân quyền dữ liệu
+        // Nếu là technician, chỉ nhìn thấy những request có technician_email == user email
+        if ($user->hasRole('technician')) {
+            $baseQuery->where('technician_email', $user->email);
+        }
+        // Nếu là user, chỉ nhìn thấy những request có branch_email == user email
+        else if ($user->hasRole('user')) {
+            $baseQuery->where('branch_email', $user->email);
+        }
+        // Nếu là admin, không giới hạn
 
         $filters = [
             'from_date' => function ($q, $v) {
@@ -50,18 +63,32 @@ class MaintenanceRequestController extends Controller
         $completedStatus = config('sla_status.code.COMPLETED');
         $newStatus = config('sla_status.code.NEW');
 
+        // Thứ tự severity mong muốn từ config
+        $severityOrder = array_map(function ($item) {
+            return $item['key'];
+        }, config('severities'));
+
+        // Tạo chuỗi cho FIELD() mysql
+        $severityOrderStr = implode("','", $severityOrder);
+
+        // Định nghĩa một hàm order theo thứ tự severity
+        $ordered = function ($query) use ($severityOrderStr) {
+            return $query->orderByRaw("FIELD(severity, '$severityOrderStr')")->orderByDesc('id');
+        };
+
         // Pagination queries
-        $allRequests = (clone $baseQuery)->latest()->paginate(20, ['*'], 'all_page')->withQueryString();
+        $allRequests = $ordered(clone $baseQuery)->paginate(20, ['*'], 'all_page')->withQueryString();
 
-        $processingRequests = (clone $baseQuery)
-            ->where('sla_status', '!=', $completedStatus)
-            ->where('sla_status', '!=', $newStatus)
-            ->where('is_confirmed', '!=', true)
-            ->latest()->paginate(20, ['*'], 'processing_page')->withQueryString();
+        $processingRequests = $ordered(
+            (clone $baseQuery)
+                ->where('sla_status', '!=', $completedStatus)
+                ->where('sla_status', '!=', $newStatus)
+                ->where('is_confirmed', '!=', true)
+        )->paginate(20, ['*'], 'processing_page')->withQueryString();
 
-        $completedRequests = (clone $baseQuery)
-            ->where('is_confirmed', true)
-            ->latest()->paginate(20, ['*'], 'completed_page')->withQueryString();
+        $completedRequests = $ordered(
+            (clone $baseQuery)->where('is_confirmed', true)
+        )->paginate(20, ['*'], 'completed_page')->withQueryString();
 
         // Counts
         $totalCount = (clone $baseQuery)->count();

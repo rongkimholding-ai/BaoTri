@@ -470,10 +470,12 @@ $(function () {
 
         let code = selected.data('code') || '';
         let technician_name = selected.data('technician_name') || '';
+        let branch_email = selected.data('branch_email') || '';
 
         let modal = $('#createModal');
 
         modal.find('.form-branch-code').val(code);
+        modal.find('.form-branch-email').val(branch_email);
 
         modal.find('.form-technician-name')
             .val(technician_name)

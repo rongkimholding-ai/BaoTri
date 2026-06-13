@@ -10,6 +10,7 @@ class MaintenanceRequest extends Model
     protected $fillable = [
         'branch_code',
         'branch_name',
+        'branch_email',
         'item_category',
         'issue_description',
         'severity',

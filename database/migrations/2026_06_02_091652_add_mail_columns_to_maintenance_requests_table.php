@@ -19,6 +19,12 @@ return new class extends Migration
                 ->default(0);
             $table->timestamp('last_reminded_at')
                 ->nullable();
+            $table->string('created_by')
+                ->nullable()
+                ->after('created_at');
+            $table->string('branch_email')
+                ->nullable()
+                ->after('branch_name');
 
         });
     }

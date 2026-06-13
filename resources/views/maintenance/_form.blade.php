@@ -27,7 +27,9 @@
             <option value="">-- Chọn cơ sở --</option>
 
             @foreach($stores as $store)
-                <option value="{{ $store['name'] }}" data-technician_name="{{ $store['technician_name'] ?? '' }}"
+                <option value="{{ $store['name'] }}" 
+                    data-branch_email="{{ $store['email'] }}"
+                    data-technician_name="{{ $store['technician_name'] ?? '' }}"
                     data-code="{{ $store['code'] }}">
                     {{ $store['name'] }}
                 </option>
@@ -167,6 +169,12 @@
                 </label>
             </div>
         </div>
+    </div>
+
+    <div class="col-md-6 mb-3 hidden">
+        <label>Mail cơ sở</label>
+
+        <input name="branch_email" class="form-control form-branch-email">
     </div>
 
     <div class="col-md-12 mb-3">
