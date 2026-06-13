@@ -56,6 +56,18 @@ class DefaultUsersSeeder extends Seeder
                 'password' => Hash::make('abcd@1234'),
             ]
         );
+        // Thêm các kỹ thuật viên từ config/technician.php với vai trò technician
+        $technicians = config('technician');
+        foreach ($technicians as $tech) {
+            $user = User::updateOrCreate(
+                ['email' => $tech['email']],
+                [
+                    'name' => $tech['name'],
+                    'password' => Hash::make('12345678'),
+                ]
+            );
+            $user->syncRoles(['technician']);
+        }
 
         $technician->syncRoles(['technician']);
 

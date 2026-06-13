@@ -13,6 +13,12 @@ return [
         "max_seconds" => 28800
     ],
     [
+        "key" => "1_DAY",
+        "name" => "1 ngày",
+        "min_seconds" => 0,
+        "max_seconds" => 86400
+    ],
+    [
         "key" => "1_2_DAYS",
         "name" => "1-2 ngày",
         "min_seconds" => 86400,
