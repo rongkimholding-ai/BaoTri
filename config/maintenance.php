@@ -35,6 +35,7 @@ return [
         // 'severity' => 'Loại sự cố',
         'solution_description' => 'Khắc phục',
         'technician' => 'Kỹ thuật viên',
+        'sla_required' => 'SLA',
         'time' => 'Thời gian',
         'delay_reason' => 'Lý do',
         'status' => 'Trạng thái',

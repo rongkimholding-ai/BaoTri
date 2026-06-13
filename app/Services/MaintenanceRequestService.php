@@ -9,6 +9,7 @@ class MaintenanceRequestService
     {
         $data['request_date'] = now();
         $data['sla_status'] = config('sla_status.code.NEW');
+        // dd($data);
 
         return MaintenanceRequest::create($data);
     }

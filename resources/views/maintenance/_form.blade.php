@@ -122,6 +122,52 @@
 
         </select>
     </div> -->
+    <div class="col-md-6 mb-3">
+        <label class="form-label d-block">
+            Bao gồm ngày làm
+        </label>
+
+        <div class="d-flex gap-4">
+            <div class="form-check">
+                <input class="form-check-input"
+                    type="checkbox"
+                    name="include_saturday"
+                    id="include_saturday"
+                    value="1"
+                    @checked(old('include_saturday', true))>
+
+                <label class="form-check-label" for="include_saturday">
+                    Thứ 7
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input"
+                    type="checkbox"
+                    name="include_sunday"
+                    id="include_sunday"
+                    value="1"
+                    @checked(old('include_sunday'))>
+
+                <label class="form-check-label" for="include_sunday">
+                    Chủ nhật
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input"
+                    type="checkbox"
+                    name="include_holiday"
+                    id="include_holiday"
+                    value="1"
+                    @checked(old('include_holiday'))>
+
+                <label class="form-check-label" for="include_holiday">
+                    Ngày lễ
+                </label>
+            </div>
+        </div>
+    </div>
 
     <div class="col-md-12 mb-3">
         <label>{{ config('maintenance.fields.solution_description') }}</label>

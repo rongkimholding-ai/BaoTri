@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HolidayCalendarController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\MaintenanceRequestController;
 use App\Http\Controllers\PermissionController;
@@ -43,5 +44,28 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('permissions', PermissionController::class);
     Route::get('/maintenance-requests/{maintenanceRequest}/logs', [MaintenanceRequestController::class, 'logs'])->name('maintenance-requests.logs');
 });
+
+Route::prefix('holiday-calendars')
+    ->name('holiday-calendars.')
+    ->group(function () {
+
+        Route::get('/', [HolidayCalendarController::class, 'index'])
+            ->name('index');
+
+        Route::get('/create', [HolidayCalendarController::class, 'create'])
+            ->name('create');
+
+        Route::post('/', [HolidayCalendarController::class, 'store'])
+            ->name('store');
+
+        Route::get('/{holidayCalendar}/edit', [HolidayCalendarController::class, 'edit'])
+            ->name('edit');
+
+        Route::put('/{holidayCalendar}', [HolidayCalendarController::class, 'update'])
+            ->name('update');
+
+        Route::delete('/{holidayCalendar}', [HolidayCalendarController::class, 'destroy'])
+            ->name('destroy');
+    });
 
 require __DIR__ . '/auth.php';

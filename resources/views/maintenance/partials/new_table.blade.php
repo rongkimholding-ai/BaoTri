@@ -56,6 +56,36 @@
                             SĐT: {{ $item->technician_mobile }}<br>
                             Email: {{ $item->technician_email }}
                         </td>
+                        <td>
+                            @if($item->include_saturday)
+                                <span class="badge bg-primary">
+                                    T7
+                                </span>
+                            @endif
+
+                            @if($item->include_sunday)
+                                <span class="badge bg-success">
+                                    CN
+                                </span>
+                            @endif
+
+                            @if($item->include_holiday)
+                                <span class="badge bg-warning text-dark">
+                                    Lễ
+                                </span>
+                            @endif
+
+                            @if(
+                                !$item->include_saturday
+                                && !$item->include_sunday
+                                && !$item->include_holiday
+                            )
+                                <span class="badge bg-secondary">
+                                    Hành chính
+                                </span>
+                            @endif
+
+                        </td>
                         <td class="time_field">
                             Ngày yêu cầu: {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
                             Yêu cầu hoàn thành: {{ $timeName }}

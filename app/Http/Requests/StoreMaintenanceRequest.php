@@ -43,6 +43,10 @@ class StoreMaintenanceRequest extends FormRequest
             'outsourced_provider' => 'nullable|string|max:255',
             'acceptance_result' => 'nullable|string|max:255',
             'acceptance_confirmed_by' => 'nullable|string|max:255',
+            'include_saturday' => 'boolean',
+            'include_sunday' => 'boolean',
+            'include_holiday' => 'boolean',
+       
         ];
     }
 

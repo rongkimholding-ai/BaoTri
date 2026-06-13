@@ -113,6 +113,22 @@ class MaintenanceRequestController extends Controller
             $request->validated()
         );
 
+        // Tự động cập nhật sla_status thành PROCESSING sau khi tạo xong và lưu vào logs trạng thái với note là "auto tiếp nhận thực hiện"
+        $created = MaintenanceRequest::latest()->first();
+        if ($created) {
+            $created->sla_status = config('sla_status.code.PROCESSING');
+            $created->save();
+
+            MaintenanceRequestLog::create([
+                'maintenance_request_id' => $created->id,
+                'user_id' => auth()->id(),
+                'old_status' => config('sla_status.code.NEW'),
+                'new_status' => config('sla_status.code.PROCESSING'),
+                'note' => 'auto tiếp nhận thực hiện',
+            ]);
+        }
+
+
         return back()->with(
             'success',
             'Thêm thành công'
@@ -322,37 +338,37 @@ class MaintenanceRequestController extends Controller
                 $data['actual_completion_date'] = $completedAt;
                 $data['delay_reason'] = '';
                 if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
-                    // Trước khi tạm dừng
                     $beforePendingSeconds =
                         BusinessTimeHelper::diffInBusinessSeconds(
                             $maintenanceRequest->request_date,
-                            $maintenanceRequest->pending_at
+                            $maintenanceRequest->pending_at,
+                            $maintenanceRequest->include_saturday,
+                            $maintenanceRequest->include_sunday,
+                            $maintenanceRequest->include_holiday
                         );
-
-                    // Sau khi tiếp tục xử lý
                     $afterResumeSeconds =
                         BusinessTimeHelper::diffInBusinessSeconds(
                             $maintenanceRequest->processing_at,
-                            $maintenanceRequest->actual_completion_date ?? $completedAt
+                            $completedAt,
+                            $maintenanceRequest->include_saturday,
+                            $maintenanceRequest->include_sunday,
+                            $maintenanceRequest->include_holiday
                         );
                     $totalSeconds = $beforePendingSeconds + $afterResumeSeconds;
                 } else {
                     $totalSeconds =
                         BusinessTimeHelper::diffInBusinessSeconds(
                             $maintenanceRequest->request_date,
-                            $maintenanceRequest->actual_completion_date ?? $completedAt
+                            $completedAt,
+                            $maintenanceRequest->include_saturday,
+                            $maintenanceRequest->include_sunday,
+                            $maintenanceRequest->include_holiday
                         );
                 }
-                $hours = floor($totalSeconds / 3600);
-                $minutes = floor(($totalSeconds % 3600) / 60);
-                $seconds = $totalSeconds % 60;
-
-                $data['actual_duration'] = sprintf(
-                    '%02d:%02d:%02d',
-                    $hours,
-                    $minutes,
-                    $seconds
-                );
+                $data['actual_duration'] =
+                    BusinessTimeHelper::formatDuration(
+                        $totalSeconds
+                    );
                 break;
 
             case config('sla_status.code.CONFIRMED'):

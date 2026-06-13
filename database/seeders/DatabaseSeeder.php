@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             DefaultUsersSeeder::class,
             StoreUserSeeder::class,
+            HolidayCalendarSeeder::class,
         ]);
     }
 }

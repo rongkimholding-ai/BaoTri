@@ -15,6 +15,9 @@
                     @endhasanyrole
 
                     @role('admin')
+                    <x-nav-link :href="route('holiday-calendars.index')" :active="request()->routeIs('holiday-calendars.index')">
+                            {{ __('Ngày lễ') }}
+                        </x-nav-link>
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('Người dùng') }}
                     </x-nav-link>
