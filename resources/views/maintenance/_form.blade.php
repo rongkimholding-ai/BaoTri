@@ -171,10 +171,10 @@
         </div>
     </div>
 
-    <div class="col-md-6 mb-3 hidden">
-        <label>Mail cơ sở</label>
+    <div class="col-md-6 mb-3">
+        <label>{{ config('maintenance.fields.outsourced_provider') }}</label>
 
-        <input name="branch_email" class="form-control form-branch-email">
+        <input class="form-control outsourced-provider" name="outsourced_provider">
     </div>
 
     <div class="col-md-12 mb-3">
@@ -182,6 +182,12 @@
 
         <textarea rows="3" class="form-control solution-description" name="solution_description">{!! old('solution_description', isset($maintenance) ? $maintenance->solution_description : '') !!}</textarea>
    
+    </div>
+
+    <div class="col-md-6 mb-3 hidden">
+        <label>Mail cơ sở</label>
+
+        <input name="branch_email" class="form-control form-branch-email">
     </div>
 
     <!-- <div class="col-md-4 mb-3">
@@ -196,16 +202,10 @@
         <input class="form-control" name="actual_duration">
     </div> -->
 
-    <div class="col-md-6 mb-3">
+    <div class="col-md-6 mb-3 hidden">
         <label>{{ config('maintenance.fields.delay_reason') }}</label>
 
         <input class="form-control" name="delay_reason">
-    </div>
-
-    <div class="col-md-6 mb-3">
-        <label>{{ config('maintenance.fields.outsourced_provider') }}</label>
-
-        <input class="form-control outsourced-provider" name="outsourced_provider">
     </div>
 
     <!-- <div class="col-md-4 mb-3">
