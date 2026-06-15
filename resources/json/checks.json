@@ -17,7 +17,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "Biển bảng tầng 1 : BP. Bảo Trì sẽ tự xử lý luôn cho cơ sở ngay sau khi tiếp nhận thông tin, đèn led lấy từ kho đã dự trữ sẵn. Đề xuất vật tư và phê duyệt trên luồng 1.office."
+        "solution": "Biển bảng tầng 1: BP.BT sẽ tự xử lý luôn cho cơ sở ngay sau khi tiếp nhận thông tin, đèn led lấy từ kho đã dự trữ sẵn. Đề xuất vật tư và phê duyệt trên luồng 1.office."
       },
       {
         "key": "CHAY_NGUON_CHAY_BONG_DEN_LED_BIEN_BANG_NGOAI_NHA_TANG_2_TRO_LEN",
@@ -25,7 +25,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "Biển bảng từ tầng 2 trở lên : BP. Bảo Trì kiểm tra hiện trạng, đánh giá và lập khối lượng dự toán . PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá, yêu cầu tiến độ NCC xử lý trong vòng 10 ngày ) khi gặp tình huống này, BP. Bảo Trì trực tiếp làm việc NCC theo danh sách trên. BP. Bảo Trì kiểm tra, xác nhận và Nghiệm thu hoàn thành công việc."
+        "solution": "Biển bảng từ tầng 2 trở lên: BP.BT kiểm tra hiện trạng, đánh giá và lập khối lượng dự toán. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá, yêu cầu tiến độ NCC xử lý trong vòng 10 ngày ) khi gặp tình huống này, BP. Bảo Trì trực tiếp làm việc NCC theo danh sách trên. BP. Bảo Trì kiểm tra, xác nhận và Nghiệm thu hoàn thành công việc."
       },
       {
         "key": "CHAY_HE_BONG_DEN_CHIEU_SANG_SPORTLIGHT",
@@ -33,7 +33,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. Bảo Trì lấy đèn từ kho đã dự trữ sẵn để thay thế cho cơ sở. Nhân Viên đề xuất xuất kho và được phê duyệt trên luồng 1.office."
+        "solution": "BP.BT lấy đèn từ kho đã dự trữ sẵn để thay thế cho cơ sở. Nhân Viên đề xuất xuất kho và được phê duyệt trên luồng 1.office."
       },
       {
         "key": "THAY_O_DIEN_PHICH_CAM",
@@ -41,7 +41,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BP. Bảo Trì lấy ổ cắm từ kho đã dự trữ sẵn để thay thế cho cơ sở. Nhân Viên đề xuất xuất kho và được phê duyệt trên luồng 1.office."
+        "solution": "BP.BT lấy ổ cắm từ kho đã dự trữ sẵn để thay thế cho cơ sở. Nhân Viên đề xuất xuất kho và được phê duyệt trên luồng 1.office."
       },
       {
         "key": "DEN_AM_TRAN_DEN",
@@ -49,7 +49,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. Bảo Trì lấy đèn từ kho đã dự trữ sẵn để thay thế cho cơ sở. Nhân Viên đề xuất xuất kho và được phê duyệt trên luồng 1.office."
+        "solution": "BP.BT lấy đèn từ kho đã dự trữ sẵn để thay thế cho cơ sở. Nhân Viên đề xuất xuất kho và được phê duyệt trên luồng 1.office."
       },
       {
         "key": "OTHER",
@@ -57,7 +57,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP. Bảo Trì , Bảo trì sẽ kiểm tra và lên phương án xử lý"
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT, Bảo trì sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -71,7 +71,7 @@
         "severity": "1A",
         "handler": "BPBT",
         "processing_time": "1_2_HOURS",
-        "solution": "BP. Bảo Trì kiểm tra ,xác nhận hiện trạng hư hỏng và Đề Xuất xuất kho bơm thay thế (đề xuất xuất kho và phê duyệt ngay trên luồn 1.office), bơm cũ sửa trong 05 ngày, lưu kho làm dự phòng."
+        "solution": "BP.BT kiểm tra ,xác nhận hiện trạng hư hỏng và Đề Xuất xuất kho bơm thay thế (đề xuất xuất kho và phê duyệt ngay trên luồn 1.office), bơm cũ sửa trong 05 ngày, lưu kho làm dự phòng."
       },
       {
         "key": "BOM_BI_E_NUOC_CHAY_CHAM",
@@ -79,7 +79,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BP. Bảo Trì kiểm tra đánh giá hiện trạng hư hỏng và đề xuất xuất kho vật tư sửa chữa trên luồng 1.office."
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng hư hỏng và đề xuất xuất kho vật tư sửa chữa trên luồng 1.office."
       },
       {
         "key": "RO_RI_NUOC_DUONG_ONG_HOAC_LOC_RO",
@@ -87,7 +87,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. Bảo Trì kiểm tra tùy theo từng trường hợp cụ thể sẽ tiến hành sửa chữa hoặc thay thế cho cơ sở. Trường hợp cần thay thế vật tư thì BP. Bảo Trì đánh giá hiện trạng, đề xuất vật tư xuất kho trên luồng 1.office và được duyệt trên luồng công việc."
+        "solution": "BP.BT kiểm tra tùy theo từng trường hợp cụ thể sẽ tiến hành sửa chữa hoặc thay thế cho cơ sở. Trường hợp cần thay thế vật tư thì BP. Bảo Trì đánh giá hiện trạng, đề xuất vật tư xuất kho trên luồng 1.office và được duyệt trên luồng công việc."
       },
       {
         "key": "THAY_VOI_NUOC_KHU_BEP",
@@ -95,7 +95,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BP. Bảo Trì kiểm tra đánh giá hiện trạng hư hỏng và đề xuất xuất kho thay mới vòi nước trên luồng 1.office và được duyệt trên cùng luồn công việc."
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng hư hỏng và đề xuất xuất kho thay mới vòi nước trên luồng 1.office và được duyệt trên cùng luồn công việc."
       },
       {
         "key": "CHAU_RUA_VOI_RUA",
@@ -111,7 +111,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP. Bảo Trì, Bảo trì sẽ kiểm tra và lên phương án xử lý"
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT, Bảo trì sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -125,7 +125,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BP. Bảo Trì xuống kiểm tra, đánh giá nguyên nhân gây tắc"
+        "solution": "BP.BT xuống kiểm tra, đánh giá nguyên nhân gây tắc."
       },
       {
         "key": "TAC_HE_THONG_THOAT_NHA_VE_SINH",
@@ -133,7 +133,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "1. Trường hợp đơn giản: BP. Bảo Trì đánh giá nguyên nhân, tiến hành dùng dây thông hoặc thụt tùy theo mức độ"
+        "solution": "Trường hợp đơn giản: BP.BT đánh giá nguyên nhân, tiến hành dùng dây thông hoặc thụt tùy theo mức độ. Trường hợp phức tạp: Sau khi BP.BT xử lý không được, BP.BT sẽ thông báo đến P.MS để P.MS sẽ gọi nhà thầu đến xử lý bằng phương pháp dùng máy nén khí hoặc máy đánh lò xo."
       },
       {
         "key": "TAC_HE_THONG_HO_GAS_NGOAI_NHA",
@@ -141,7 +141,7 @@
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "1. Phòng QLVHCS xin cấp phép từ chính quyền đến việc cấp phép cho đào vỉa hè hoặc các sơ ban ngành liên quan đến hệ thống Cống, Cấp thoát nước của Quận/Thành phố ( nếu cần phải đào vỉa hè để xử lý)."
+        "solution": "Phòng QLVHCS xin cấp phép từ chính quyền đến việc cấp phép cho đào vỉa hè hoặc các sơ ban ngành liên quan đến hệ thống Cống, Cấp thoát nước của Quận/Thành phố ( nếu cần phải đào vỉa hè để xử lý). P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá, yêu cầu tiến độ NCC xử lý trong vòng 1 ngày ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "OTHER",
@@ -149,7 +149,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP. Bảo Trì sẽ kiểm tra và lên phương án xử lý"
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP. Bảo Trì sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -159,7 +159,7 @@
     "issues": [
       {
         "key": "DIEU_HOA_KHONG_MAT_KHONG_LEN_NGUON_SUA_MACH_NAP_GA_MAT_NGUON",
-        "name": "Điều hòa không mát, không lên nguồn, Sửa mạch, nạp ga, mất nguồn …..",
+        "name": "Điều hòa không mát, không lên nguồn, Sửa mạch, nạp ga, mất nguồn…",
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
@@ -171,7 +171,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra nguyên nhân chảy nước, thực hiện thông ống thoát nước ngưng, nếu trường hợp máy bị bẩn thì vệ sinh trước định kỳ"
+        "solution": "BP.BT kiểm tra nguyên nhân chảy nước, thực hiện thông ống thoát nước ngưng, nếu trường hợp máy bị bẩn thì vệ sinh trước định kỳ."
       },
       {
         "key": "THAY_MACH_THAY_BLOCK_CUC_NONG",
@@ -187,7 +187,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý"
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -201,7 +201,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày"
+        "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày."
       },
       {
         "key": "CAC_LOI_E01_E02_E03_E05",
@@ -209,7 +209,7 @@
         "severity": "1A",
         "handler": "BPBT",
         "processing_time": "1_2_HOURS",
-        "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày"
+        "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày."
       }
     ]
   },
@@ -223,7 +223,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày"
+        "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày."
       },
       {
         "key": "GAY_TRUC_MAY_BOM_HONG_DONG_CO",
@@ -245,7 +245,7 @@
         "severity": "2",
         "handler": "BP.BT",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra xác định nguyên nhân và xử lý ngay tại chỗ. Trong trường hợp không tự xử lý được thì đề xuất P.MS hỗ trợ NCC trên luồng 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, P.MS trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra xác định nguyên nhân và xử lý ngay tại chỗ. Trong trường hợp không tự xử lý được thì đề xuất P.MS hỗ trợ NCC trên luồng 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, P.MS trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "TU_MAT_CHET_BLOCK",
@@ -253,7 +253,7 @@
         "severity": "1B",
         "handler": "Nhà thầu",
         "processing_time": "1_DAY",
-        "solution": "BP.BT đổi máy dự phòng sẵn trong kho ngay trong ngày, máy cũ sửa chữa trong 05 ngày, sau đổi trả lại máy dự phòng về kho"
+        "solution": "BP.BT đổi máy dự phòng sẵn trong kho ngay trong ngày, máy cũ sửa chữa trong 05 ngày, sau đổi trả lại máy dự phòng về kho."
       }
     ]
   },
@@ -277,7 +277,7 @@
     "issues": [
       {
         "key": "MOTOR_KHONG_HOAT_DONG_TAY_KHUAY_KHONG_QUAY",
-        "name": "Motor Không hoạt động/ motor quay nhưng tay khuấy không quay.",
+        "name": "Motor Không hoạt động/ motor quay nhưng tay khuấy không quay",
         "severity": "1B",
         "handler": "BTBT/ Mua hàng",
         "processing_time": "2_8_HOURS",
@@ -351,7 +351,7 @@
         "severity": "3A",
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT trực tiếp dùng máy hàn để hàn lại tay nắm cho thùng đá"
+        "solution": "BP.BT trực tiếp dùng máy hàn để hàn lại tay nắm cho thùng đá."
       }
     ]
   },
@@ -365,7 +365,7 @@
         "severity": "3A",
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia cố"
+        "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia cố."
       }
     ]
   },
@@ -379,7 +379,7 @@
         "severity": "3A",
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia  cố lại bản lề"
+        "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia  cố lại bản lề."
       }
     ]
   },
@@ -393,7 +393,7 @@
         "severity": "3A",
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia cố lại bản lề"
+        "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia cố lại bản lề."
       }
     ]
   },
@@ -407,7 +407,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -429,7 +429,7 @@
         "severity": "3B",
         "handler": "Nhà thầu ",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -443,7 +443,7 @@
         "severity": "3B",
         "handler": "BPBT/Mua hàng",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. "
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
       },
       {
         "key": "TUONG_SON_DUC_TRAT_SON_LAI",
@@ -451,15 +451,15 @@
         "severity": "3B",
         "handler": "Nhà thầu ",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "CAC_DIEN_TUONG_TRANH_VE",
         "name": "Các diện tường tranh vẽ",
         "severity": "3B",
-        "handler": "Nhà thầu ",
+        "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -473,7 +473,7 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. "
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
       },
       {
         "key": "VO_MANG_AM_MOC_PHAI_THAY_THE",   
@@ -481,7 +481,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -495,15 +495,15 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. "
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
       },
       {
         "key": "NHU_TREN_NHUNG_KHOI_LUONG_QUA_LON",
         "name": "Như trên nhưng khối lượng quá lớn",
         "severity": "3B",
-        "handler": "Nhà thầu ",
+        "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -517,7 +517,7 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. "
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
       },
       {
         "key": "VO_XUOC_TAC_NHAN_KHAC_MAT_MY_QUAN_CONCEPT_KL_LON",
@@ -525,7 +525,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -539,7 +539,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -553,7 +553,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       },
       {
         "key": "VAN_MUC_BUNG_VO",
@@ -561,7 +561,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -575,7 +575,7 @@
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -589,7 +589,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       },
       {
         "key": "BAN_GHE_BI_GAY_CHAN_GAY_MONG_VA_KHOP_NOI",
@@ -597,7 +597,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -611,7 +611,7 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       },
       {
         "key": "TU_NGUYEN_LIEU_MUC_HONG_KHONG_SU_DUNG_LAI_DUOC",
@@ -619,7 +619,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -633,7 +633,7 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       }
     ]
   },
@@ -647,7 +647,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -661,7 +661,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "CUA_HONG_BAN_LE_PHU_KIEN",
@@ -669,7 +669,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -683,7 +683,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -697,7 +697,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "CUA_BI_HONG_BAN_LE_PHU_KIEN",
@@ -705,7 +705,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -719,7 +719,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -733,7 +733,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       },
       {
         "key": "REM_BI_RACH",
@@ -741,7 +741,7 @@
         "severity": "2",
         "handler": "NCC",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -755,7 +755,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -769,15 +769,15 @@
         "severity": "1A",
         "handler": "BPBT/ Mua hàng",
         "processing_time": "1_2_HOURS",
-        "solution": "BP.BT tiến hành kiểm tra, xác định vị trí motor cửa để kéo cửa lên tạm. Xác định nguyên nhân cửa không lên. Trong trường hợp không tự sửa chữa được do lỗi thiết bị thì đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí sửa chữa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công (đã ký HĐ nguyên tắc, có đơn giá) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT tiến hành kiểm tra, xác định vị trí motor cửa để kéo cửa lên tạm. Xác định nguyên nhân cửa không lên. Trong trường hợp không tự sửa chữa được do lỗi thiết bị thì đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí sửa chữa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công (đã ký HĐ nguyên tắc, có đơn giá) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "SUA_CHUA_CUA_CUON_XO_NAN_LECH_NAN_KET_NAN_BO_NHAN_TIN_HIEU_KHONG_NHAN_TIN_HIEU_B",
-        "name": "Sữa chữa cửa cuốn xô nan, lệch nan, kẹt nan,bộ nhận tín hiệu không nhận tín hiệu, bộ tích điện hỏng , hỏng điều khiển …",
+        "name": "Sữa chữa cửa cuốn xô nan, lệch nan, kẹt nan,bộ nhận tín hiệu không nhận tín hiệu, bộ tích điện hỏng, hỏng điều khiển…",
         "severity": "1B",
         "handler": "Nhà thầu",
         "processing_time": "2_8_HOURS",
-        "solution": "BP.BT tiến hành kiểm tra, xác định nguyên nhân và tiến hành sửa chữa. Trong trường hợp không tự sửa chữa được do lỗi thiết bị thì đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí sửa chữa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT tiến hành kiểm tra, xác định nguyên nhân và tiến hành sửa chữa. Trong trường hợp không tự sửa chữa được do lỗi thiết bị thì đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí sửa chữa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "THAY_NAN_CUA",
@@ -785,7 +785,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT tiến hành kiểm tra, đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí thay nan cửa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công (đã ký HĐ nguyên tắc, có đơn giá) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "BP.BT tiến hành kiểm tra, đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí thay nan cửa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công (đã ký HĐ nguyên tắc, có đơn giá) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
         "key": "CUA_CUON_HONG_KHONG_VAN_HANH_DUOC",
@@ -793,7 +793,7 @@
         "severity": "1B",
         "handler": "Nhà thầu",
         "processing_time": "2_8_HOURS",
-        "solution": "1. Trường hợp trong đêm muộn : nhà thầu xuống xử lý hạ cửa bằng tay để NV có thể khóa lại, sáng hôm sau nhà thầu cùng BP.BT kiểm tra xác nhận lỗi. Nhà thầu báo và chốt giá thi công với P.MS để xử lý ngay"
+        "solution": "Trường hợp trong đêm muộn: nhà thầu xuống xử lý hạ cửa bằng tay để NV có thể khóa lại, sáng hôm sau nhà thầu cùng BP.BT kiểm tra xác nhận lỗi. Nhà thầu báo và chốt giá thi công với P.MS để xử lý ngay. Trường hợp ban ngày: nhà thầu cùng BP.BT kiểm tra xác nhận lỗi, sau báo và chốt giá với P.MS để xử lý ngay."
       }
     ]
   },
@@ -807,7 +807,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "PKT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "PKT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       },
       {
         "key": "ALU_LAU_NGAY_BI_GION",
@@ -815,7 +815,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -829,7 +829,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý"
+        "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
       },
       {
         "key": "MAI_TON_CU_MUC_NAT_GAY_DOT",
@@ -837,7 +837,7 @@
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -851,7 +851,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý"
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -865,15 +865,15 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. BT thu xếp sửa tại chỗ"
+        "solution": "BP.BT thu xếp sửa tại chỗ."
       },
       {
         "key": "LOI_KHAC_KHONG_KHAC_PHUC_DUOC_NHU_GAY_VO_BAY_MAU_SON_SAI_CONCEPT",
-        "name": "Lỗi khác không khắc phục được như gãy, vỡ, , bay màu sơn sai concept, ..",
+        "name": "Lỗi khác không khắc phục được như gãy, vỡ, bay màu sơn sai concept,…",
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -887,7 +887,7 @@
         "severity": "3A",
         "handler": "BP.BT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. BT thu xếp sửa tại chỗ"
+        "solution": "BP. BT thu xếp sửa tại chỗ."
       },
       {
         "key": "LOI_KHAC_KHONG_KHAC_PHUC_DUOC_NHU_GAY_DAP",
@@ -895,7 +895,7 @@
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -909,15 +909,15 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. BT thu xếp sửa tại chỗ"
+        "solution": "BP.BT thu xếp sửa tại chỗ."
       },
       {
         "key": "LOI_KHAC_KHONG_KHAC_PHUC_DUOC",
-        "name": "Lỗi khác không khắc phục được như gãy, vỡ, bay màu sơn sai concept, ..",
+        "name": "Lỗi khác không khắc phục được như gãy, vỡ, bay màu sơn sai concept,…",
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -931,7 +931,7 @@
         "severity": "3A",
         "handler": null,
         "processing_time": "3_5_DAYS",
-        "solution": "BP. BT thu xếp sửa tại chỗ"
+        "solution": "BP. BT thu xếp sửa tại chỗ."
       },
       {
         "key": "TRANH_KHONG_SANG_DO_HONG_LED_NGUON",
@@ -939,7 +939,7 @@
         "severity": "2",
         "handler": "BPBT/ Mua hàng",
         "processing_time": "1_2_DAYS",
-        "solution": "BP. BT kiểm tra đề xuất Vật tư xử lý"
+        "solution": "BP. BT kiểm tra đề xuất Vật tư xử lý."
       },
       {
         "key": "TRANH_GAY_VO_GAY_O_KHONG_SUA_DUOC",
@@ -947,7 +947,7 @@
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -961,21 +961,21 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP. BT thu xếp sửa tại chỗ"
+        "solution": "BP.BT thu xếp sửa tại chỗ."
       },
       {
         "key": "LOI_KHAC_KHONG_KHAC_PHUC_DUOC_NHU_RACH_GAY_VO_BAY_MAU_SON_SAI_CONCEPT",
-        "name": "Lỗi khác không khắc phục được như rách, gãy, vỡ, , bay màu sơn sai concept, ..",
+        "name": "Lỗi khác không khắc phục được như rách, gãy, vỡ, bay màu sơn sai concept,…",
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
   {
     "key": "SLOGAN_THE_CUP_OF_HAPPINESS",
-    "name": "Slogan : The cup of happiness",
+    "name": "Slogan: The cup of happiness",
     "issues": [
       {
         "key": "CHU_BI_BUNG_ROI_MAT_CHU",
@@ -983,7 +983,7 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT đề xuất vật tư xử lý tại chỗ"
+        "solution": "BP.BT đề xuất vật tư xử lý tại chỗ."
       }
     ]
   },
@@ -997,7 +997,7 @@
         "severity": "3A",
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT đề xuất vật tư xử lý tại chỗ"
+        "solution": "BP.BT đề xuất vật tư xử lý tại chỗ."
       },
       {
         "key": "CHU_VO_TAC_DONG_BEN_NGOAI",
@@ -1005,7 +1005,7 @@
         "severity": "3A",
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -1019,7 +1019,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BP.BT đề xuất kho vật tư xử lý tại chỗ"
+        "solution": "BP.BT đề xuất kho vật tư xử lý tại chỗ."
       },
       {
         "key": "HONG_LED_DUOI_2_KY_TU",
@@ -1027,7 +1027,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ"
+        "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ."
       },
       {
         "key": "HONG_LED_TU_3_KY_TU_DEN_TOAN_BO_BO_CHU",
@@ -1035,7 +1035,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -1049,7 +1049,7 @@
         "severity": "2",
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
-        "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ"
+        "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ."
       }
     ]
   },
@@ -1063,7 +1063,7 @@
         "severity": "1B",
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
-        "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ"
+        "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ."
       },
       {
         "key": "CHAY_MAM_LED",
@@ -1071,7 +1071,7 @@
         "severity": "2",
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -1127,7 +1127,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch"
+        "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch."
       }
     ]
   },
@@ -1141,7 +1141,7 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch"
+        "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch."
       }
     ]
   },
@@ -1155,7 +1155,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên"
+        "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
       }
     ]
   },
@@ -1191,7 +1191,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý"
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   }

@@ -180,7 +180,8 @@
     <div class="col-md-12 mb-3">
         <label>{{ config('maintenance.fields.solution_description') }}</label>
 
-        <textarea rows="3" class="form-control solution-description" name="solution_description"></textarea>
+        <textarea rows="3" class="form-control solution-description" name="solution_description">{!! old('solution_description', isset($maintenance) ? $maintenance->solution_description : '') !!}</textarea>
+   
     </div>
 
     <!-- <div class="col-md-4 mb-3">

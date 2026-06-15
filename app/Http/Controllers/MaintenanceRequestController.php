@@ -534,6 +534,29 @@ class MaintenanceRequestController extends Controller
     {
         $jsonPath = resource_path('json/checks.json');
         $data = json_decode(file_get_contents($jsonPath), true);
+        // Sắp xếp lại tất cả các issues trong data theo thứ tự của severity trong config
+        if (is_array($data)) {
+            // Lấy thứ tự severity từ config
+            $severityOrder = array_map(function ($item) {
+                return $item['key'];
+            }, config('severities', []));
+            $severityOrderFlipped = array_flip($severityOrder);
+
+            // Duyệt từng category trong data và sort issues
+            foreach ($data as &$category) {
+                if (isset($category['issues']) && is_array($category['issues'])) {
+                    usort($category['issues'], function($a, $b) use ($severityOrderFlipped) {
+                        $aSev = $a['severity'] ?? null;
+                        $bSev = $b['severity'] ?? null;
+
+                        $aIndex = ($aSev && isset($severityOrderFlipped[$aSev])) ? $severityOrderFlipped[$aSev] : PHP_INT_MAX;
+                        $bIndex = ($bSev && isset($severityOrderFlipped[$bSev])) ? $severityOrderFlipped[$bSev] : PHP_INT_MAX;
+                        return $aIndex <=> $bIndex;
+                    });
+                }
+            }
+            unset($category); // Unset reference
+        }
 
         return $data;
     }

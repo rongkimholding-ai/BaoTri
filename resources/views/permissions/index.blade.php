@@ -67,6 +67,9 @@
 
             </div>
 
+            <div class="mt-3">
+                {{ $permissions->links() }}
+            </div>
         </div>
 
     </div>
