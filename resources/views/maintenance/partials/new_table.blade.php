@@ -178,6 +178,15 @@
                                                     Hoàn thành Y/C
                                                 </a>
                                             </li>
+                                        @elseif($item->sla_status == config('sla_status.code.PENDING_CONTRACTOR'))
+                                            <li>
+                                                <a class="dropdown-item change-status-btn"
+                                                    href=""
+                                                    data-id="{{ $item->id }}"
+                                                    data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
+                                                    Hoàn thành Y/C
+                                                </a>
+                                            </li>
                                         @elseif($item->sla_status == config('sla_status.code.PENDING'))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
@@ -190,7 +199,7 @@
                                         @endif
                                     @endhasanyrole
                                     @hasanyrole('manager|admin')
-                                        @if($item->sla_status == config('sla_status.code.WAITING_CONFIRM'))
+                                        @if(in_array($item->sla_statu,[config('sla_status.code.WAITING_CONFIRM')]))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
                                                     href=""
