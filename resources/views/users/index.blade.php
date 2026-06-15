@@ -15,6 +15,25 @@
 
             </div>
 
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+       
+
             {{-- TABLE --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
 
@@ -43,9 +62,31 @@
                                 </td>
 
                                 <td class="py-2">
-                                    <button onclick="openEditModal({{ $u->id }})" class="text-blue-600">
+                                <div class="dropdown">
+                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác</button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                    <button onclick="openEditModal({{ $u->id }})" class="dropdown-item">
                                         Sửa
                                     </button>
+                                    </li>
+                                    @hasrole('admin')
+                                    <li>
+                                    <form action="{{ route('users.reset-password', $u) }}"
+                                        method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Bạn có chắc chắn muốn reset mật khẩu của {{ $u->name }}?')"
+                                    >
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            class="dropdown-item text-warning"
+                                        >
+                                            Reset Pass
+                                        </button>
+                                    </form>
+                                    </li>
+                                    @endhasrole
                                 </td>
 
                             </tr>

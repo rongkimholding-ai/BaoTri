@@ -136,7 +136,7 @@
                     name="include_saturday"
                     id="include_saturday"
                     value="1"
-                    @checked(old('include_saturday', true))>
+                    @checked(old('include_saturday'))>
 
                 <label class="form-check-label" for="include_saturday">
                     Thứ 7

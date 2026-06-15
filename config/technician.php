@@ -22,4 +22,11 @@ return [
         "mobile" => "0961601851",
         "email" => "hoavu.support@tocotocotea.com"
     ],
+    'ngoai_gio' => [
+        "key" => "VPBT002",
+        "name" => "Bảo trì ngoài giờ",
+        "position" => "NV Bảo Trì",
+        "mobile" => "",
+        "email" => "baotri@tocotocotea.com" // pass: TACO@15062026
+    ],
 ];

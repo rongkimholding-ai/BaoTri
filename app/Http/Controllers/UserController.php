@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ResetUserPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -108,5 +111,29 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function adminResetPassword(
+        // ResetUserPasswordRequest $request,
+        User $user
+    ) {
+        $newPass = '12345678';
+        $data = [
+            'password' => Hash::make(
+                $newPass
+            ),
+            'reset_password_at' => now(),
+            'reset_password_by' => auth()->user()->email,
+        ];
+        // dd($data);
+
+        $user->update($data);
+    
+        return redirect()
+            ->back()
+            ->with(
+                'success',
+                'Đặt lại mật khẩu thành công.'
+            );
     }
 }

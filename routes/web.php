@@ -39,6 +39,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::post(
+        '/users/{user}/reset-password',
+        [UserController::class, 'adminResetPassword']
+    )->name('users.reset-password');
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);

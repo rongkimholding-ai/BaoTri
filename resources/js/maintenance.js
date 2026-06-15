@@ -868,4 +868,42 @@ $(function () {
             });
         }
     );
+
+    $(document).on(
+        'change',
+        '#include_saturday, #include_sunday, #include_holiday',
+        function () {
+            let modal = $(this).closest('.modal');
+            let technicianSelect = modal.find('.form-technician-name');
+    
+            let hasSpecialDay =
+                modal.find('#include_saturday').is(':checked') ||
+                modal.find('#include_sunday').is(':checked') ||
+                modal.find('#include_holiday').is(':checked');
+    
+            if (hasSpecialDay) {
+                 // Chỉ lưu 1 lần trước khi override
+                if (!technicianSelect.data('previous-value')) {
+                    technicianSelect.data(
+                        'previous-value',
+                        technicianSelect.val()
+                    );
+                }
+
+                technicianSelect
+                    .val(window.techNgoaiGio)
+                    .trigger('change');
+            } else {
+                let previousValue = technicianSelect.data('previous-value');
+
+                if (previousValue) {
+                    technicianSelect
+                        .val(previousValue)
+                        .trigger('change');
+
+                    technicianSelect.removeData('previous-value');
+                }
+            }
+        }
+    );
 });

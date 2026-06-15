@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('maintenance_requests', function (Blueprint $table) {
 
             $table->boolean('include_saturday')
-                ->default(true)
+                ->default(false)
                 ->after('standard_completion_time');
 
             $table->boolean('include_sunday')

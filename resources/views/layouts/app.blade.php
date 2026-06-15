@@ -19,6 +19,7 @@
     <script>
         window.slaStatusNames = @json(config('sla_status.names'));
         window.slaStatusBadges = @json(config('sla_status.badge'));
+        window.techNgoaiGio = @json(config('technician.ngoai_gio.name'));
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

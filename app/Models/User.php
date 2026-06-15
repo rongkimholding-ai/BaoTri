@@ -23,6 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'updated_by',
+        'reset_password_at',
+        'reset_password_by'
     ];
 
     /**

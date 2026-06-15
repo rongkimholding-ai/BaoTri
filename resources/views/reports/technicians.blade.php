@@ -28,13 +28,15 @@
     </x-slot>
 
     <div class="py-4">
+            <small class="text-muted">Ghi chú: <i><b>ĐM</b>: Định mức</i>, <i><b>YC</b>: Tổng số yêu cầu</i>, <i><b>CH</b>: Cửa hàng</i>
+            </small>
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-report">
                 <thead class="table-dark align-middle text-center">
                     <tr>
                         <th rowspan="2">STT</th>
                         <th rowspan="2">Kỹ thuật viên</th>
-                        <th rowspan="2">Số Y/C</th>
+                        <th rowspan="2">CH phụ trách</th>
                         <th rowspan="2">ĐM/ngày</th>
                         <th rowspan="2">ĐM/tháng</th>
                         <th colspan="2">Tổng yêu cầu</th>
@@ -76,6 +78,7 @@
                                 <td style="width:{{ $width }}px">
                                     <input
                                         type="number"
+                                        min="0"
                                         class="form-control form-control-sm inline-target"
                                         data-tech="{{ $item->technician_name }}"
                                         data-field="{{ $field }}"
@@ -137,10 +140,6 @@
                     </tr>
                 </tfoot>
             </table>
-            <small class="text-muted">Ghi chú:<br>
-                - <i><b>ĐM</b>: Định mức</i> <br>
-                - <i><b>YC</b>: Tổng số yêu cầu</i>
-            </small>
         </div>
     </div>
     @include('reports.modals.export_by_date')

@@ -71,6 +71,16 @@ class DefaultUsersSeeder extends Seeder
 
         $technician->syncRoles(['technician']);
 
+        // Technician truc T7 CN Le
+        $techtrucngoaigio = User::updateOrCreate(
+            ['email' => 'baotri@tocotocotea.com'],
+            [
+                'name' => 'Trực ngoài giờ',
+                'password' => Hash::make('12345678'),
+            ]
+        );
+        $techtrucngoaigio->syncRoles(['technician']);
+
         // User
         $user = User::updateOrCreate(
             ['email' => 'user@tea.com'],
