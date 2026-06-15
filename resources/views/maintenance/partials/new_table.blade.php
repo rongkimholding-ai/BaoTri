@@ -199,7 +199,7 @@
                                         @endif
                                     @endhasanyrole
                                     @hasanyrole('manager|admin')
-                                        @if(in_array($item->sla_statu,[config('sla_status.code.WAITING_CONFIRM')]))
+                                        @if(in_array($item->sla_status,[config('sla_status.code.WAITING_CONFIRM')]))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
                                                     href=""
@@ -228,14 +228,10 @@
                                         @endif
                                     @endhasanyrole
                                     @can('confirm maintenance')
-                                        @if(
-                                            in_array(
-                                                $item->sla_status,
-                                                [
+                                        @if(in_array($item->sla_status,[
                                                     config('sla_status.code.COMPLETED'),
                                                     config('sla_status.code.LATED')
-                                                ]
-                                            )
+                                                ])
                                             && empty($item->acceptance_result)
                                         )
                                         <li>
