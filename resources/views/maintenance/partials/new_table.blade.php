@@ -64,13 +64,13 @@
                             @endif
 
                             @if($item->include_sunday)
-                                <span class="badge bg-success">
+                                <span class="badge bg-info">
                                     CN
                                 </span>
                             @endif
 
                             @if($item->include_holiday)
-                                <span class="badge bg-warning text-dark">
+                                <span class="badge bg-warning">
                                     Lễ
                                 </span>
                             @endif
