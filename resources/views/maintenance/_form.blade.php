@@ -20,23 +20,51 @@
         </select>
     </div>
 
+    @php
+        use Illuminate\Support\Facades\Auth;
+        $user = Auth::user();
+        // Tìm chi nhánh tương ứng với tài khoản đăng nhập.
+        $userStore = null;
+        if($user) {
+            // Tuỳ dữ liệu user, sửa lại cho đúng business (ở đây ví dụ so với email)
+            $userStore = collect($stores)->first(function($store) use ($user) {
+                return isset($store['email']) && $store['email'] === $user->email;
+                // Hoặc nếu dùng branch_code:
+                // return isset($store['code']) && $store['code'] === $user->branch_code;
+            });
+        }
+    @endphp
+
     <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.branch_name') }}</label>
-
-        <select class="form-control form-branch-name select2-branch" name="branch_name">
+        <select 
+            class="form-control form-branch-name select2-branch" 
+            name="branch_name"
+            @if($userStore) 
+                disabled 
+                tabindex="-1" 
+                style="pointer-events: none; background: #eee;"
+            @endif
+        >
             <option value="">-- Chọn cơ sở --</option>
-
             @foreach($stores as $store)
                 <option value="{{ $store['name'] }}" 
                     data-branch_email="{{ $store['email'] }}"
                     data-technician_name="{{ $store['technician_name'] ?? '' }}"
-                    data-code="{{ $store['code'] }}">
+                    data-code="{{ $store['code'] }}"
+                    @if($userStore && $store['email'] === $userStore['email']) selected @endif
+                >
                     {{ $store['name'] }}
                 </option>
             @endforeach
         </select>
+        @if($userStore)
+            <input type="hidden" name="branch_code" value="{{ $userStore['code'] }}">
+            <input type="hidden" name="branch_email" value="{{ $userStore['email'] }}">
+            <input type="hidden" name="technician_name" value="{{ $userStore['technician_name'] ?? '' }}">
+        @endif
     </div>
-
+    
     <!-- <div class="col-md-4 mb-3">
         <label>{{ config('maintenance.fields.request_date') }}</label>
 
@@ -61,7 +89,7 @@
                             data-issue="{{ $issue['name'] }}" data-severity="{{ $issue['severity'] }}"
                             data-handler="{{ $issue['handler'] }}" data-processing="{{ $issue['processing_time'] }}"
                             data-solution="{{ $issue['solution'] }}">
-                            {{ $check['name'] }} - {{ $issue['name'] }}
+                            {{ $check['name'] }} {{ $issue['severity'] ? '('.$issue['severity'].')': '' }} - {{ $issue['name'] }}
                         </option>
 
                     @endforeach

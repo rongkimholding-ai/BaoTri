@@ -52,6 +52,7 @@ class MaintenanceRequestController extends Controller
             'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
             'severity'    => fn($q, $v) => $q->where('severity', $v),
             'status'      => fn($q, $v) => $q->where('sla_status', $v),
+            'id'          => fn($q, $v) => $q->where('id', $v),
         ];
 
         foreach ($filters as $field => $closure) {
@@ -153,6 +154,21 @@ class MaintenanceRequestController extends Controller
                 'new_status' => config('sla_status.code.PROCESSING'),
                 'note' => 'auto tiếp nhận thực hiện',
             ]);
+        }
+
+        // Tự động gửi mail nhắc việc cho kỹ thuật viên khi tạo mới (tham khảo remind method)
+        if (!empty($created->technician_email)) {
+            try {
+                $sendMail = $created->technician_email;
+                \Mail::to($sendMail)->send(new MaintenanceReminderMail($created));
+                $created->increment('reminder_count', 1, ['last_reminded_at' => now()]);
+            } catch (\Throwable $e) {
+                \Log::error('Failed to send maintenance reminder email', [
+                    'id' => $created->id,
+                    'email' => $created->technician_email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
 
@@ -346,6 +362,7 @@ class MaintenanceRequestController extends Controller
         $request->validate([
             'status' => ['string', 'in:' . implode(',', $allowedStatuses)],
         ]);
+        // dd($request);
 
         // Kiểm tra quyền
         abort_unless(auth()->user()->can('change-maintenance-status'), 403);
@@ -396,6 +413,29 @@ class MaintenanceRequestController extends Controller
                     BusinessTimeHelper::formatDuration(
                         $totalSeconds
                     );
+
+                if (auth()->user()->email === 'baotri@tocotocotea.com') {
+                    // Get selected technician email from request
+                    $selectedTechEmail = $request->input('tech_mail');
+                    if ($selectedTechEmail) {
+                        $technicians = config('technician');
+                        // Remove any non-numeric key (like 'ngoai_gio')
+                        $techList = array_filter($technicians, function($key) {
+                            return is_int($key) || ctype_digit((string)$key);
+                        }, ARRAY_FILTER_USE_KEY);
+
+                        // Find technician matching selected email
+                        $selectedTech = collect($techList)->first(function ($tech) use ($selectedTechEmail) {
+                            return isset($tech['email']) && $tech['email'] === $selectedTechEmail;
+                        });
+                        if ($selectedTech) {
+                            $data['technician_email'] = $selectedTech['email'];
+                            $data['technician_name'] = $selectedTech['name'];
+                            $data['technician_mobile'] = $selectedTech['mobile'];
+                        }
+                    }
+                }
+  
                 break;
 
             case config('sla_status.code.CONFIRMED'):

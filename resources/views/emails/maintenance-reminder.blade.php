@@ -26,4 +26,10 @@
 @endphp
 <p>Yêu cầu hoàn thành: {{ $timeName }}</p>
 
+<p>
+    <a href="{{ route('maintenance-requests.index', ['id' => $request->id]) }}">
+        Xem chi tiết yêu cầu bảo trì (ID: {{ $request->id }})
+    </a>
+</p>
+
 <p>Vui lòng xử lý sớm.</p>

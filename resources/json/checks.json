@@ -9,7 +9,15 @@
         "severity": "1A",
         "handler": "BPBT",
         "processing_time": "1_2_HOURS",
-        "solution": "Tiếp nhận thông tin, kiểm tra xử, giải quyết. Đề xuất vật tư xuất kho và phê duyệt ngay trên luồng 1.offcie."
+        "solution": "Tiếp nhận thông tin, kiểm tra xử lý, giải quyết. Đề xuất vật tư xuất kho và phê duyệt ngay trên luồng 1.offcie."
+      },
+      {
+        "key": "RO_RI_DIEN",
+        "name": "Rò rỉ điện",
+        "severity": "1A",
+        "handler": "BPBT",
+        "processing_time": "1_2_HOURS",
+        "solution": "Tiếp nhận thông tin, kiểm tra xử lý, giải quyết. Cơ sở tạm dừng/rút phích cắm các thiết bị."
       },
       {
         "key": "CHAY_NGUON_DEN_LED_BANG_TANG_1",
@@ -25,7 +33,7 @@
         "severity": "3B",
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
-        "solution": "Biển bảng từ tầng 2 trở lên: BP.BT kiểm tra hiện trạng, đánh giá và lập khối lượng dự toán. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá, yêu cầu tiến độ NCC xử lý trong vòng 10 ngày ) khi gặp tình huống này, BP. Bảo Trì trực tiếp làm việc NCC theo danh sách trên. BP. Bảo Trì kiểm tra, xác nhận và Nghiệm thu hoàn thành công việc."
+        "solution": "Biển bảng từ tầng 2 trở lên: BP.BT kiểm tra hiện trạng, đánh giá và lập khối lượng dự toán. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá, yêu cầu tiến độ NCC xử lý trong vòng 10 ngày ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên. BP.BT kiểm tra, xác nhận và Nghiệm thu hoàn thành công việc."
       },
       {
         "key": "CHAY_HE_BONG_DEN_CHIEU_SANG_SPORTLIGHT",
@@ -87,7 +95,15 @@
         "severity": "3A",
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
-        "solution": "BP.BT kiểm tra tùy theo từng trường hợp cụ thể sẽ tiến hành sửa chữa hoặc thay thế cho cơ sở. Trường hợp cần thay thế vật tư thì BP. Bảo Trì đánh giá hiện trạng, đề xuất vật tư xuất kho trên luồng 1.office và được duyệt trên luồng công việc."
+        "solution": "BP.BT kiểm tra tùy theo từng trường hợp cụ thể sẽ tiến hành sửa chữa hoặc thay thế cho cơ sở. Trường hợp cần thay thế vật tư thì BP.BT đánh giá hiện trạng, đề xuất vật tư xuất kho trên luồng 1.office và được duyệt trên luồng công việc."
+      },
+      {
+        "key": "RO_RI_NUOC_LON",
+        "name": "Rò rỉ nước từ hệ thống (lớn), cơ sở không sử dụng được nguồn nước",
+        "severity": "1B",
+        "handler": "BPBT",
+        "processing_time": "2_8_HOURS",
+        "solution": "BP.BT kiểm tra tùy theo từng trường hợp cụ thể sẽ tiến hành sửa chữa hoặc thay thế cho cơ sở. Trường hợp cần thay thế vật tư thì BP.BT đánh giá hiện trạng, đề xuất vật tư xuất kho trên luồng 1.office và được duyệt trên luồng công việc."
       },
       {
         "key": "THAY_VOI_NUOC_KHU_BEP",
@@ -149,7 +165,7 @@
         "severity": null,
         "handler": "BPBT",
         "processing_time": "Theo phương án xử lý",
-        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP. Bảo Trì sẽ kiểm tra và lên phương án xử lý."
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -210,6 +226,14 @@
         "handler": "BPBT",
         "processing_time": "1_2_HOURS",
         "solution": "BPBT sẽ kiểm tra, sửa chữa tại cơ sở ngay trong ngày."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -232,6 +256,14 @@
         "handler": "BPBT",
         "processing_time": "2_8_HOURS",
         "solution": "BP.BT đổi máy dự phòng sẵn trong kho ngay trong ngày, máy cũ sửa chữa trong 05 ngày, sửa xong thì máy được sửa chữa sẽ dùng làm máy dự phòng."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -254,12 +286,20 @@
         "handler": "Nhà thầu",
         "processing_time": "1_DAY",
         "solution": "BP.BT đổi máy dự phòng sẵn trong kho ngay trong ngày, máy cũ sửa chữa trong 05 ngày, sau đổi trả lại máy dự phòng về kho."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
   {
     "key": "BEP_TU_AM_SIEU_TOC_NOI_U",
-    "name": "Bếp từ, ấm siêu tốc, NỒI Ủ",
+    "name": "Bếp từ, ấm siêu tốc, nồi ủ, nồi nấu trân châu",
     "issues": [
       {
         "key": "KHONG_HOAT_DONG",
@@ -268,6 +308,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "2_8_HOURS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -282,6 +330,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "2_8_HOURS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -296,6 +352,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "2_8_HOURS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -310,6 +374,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "2_8_HOURS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -324,6 +396,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -338,6 +418,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -352,6 +440,14 @@
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT trực tiếp dùng máy hàn để hàn lại tay nắm cho thùng đá."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -366,6 +462,14 @@
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia cố."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -380,6 +484,14 @@
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia  cố lại bản lề."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -394,6 +506,14 @@
         "handler": "BTBT",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT trực tiếp dùng máy hàn để hàn gia cố lại bản lề."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -408,6 +528,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -430,6 +558,14 @@
         "handler": "Nhà thầu ",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -460,6 +596,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -482,6 +626,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -504,6 +656,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -526,6 +686,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -540,6 +708,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -562,6 +738,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -576,6 +760,14 @@
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -598,6 +790,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -620,6 +820,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -634,6 +842,14 @@
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT tiếp nhận thông tin từ đơn vị sử dụng, sắp xếp theo lịch để xử lý."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -648,6 +864,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -670,6 +894,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -684,6 +916,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -706,6 +946,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -720,6 +968,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -742,6 +998,14 @@
         "handler": "NCC",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra, đánh giá và đề xuất trên luồng 1.office trình duyệt. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -756,6 +1020,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "BP.BT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -774,9 +1046,9 @@
       {
         "key": "SUA_CHUA_CUA_CUON_XO_NAN_LECH_NAN_KET_NAN_BO_NHAN_TIN_HIEU_KHONG_NHAN_TIN_HIEU_B",
         "name": "Sữa chữa cửa cuốn xô nan, lệch nan, kẹt nan,bộ nhận tín hiệu không nhận tín hiệu, bộ tích điện hỏng, hỏng điều khiển…",
-        "severity": "1B",
+        "severity": "1A",
         "handler": "Nhà thầu",
-        "processing_time": "2_8_HOURS",
+        "processing_time": "1_2_HOURS",
         "solution": "BP.BT tiến hành kiểm tra, xác định nguyên nhân và tiến hành sửa chữa. Trong trường hợp không tự sửa chữa được do lỗi thiết bị thì đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí sửa chữa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
@@ -788,12 +1060,28 @@
         "solution": "BP.BT tiến hành kiểm tra, đánh giá hiện trạng, lập đề xuất kèm tiên lượng chi phí thay nan cửa trình duyệt trên 1.office. P.MS lập danh sách nhà cung cấp, thi công (đã ký HĐ nguyên tắc, có đơn giá) khi gặp tình huống này, BP.BT trực tiếp làm việc NCC theo danh sách trên."
       },
       {
+        "key": "CUA_CUON_HONG_KHONG_DONG_XUONG_DUOC",
+        "name": "Cửa cuốn hỏng không đóng xuống được",
+        "severity": "1A",
+        "handler": "Nhà thầu",
+        "processing_time": "1_2_HOURS",
+        "solution": "Trường hợp trong đêm muộn: nhà thầu xuống xử lý hạ cửa bằng tay để NV có thể khóa lại, sáng hôm sau nhà thầu cùng BP.BT kiểm tra xác nhận lỗi. Nhà thầu báo và chốt giá thi công với P.MS để xử lý ngay."
+      },
+      {
         "key": "CUA_CUON_HONG_KHONG_VAN_HANH_DUOC",
         "name": "Cửa cuốn hỏng không vận hành được",
         "severity": "1B",
         "handler": "Nhà thầu",
         "processing_time": "2_8_HOURS",
-        "solution": "Trường hợp trong đêm muộn: nhà thầu xuống xử lý hạ cửa bằng tay để NV có thể khóa lại, sáng hôm sau nhà thầu cùng BP.BT kiểm tra xác nhận lỗi. Nhà thầu báo và chốt giá thi công với P.MS để xử lý ngay. Trường hợp ban ngày: nhà thầu cùng BP.BT kiểm tra xác nhận lỗi, sau báo và chốt giá với P.MS để xử lý ngay."
+        "solution": "Trường hợp ban ngày: nhà thầu cùng BP.BT kiểm tra xác nhận lỗi, sau báo và chốt giá với P.MS để xử lý ngay."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -816,6 +1104,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -838,6 +1134,14 @@
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -874,6 +1178,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -896,6 +1208,14 @@
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -918,6 +1238,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -948,6 +1276,14 @@
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -970,6 +1306,14 @@
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -984,6 +1328,14 @@
         "handler": "BPBT/Mua hàng",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT đề xuất vật tư xử lý tại chỗ."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1006,6 +1358,14 @@
         "handler": "Nhà thầu",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1036,6 +1396,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1050,6 +1418,14 @@
         "handler": "BPBT",
         "processing_time": "1_2_DAYS",
         "solution": "BP.BT đề xuất xuất kho vật tư xử lý tại chỗ."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1072,6 +1448,14 @@
         "handler": "Nhà thầu",
         "processing_time": "1_2_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1086,6 +1470,14 @@
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1100,6 +1492,14 @@
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1114,6 +1514,14 @@
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1128,6 +1536,14 @@
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1142,6 +1558,14 @@
         "handler": "BPBT",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT thu xếp kiểm tra xử lý tại chỗ theo lịch."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1156,6 +1580,14 @@
         "handler": "Nhà thầu",
         "processing_time": "7_15_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office. PMH lập danh sách nhà cung cấp ( đã ký HĐ nguyên tắc, có đơn giá ) khi gặp tình huống này, PKT trực tiếp làm việc NCC theo danh sách trên."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },
@@ -1170,6 +1602,14 @@
         "handler": "BPBT/Mua hàng",
         "processing_time": "1_2_DAYS",
         "solution": "PKT kiểm tra đánh giá hiện trạng, lập đề xuất và tiên lượng sửa chữa/thay thế trình duyệt trên 1.office."
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "severity": null,
+        "handler": "BPBT",
+        "processing_time": "Theo phương án xử lý",
+        "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
   },

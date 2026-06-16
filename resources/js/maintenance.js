@@ -482,6 +482,12 @@ $(function () {
             .trigger('change');
     });
 
+    // kiểm tra có giá trị trong .form-branch-name thì tự động trigger change
+    const $branchName = $('.form-branch-name');
+    if ($branchName.length && $branchName.val()) {
+        $branchName.trigger('change');
+    }
+
     $(document).on('change', 'table .select2-branch', function () {
 
         let option = $(this).find(':selected');
@@ -515,6 +521,7 @@ $(function () {
         let id = $('#statusRequestId').val();
         let note = $('#statusNote').val();
         let status;
+        let tech_mail = $('#technicianSelect').val();
         if (
             $('#statusSelectWrapper')
                 .hasClass('d-none')
@@ -530,7 +537,8 @@ $(function () {
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
                 status: status,
-                note: note
+                note: note,
+                tech_mail: tech_mail
             },
             success: function () {
                 location.reload();

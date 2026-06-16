@@ -28,6 +28,30 @@
                         readonly>
                 </div>
 
+                @php
+                    use Illuminate\Support\Facades\Auth;
+                    $user = Auth::user();
+                    $baotriEmail = 'baotri@tocotocotea.com';
+                    $technicians = config('technician');
+                    // Remove all non-numeric (like 'ngoai_gio') keys
+                    $techList = array_filter($technicians, function($key) {
+                        return is_int($key) || ctype_digit((string)$key);
+                    }, ARRAY_FILTER_USE_KEY);
+                @endphp
+
+                @if($user && $user->email === $baotriEmail)
+                <div class="mb-3">
+                    <label class="form-label">Kỹ thuật viên phụ trách</label>
+                    <select id="technicianSelect" name="technician_email" class="form-select">
+                        <option value="">-- Chọn kỹ thuật viên --</option>
+                        @foreach($techList as $tech)
+                            <option value="{{ $tech['email'] }}">{{ $tech['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+        
+
                 <div class="mb-3 d-none" id="statusSelectWrapper">
                     <label class="form-label">
                         Chọn trạng thái
