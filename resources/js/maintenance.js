@@ -503,43 +503,88 @@ $(function () {
         saveInline(codeInput);    // branch_code
     });
 
+    function toggleImageUpload(status) {
+        if (status == window.slaStatusCodes.WAITING_CONFIRM) {
+            $('#imageUploadWrapper').removeClass('d-none');
+        } else {
+            $('#imageUploadWrapper').addClass('d-none');
+            $('#completionImages').val('');
+        }
+    }
+
+    $(document).on('change', '#statusSelect', function () {
+        toggleImageUpload($(this).val());
+    });
+
+    $('#changeStatusModal').on('hidden.bs.modal', function () {
+
+        $('#completionImages').val('');
+        $('#imageUploadWrapper').addClass('d-none');
+    
+    });
+
     $(document).on('click', '.change-status-btn', function (e) {
+
         e.preventDefault();
+    
+        let status = $(this).data('status');
+    
         $('#statusRequestId').val($(this).data('id'));
-        $('#newStatus').val($(this).data('status'));
+        $('#newStatus').val(status);
         $('#statusLabel').val($(this).text().trim());
+    
         $('#statusSelectWrapper').addClass('d-none');
         $('#statusLabel').closest('.mb-3').removeClass('d-none');
         $('#statusNote').val('');
+    
+        toggleImageUpload(status);
+    
         new bootstrap.Modal(
             document.getElementById('changeStatusModal')
         ).show();
-
     });
 
     $('#confirmChangeStatus').on('click', function () {
         let id = $('#statusRequestId').val();
         let note = $('#statusNote').val();
-        let status;
         let tech_mail = $('#technicianSelect').val();
-        if (
-            $('#statusSelectWrapper')
-                .hasClass('d-none')
-        ) {
+        let status;
+    
+        if ($('#statusSelectWrapper').hasClass('d-none')) {
             status = $('#newStatus').val();
         } else {
             status = $('#statusSelect').val();
         }
-        
+    
+        if (
+            status == window.slaStatusCodes.WAITING_CONFIRM &&
+            $('#completionImages')[0].files.length === 0
+        ) {
+            alert('Vui lòng tải lên ít nhất 1 ảnh.');
+            return;
+        }
+    
+        let formData = new FormData();
+    
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        formData.append('_method', 'PATCH');
+        formData.append('status', status);
+        formData.append('note', note);
+        formData.append('tech_mail', tech_mail);
+    
+        let files = $('#completionImages')[0].files;
+    
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images[]', files[i]);
+        }
+    
         $.ajax({
             url: `/maintenance-requests/${id}/status`,
-            type: 'PATCH',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                status: status,
-                note: note,
-                tech_mail: tech_mail
-            },
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+    
             success: function () {
                 location.reload();
             }

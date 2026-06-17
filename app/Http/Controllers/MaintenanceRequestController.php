@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\BusinessTimeHelper;
 use App\Http\Requests\StoreMaintenanceRequest;
+use App\Mail\MaintenanceCompletedMail;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestLog;
 use App\Services\MaintenanceRequestService;
@@ -12,6 +13,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MaintenanceReminderMail;
+use Intervention\Image\Drivers\Gd\Encoders\JpegEncoder;
+use Storage;
+use App\Models\MaintenanceRequestImage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class MaintenanceRequestController extends Controller
 {
@@ -109,9 +115,16 @@ class MaintenanceRequestController extends Controller
         $severities = $this->getSeveritiesData();
 
         return view('maintenance.index', compact(
-            'allRequests', 'processingRequests', 'completedRequests',
-            'stores', 'checks', 'techs', 'severities',
-            'totalCount', 'processingCount', 'completedCount'
+            'allRequests',
+            'processingRequests',
+            'completedRequests',
+            'stores',
+            'checks',
+            'techs',
+            'severities',
+            'totalCount',
+            'processingCount',
+            'completedCount'
         ));
     }
 
@@ -156,7 +169,7 @@ class MaintenanceRequestController extends Controller
             ]);
         }
 
-        // Tự động gửi mail nhắc việc cho kỹ thuật viên khi tạo mới (tham khảo remind method)
+        // Tự động gửi mail nhắc việc cho kỹ thuật viên khi tạo mới
         if (!empty($created->technician_email)) {
             try {
                 $sendMail = $created->technician_email;
@@ -362,7 +375,17 @@ class MaintenanceRequestController extends Controller
         $request->validate([
             'status' => ['string', 'in:' . implode(',', $allowedStatuses)],
         ]);
-        // dd($request);
+
+        if ($request->status === config('sla_status.code.WAITING_CONFIRM')) {
+            $request->validate([
+                'images' => ['required', 'array', 'min:1'],
+                'images.*' => [
+                    'image',
+                    'mimes:jpg,jpeg,png,webp',
+                    'max:10240',
+                ],
+            ]);
+        }
 
         // Kiểm tra quyền
         abort_unless(auth()->user()->can('change-maintenance-status'), 403);
@@ -400,14 +423,14 @@ class MaintenanceRequestController extends Controller
                 //         );
                 //     $totalSeconds = $beforePendingSeconds + $afterResumeSeconds;
                 // } else {
-                    $totalSeconds =
-                        BusinessTimeHelper::diffInBusinessSeconds(
-                            $maintenanceRequest->request_date,
-                            $completedAt,
-                            $maintenanceRequest->include_saturday,
-                            $maintenanceRequest->include_sunday,
-                            $maintenanceRequest->include_holiday
-                        );
+                $totalSeconds =
+                    BusinessTimeHelper::diffInBusinessSeconds(
+                        $maintenanceRequest->request_date,
+                        $completedAt,
+                        $maintenanceRequest->include_saturday,
+                        $maintenanceRequest->include_sunday,
+                        $maintenanceRequest->include_holiday
+                    );
                 // }
                 $data['actual_duration'] =
                     BusinessTimeHelper::formatDuration(
@@ -420,8 +443,8 @@ class MaintenanceRequestController extends Controller
                     if ($selectedTechEmail) {
                         $technicians = config('technician');
                         // Remove any non-numeric key (like 'ngoai_gio')
-                        $techList = array_filter($technicians, function($key) {
-                            return is_int($key) || ctype_digit((string)$key);
+                        $techList = array_filter($technicians, function ($key) {
+                            return is_int($key) || ctype_digit((string) $key);
                         }, ARRAY_FILTER_USE_KEY);
 
                         // Find technician matching selected email
@@ -435,7 +458,19 @@ class MaintenanceRequestController extends Controller
                         }
                     }
                 }
-  
+
+                // Gửi mail thông báo khi hoàn thành công việc
+                try {
+                    Mail::to($maintenanceRequest->branch_email)
+                        ->send(new MaintenanceCompletedMail($maintenanceRequest));
+                } catch (\Throwable $e) {
+                    \Log::error('Failed to send maintenance completed email', [
+                        'id' => $maintenanceRequest->id,
+                        'branch_email' => $maintenanceRequest->branch_email,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+   
                 break;
 
             case config('sla_status.code.CONFIRMED'):
@@ -462,6 +497,36 @@ class MaintenanceRequestController extends Controller
         }
 
         $maintenanceRequest->update($data);
+
+        if (
+            $status === config('sla_status.code.WAITING_CONFIRM')
+            && $request->hasFile('images')
+        ) {
+            $manager = new ImageManager(new Driver());
+            foreach ($request->file('images') as $file) {
+                $image = $manager->read($file);
+                $image->scaleDown(
+                    width: 1280,
+                    height: 1280
+                );
+                $fileName = uniqid() . '.jpg';
+                $dateFolder = now()->format('Y_m_d');
+                $path = 'images/' . $dateFolder . '/' . $fileName;
+                $encoded = $image->encode(
+                    new JpegEncoder(quality: 70)
+                );
+                Storage::disk('public')->put(
+                    $path,
+                    $encoded
+                );
+
+                MaintenanceRequestImage::create([
+                    'maintenance_request_id' => $maintenanceRequest->id,
+                    'path' => $path,
+                    'uploaded_by' => $request->input('tech_mail') ?: auth()->user()->email,
+                ]);
+            }
+        }
 
         MaintenanceRequestLog::create([
             'maintenance_request_id' => $maintenanceRequest->id,
@@ -585,7 +650,7 @@ class MaintenanceRequestController extends Controller
             // Duyệt từng category trong data và sort issues
             foreach ($data as &$category) {
                 if (isset($category['issues']) && is_array($category['issues'])) {
-                    usort($category['issues'], function($a, $b) use ($severityOrderFlipped) {
+                    usort($category['issues'], function ($a, $b) use ($severityOrderFlipped) {
                         $aSev = $a['severity'] ?? null;
                         $bSev = $b['severity'] ?? null;
 

@@ -42,4 +42,9 @@ class MaintenanceRequest extends Model
         return $this->hasMany(MaintenanceRequestLog::class)
             ->latest();
     }
+
+    public function images()
+    {
+        return $this->hasMany(MaintenanceRequestImage::class);
+    }
 }

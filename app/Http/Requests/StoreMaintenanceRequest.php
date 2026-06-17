@@ -51,8 +51,8 @@ class StoreMaintenanceRequest extends FormRequest
         ];
     }
 
-    protected function prepareForValidation()
-    {
-        \Log::info('prepareForValidation', $this->all());
-    }
+    // protected function prepareForValidation()
+    // {
+    //     \Log::info('prepareForValidation', $this->all());
+    // }
 }

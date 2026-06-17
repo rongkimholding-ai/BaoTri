@@ -5,7 +5,7 @@ namespace App\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Envelope;
 
-class MaintenanceReminderMail extends Mailable
+class MaintenanceCompletedMail extends Mailable
 {
     public $request;
 
@@ -17,8 +17,8 @@ class MaintenanceReminderMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Nhắc việc Yêu cầu bảo trì')
-            ->view('emails.maintenance-reminder');
+            ->subject('Yêu cầu bảo trì đã được hỗ trợ')
+            ->view('emails.maintenance-completed');
     }
 
     public function envelope(): Envelope
@@ -48,7 +48,7 @@ class MaintenanceReminderMail extends Mailable
         }
 
         return new Envelope(
-            subject: 'Yêu cầu bảo trì mới',
+            subject: 'Yêu cầu bảo trì đã được hỗ trợ',
             cc: config('mail.notification_cc', $cc),
         );
     }
