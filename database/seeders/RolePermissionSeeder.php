@@ -53,7 +53,8 @@ class RolePermissionSeeder extends Seeder
         $roleInstances['admin']->syncPermissions(Permission::all());
 
         $roleInstances['user']->syncPermissions([
-            Permission::where('name', 'view data')->first()
+            Permission::where('name', 'view data')->first(),
+            Permission::where('name', 'create data')->first(),
         ]);
 
         $roleInstances['technician']->syncPermissions([
@@ -66,7 +67,7 @@ class RolePermissionSeeder extends Seeder
             Permission::where('name', 'export excel')->first(),
             Permission::where('name', 'export excel tech')->first(),
             Permission::where('name', 'change-maintenance-status')->first(),
-            Permission::where('name', 'remind maintenance')->first(),
+            // Permission::where('name', 'remind maintenance')->first(),
         ]);
     }
 }
