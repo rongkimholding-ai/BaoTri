@@ -381,25 +381,25 @@ class MaintenanceRequestController extends Controller
                 $completedAt = $now;
                 $data['actual_completion_date'] = $completedAt;
                 $data['delay_reason'] = '';
-                if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
-                    $beforePendingSeconds =
-                        BusinessTimeHelper::diffInBusinessSeconds(
-                            $maintenanceRequest->request_date,
-                            $maintenanceRequest->pending_at,
-                            $maintenanceRequest->include_saturday,
-                            $maintenanceRequest->include_sunday,
-                            $maintenanceRequest->include_holiday
-                        );
-                    $afterResumeSeconds =
-                        BusinessTimeHelper::diffInBusinessSeconds(
-                            $maintenanceRequest->processing_at,
-                            $completedAt,
-                            $maintenanceRequest->include_saturday,
-                            $maintenanceRequest->include_sunday,
-                            $maintenanceRequest->include_holiday
-                        );
-                    $totalSeconds = $beforePendingSeconds + $afterResumeSeconds;
-                } else {
+                // if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
+                //     $beforePendingSeconds =
+                //         BusinessTimeHelper::diffInBusinessSeconds(
+                //             $maintenanceRequest->request_date,
+                //             $maintenanceRequest->pending_at,
+                //             $maintenanceRequest->include_saturday,
+                //             $maintenanceRequest->include_sunday,
+                //             $maintenanceRequest->include_holiday
+                //         );
+                //     $afterResumeSeconds =
+                //         BusinessTimeHelper::diffInBusinessSeconds(
+                //             $maintenanceRequest->processing_at,
+                //             $completedAt,
+                //             $maintenanceRequest->include_saturday,
+                //             $maintenanceRequest->include_sunday,
+                //             $maintenanceRequest->include_holiday
+                //         );
+                //     $totalSeconds = $beforePendingSeconds + $afterResumeSeconds;
+                // } else {
                     $totalSeconds =
                         BusinessTimeHelper::diffInBusinessSeconds(
                             $maintenanceRequest->request_date,
@@ -408,7 +408,7 @@ class MaintenanceRequestController extends Controller
                             $maintenanceRequest->include_sunday,
                             $maintenanceRequest->include_holiday
                         );
-                }
+                // }
                 $data['actual_duration'] =
                     BusinessTimeHelper::formatDuration(
                         $totalSeconds
