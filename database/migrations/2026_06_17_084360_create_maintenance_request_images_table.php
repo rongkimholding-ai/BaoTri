@@ -19,7 +19,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
         
             $table->string('path');
-            $table->string('uploaded_by')->nullable()->after('path');
+            $table->string('uploaded_by')->nullable();
         
             $table->timestamps();
         });
