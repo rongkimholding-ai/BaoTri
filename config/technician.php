@@ -2,6 +2,13 @@
 
 return [
     [
+        "key" => "",
+        "name" => "Hoàng Thanh Liêm",
+        "position" => "QL Bảo Trì",
+        "mobile" => "",
+        "email" => "liemhoang.support.hcm@tocototea.com"
+    ],
+    [
         "key" => "VP1706",
         "name" => "Nguyễn Đức Dư",
         "position" => "TN Bảo Trì",
@@ -21,6 +28,20 @@ return [
         "position" => "NV Bảo Trì",
         "mobile" => "0961601851",
         "email" => "hoavu.support@tocotocotea.com"
+    ],
+    [
+        "key" => "",
+        "name" => "Nguyễn Duy Thắng",
+        "position" => "NV Bảo Trì",
+        "mobile" => "",
+        "email" => "duythang.support.hcm@tocototea.com"
+    ],
+    [
+        "key" => "",
+        "name" => "Phạm Văn Thắng",
+        "position" => "NV Bảo Trì",
+        "mobile" => "",
+        "email" => "vanthang.support.hcm@tocototea.com"
     ],
     'ngoai_gio' => [
         "key" => "VPBT002",

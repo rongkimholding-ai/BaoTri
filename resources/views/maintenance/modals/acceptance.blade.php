@@ -56,6 +56,20 @@
 
                 </div>
 
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Ảnh hoàn thành
+                    </label>
+
+                    <input type="file" id="acceptanceImages" class="form-control" multiple accept="image/*">
+
+                    <small class="text-muted">
+                        Có thể chọn nhiều ảnh
+                    </small>
+
+                </div>
+
                 <div
                     id="acceptance-error"
                     class="alert alert-danger d-none">

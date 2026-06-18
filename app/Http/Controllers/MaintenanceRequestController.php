@@ -199,6 +199,21 @@ class MaintenanceRequestController extends Controller
         return response()->json($maintenanceRequest);
     }
 
+    public function detail(MaintenanceRequest $maintenanceRequest)
+    {
+        // Lấy đầy đủ logs với thông tin user
+        $maintenanceRequest->load(['images']);
+        $logs = $maintenanceRequest->logs()
+            ->with('user')
+            ->get();
+
+    
+        return view(
+            'maintenance.partials.detail',
+            compact('maintenanceRequest')
+        );
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -549,7 +564,10 @@ class MaintenanceRequestController extends Controller
         $request->validate([
             'id'     => 'required',
             'result' => 'required|in:accepted,rejected',
-            'note'   => 'nullable|string|max:1000'
+            'note'   => 'nullable|string|max:1000',
+
+            'images'     => 'nullable|array',
+            'images.*'   => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $item = MaintenanceRequest::findOrFail($request->id);
@@ -601,6 +619,33 @@ class MaintenanceRequestController extends Controller
             }
 
             $item->save();
+
+            if ($request->hasFile('images')) {
+                $manager = new ImageManager(new Driver());
+                foreach ($request->file('images') as $file) {
+                    $image = $manager->read($file);
+                    $image->scaleDown(
+                        width: 1280,
+                        height: 1280
+                    );
+                    $fileName = uniqid() . '.jpg';
+                    $dateFolder = now()->format('Y_m_d');
+                    $path = 'images/' . $dateFolder . '/' . $fileName;
+                    $encoded = $image->encode(
+                        new JpegEncoder(quality: 70)
+                    );
+                    Storage::disk('public')->put(
+                        $path,
+                        $encoded
+                    );
+            
+                    MaintenanceRequestImage::create([
+                        'maintenance_request_id' => $item->id,
+                        'path'                   => $path,
+                        'uploaded_by'            => auth()->user()->email,
+                    ]);
+                }
+            }
 
             MaintenanceRequestLog::create([
                 'maintenance_request_id' => $item->id,

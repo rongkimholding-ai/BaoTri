@@ -68,13 +68,13 @@
                             </span>
                         </td>
                         <td class="textarea-field">{{ $item->issue_description }}</td>
-                        <td class="textarea-field">{{ $item->solution_description }}</td>
-                        <td class="tech_data">
+                        <!-- <td class="textarea-field">{{ $item->solution_description }}</td> -->
+                        <!-- <td class="tech_data">
                             Tên: {{ $item->technician_name }}<br>
                             SĐT: {{ $item->technician_mobile }}<br>
                             Email: {{ $item->technician_email }}
-                        </td>
-                        <td>
+                        </td> -->
+                        <!-- <td>
                             @if($item->include_saturday)
                                 <span class="badge bg-primary">
                                     T7
@@ -103,7 +103,7 @@
                                 </span>
                             @endif
 
-                        </td>
+                        </td> -->
                         <td class="time_field">
                             Ngày yêu cầu: {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
                             Yêu cầu hoàn thành: {{ $timeName }}
@@ -123,7 +123,7 @@
                             Tạo: {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}<br>
                             Cập nhật: {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
                         </td>
-                        <td>{{ $item->delay_reason }}</td>
+                        <!-- <td>{{ $item->delay_reason }}</td> -->
                         <td class="confirm_checked status-field">
                             <span class="status_badge {{ $slaStatusBadge }}">
                                 {{ $slaStatusName }}
@@ -132,7 +132,7 @@
                                 {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
                             </span>
                         </td>
-                        <td>{{ $item->outsourced_provider }}</td>
+                        <!-- <td>{{ $item->outsourced_provider }}</td> -->
                         <td>{{ $acceptanceList[$item->acceptance_result] ?? $item->acceptance_result }}</td>
                         <td class="confirmer-name">{{ $item->acceptance_confirmed_by }}</td>
                         <td>
@@ -143,6 +143,15 @@
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác</button>
                                 <ul class="dropdown-menu">
+                                    <li>
+                                        <a
+                                            role="button"
+                                            class="dropdown-item btn-detail"
+                                            data-id="{{ $item->id }}"
+                                        >
+                                            Chi tiết
+                                        </a>
+                                    </li>
                                     @hasanyrole('technician|admin')
                                         @if(in_array($item->sla_status, [config('sla_status.code.NEW'), config('sla_status.code.REOPEN')]))
                                             <li>

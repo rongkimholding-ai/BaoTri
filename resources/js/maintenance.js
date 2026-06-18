@@ -517,8 +517,7 @@ $(function () {
     });
 
     $('#changeStatusModal').on('hidden.bs.modal', function () {
-
-        $('#completionImages').val('');
+        $('#completionImages').val(null);
         $('#imageUploadWrapper').addClass('d-none');
     
     });
@@ -668,6 +667,25 @@ $(function () {
             ).show();
 
         }, 'json');
+    });
+
+    $(document).on('click', '.btn-detail', function (e) {
+
+        e.preventDefault();
+    
+        const id = $(this).data('id');
+    
+        console.log('ID:', id);
+    
+        const modal = new bootstrap.Modal(
+            document.getElementById('detailModal')
+        );
+    
+        modal.show();
+    
+        $.get('/maintenance-requests/' + id + '/detail', function (html) {
+            $('#detail-content').html(html);
+        });
     });
 
     $(document).on('change', '.inline-target', function () {
@@ -878,32 +896,59 @@ $(function () {
 
     $('#acceptanceModal').on('hidden.bs.modal', function () {
         $(this).find('form')[0].reset();
+        $('#acceptanceImages').val(null);
     });
 
     $('#submitAcceptance').on(
         'click',
         function () {
-            
+    
+            let formData = new FormData();
+    
+            formData.append(
+                '_token',
+                $('meta[name="csrf-token"]').attr('content')
+            );
+    
+            formData.append(
+                'id',
+                $('#acceptance_request_id').val()
+            );
+    
+            formData.append(
+                'result',
+                $('#acceptance_result').val()
+            );
+    
+            formData.append(
+                'note',
+                $('#acceptance_note').val()
+            );
+    
+            let files = $('#acceptanceImages')[0].files;
+    
+            for (let i = 0; i < files.length; i++) {
+                formData.append(
+                    'images[]',
+                    files[i]
+                );
+            }
+    
             $.ajax({
     
                 url: '/maintenance-request/acceptance',
     
                 type: 'POST',
     
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
+                data: formData,
     
-                    id: $('#acceptance_request_id').val(),
+                processData: false,
     
-                    result: $('#acceptance_result').val(),
-    
-                    note: $('#acceptance_note').val()
-                },
+                contentType: false,
     
                 success: function (response) {
     
                     if (response.success) {
-    
                         location.reload();
                     }
                 },

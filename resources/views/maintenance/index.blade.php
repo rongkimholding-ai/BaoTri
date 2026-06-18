@@ -169,4 +169,5 @@
     @include('maintenance.modals.change_status')
     @include('maintenance.modals.log')
     @include('maintenance.modals.acceptance')
+    @include('maintenance.modals.show')
 </x-app-layout>

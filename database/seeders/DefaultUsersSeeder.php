@@ -57,29 +57,29 @@ class DefaultUsersSeeder extends Seeder
             ]
         );
         // Thêm các kỹ thuật viên từ config/technician.php với vai trò technician
-        $technicians = config('technician');
-        foreach ($technicians as $tech) {
-            $user = User::updateOrCreate(
-                ['email' => $tech['email']],
-                [
-                    'name' => $tech['name'],
-                    'password' => Hash::make('12345678'),
-                ]
-            );
-            $user->syncRoles(['technician']);
-        }
+        // $technicians = config('technician');
+        // foreach ($technicians as $tech) {
+        //     $user = User::updateOrCreate(
+        //         ['email' => $tech['email']],
+        //         [
+        //             'name' => $tech['name'],
+        //             'password' => Hash::make('12345678'),
+        //         ]
+        //     );
+        //     $user->syncRoles(['technician']);
+        // }
 
-        $technician->syncRoles(['technician']);
+        // $technician->syncRoles(['technician']);
 
-        // Technician truc T7 CN Le
-        $techtrucngoaigio = User::updateOrCreate(
-            ['email' => 'baotri@tocotocotea.com'],
-            [
-                'name' => 'Trực ngoài giờ',
-                'password' => Hash::make('12345678'),
-            ]
-        );
-        $techtrucngoaigio->syncRoles(['technician']);
+        // // Technician truc T7 CN Le
+        // $techtrucngoaigio = User::updateOrCreate(
+        //     ['email' => 'baotri@tocotocotea.com'],
+        //     [
+        //         'name' => 'Trực ngoài giờ',
+        //         'password' => Hash::make('12345678'),
+        //     ]
+        // );
+        // $techtrucngoaigio->syncRoles(['technician']);
 
         // User
         $user = User::updateOrCreate(
