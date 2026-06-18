@@ -33,14 +33,14 @@ return [
         "key" => "",
         "name" => "Nguyễn Duy Thắng",
         "position" => "NV Bảo Trì",
-        "mobile" => "",
+        "mobile" => "0988124788",
         "email" => "duythang.support.hcm@tocototea.com"
     ],
     [
         "key" => "",
         "name" => "Phạm Văn Thắng",
         "position" => "NV Bảo Trì",
-        "mobile" => "",
+        "mobile" => "0378863638",
         "email" => "vanthang.support.hcm@tocototea.com"
     ],
     'ngoai_gio' => [

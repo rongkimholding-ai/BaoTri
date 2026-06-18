@@ -93,12 +93,26 @@
                             <label for="branch_name" class="form-label mb-1">Tên cơ sở</label>
                             <select class="form-control select2-branch" name="branch_name" id="branch_name" data-field="branch_name">
                                 <option value="">-- Chọn cơ sở --</option>
-                                @foreach($stores as $store)
-                                    <option value="{{ $store['name'] }}" data-code="{{ $store['code'] }}"
-                                        @selected(request('branch_name') == $store['name'])>
-                                        {{ $store['name'] }}
-                                    </option>
-                                @endforeach
+                                @if(isset($stores['mien_bac']))
+                                    <optgroup label="Miền Bắc">
+                                        @foreach($stores['mien_bac'] as $store)
+                                            <option value="{{ $store['name'] }}" data-code="{{ $store['code'] }}"
+                                                @selected(request('branch_name') == $store['name'])>
+                                                {{ $store['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
+                                @if(isset($stores['mien_nam']))
+                                    <optgroup label="Miền Nam">
+                                        @foreach($stores['mien_nam'] as $store)
+                                            <option value="{{ $store['name'] }}" data-code="{{ $store['code'] }}"
+                                                @selected(request('branch_name') == $store['name'])>
+                                                {{ $store['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
                             </select>
                         </div>
                         <div class="col-md-3">

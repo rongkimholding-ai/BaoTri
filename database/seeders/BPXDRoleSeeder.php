@@ -9,49 +9,20 @@ class BPXDRoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Danh sách permission
-        $permissions = [
-            'view data',
-            'create data',
-            'export excel',
-            'export excel tech',
-            'delete data',
-            'confirm maintenance',
-            'remind maintenance',
-            'change-maintenance-status',
+        $roles = [
+            'admin',
+            'manager',
+            'technician',
+            'user',
         ];
 
-        $role = Role::firstOrCreate([
-            'name' => 'BPXD',
-            'guard_name' => 'web',
-        ]);
-
-        $roleTN = Role::firstOrCreate([
-            'name' => 'BPXD TN',
-            'guard_name' => 'web',
-        ]);
-
-        $roleManager = Role::firstOrCreate([
-            'name' => 'BPXD manager',
-            'guard_name' => 'web',
-        ]);
+        foreach ($roles as $role) {
+            Role::firstOrCreate([
+                'name' => $role,
+                'guard_name' => 'web',
+            ]);
+        }
    
-
-        // Gán quyền cho role
-        $roleManager->syncPermissions($permissions);
-        $roleTN->syncPermissions([
-            'view data',
-            'create data',
-            'export excel',
-            'export excel tech',
-            'change-maintenance-status',
-        ]);
-        $role->syncPermissions([
-            'view data',
-            'change-maintenance-status',
-        ]);
-   
-
         // Tạo user
         $technicians = config('technician');
         $users = [];
@@ -81,11 +52,11 @@ class BPXDRoleSeeder extends Seeder
 
             // Gán role theo email
             if ($userData['email'] === 'liemhoang.support.hcm@tocototea.com') {
-                $user->assignRole($roleManager);
+                $user->assignRole('manager');
             } elseif ($userData['email'] === 'dunguyen.support@tocotocotea.com') {
-                $user->assignRole($roleTN);
+                $user->assignRole('manager');
             } else {
-                $user->assignRole($role);
+                $user->assignRole('technician');
             }
         }
 

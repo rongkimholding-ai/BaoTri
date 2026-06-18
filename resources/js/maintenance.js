@@ -422,6 +422,65 @@ $(function () {
 
         $('#createModal select:disabled').prop('disabled', false);
 
+        // Nếu chọn "Cửa hàng khác", lấy giá trị từ input other_branch_name, other_branch_code, other_branch_email và truyền vào input ẩn branch_name, branch_code, branch_email,
+        // đồng thời xoá input select branch_name để không trùng name, tránh truyền 2 giá trị branch_name khi submit
+        let branchSelect = $('#branch_name_select');
+        if (branchSelect.val() === 'other_store') {
+            let form = $(this);
+
+            // Lấy các giá trị nhập thủ công
+            let otherBranchName = $('#other_branch_name').val();
+            let otherBranchCode = $('#other_branch_code').val();
+            let otherBranchEmail = $('#other_branch_email').val();
+
+            // Xoá select name="branch_name" để không trùng với input ẩn
+            form.find('select[name="branch_name"]').prop('disabled', true);
+
+            // Xoá hidden hoặc input branch_name cũ (không phải hidden-other-branch)
+            form.find('input[name="branch_name"]:not(.hidden-other-branch)').remove();
+            form.find('input[name="branch_code"]:not(.hidden-other-branch)').remove();
+            form.find('input[name="branch_email"]:not(.hidden-other-branch)').remove();
+
+            // Tạo/cập nhật input ẩn branch_name
+            let hiddenName = form.find('input[name="branch_name"].hidden-other-branch');
+            if (hiddenName.length === 0) {
+                hiddenName = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'branch_name'
+                }).addClass('hidden-other-branch');
+                form.append(hiddenName);
+            }
+            hiddenName.val(otherBranchName || '');
+
+            // Tạo/cập nhật input ẩn branch_code
+            let hiddenCode = form.find('input[name="branch_code"].hidden-other-branch');
+            if (hiddenCode.length === 0) {
+                hiddenCode = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'branch_code'
+                }).addClass('hidden-other-branch');
+                form.append(hiddenCode);
+            }
+            hiddenCode.val(otherBranchCode || '');
+
+            // Tạo/cập nhật input ẩn branch_email
+            let hiddenEmail = form.find('input[name="branch_email"].hidden-other-branch');
+            if (hiddenEmail.length === 0) {
+                hiddenEmail = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'branch_email'
+                }).addClass('hidden-other-branch');
+                form.append(hiddenEmail);
+            }
+            hiddenEmail.val(otherBranchEmail || '');
+
+        } else {
+            // Nếu không chọn "other_store", enable lại select branch_name
+            $(this).find('select[name="branch_name"]').prop('disabled', false);
+            // Xoá các input ẩn nếu có
+            $(this).find('input.hidden-other-branch').remove();
+        }
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
@@ -756,10 +815,11 @@ $(function () {
     function toggleFormFields() {
         const modal = $('#createModal');
         const key = modal.find('.issue-selector option:selected').data('key');
+        const branch_name_select = $('#branch_name_select').val();
 
         // Khóa toàn bộ trước
         modal.find('input, textarea')
-            .not('.form-branch-name, .issue-selector')
+            .not('.form-branch-name, .issue-selector, #other_branch_name, #other_branch_code, #other_branch_email')
             .prop('readonly', true);
 
         modal.find('select')
@@ -778,6 +838,12 @@ $(function () {
                 .prop('readonly', false)
                 .prop('disabled', false)
                 .addClass('editable-highlight');
+        }
+
+        if (branch_name_select == 'other_store') {
+            modal.find('select')
+            .not('.form-branch-name')
+            .prop('disabled', false);
         }
     }
 
@@ -1004,4 +1070,26 @@ $(function () {
             }
         }
     );
+
+    function toggleOtherStoreInput() {
+        const selectedValue = $('#branch_name_select').val();
+    
+        if (selectedValue === 'other_store') {
+            $('#other_store_input_wrap').removeClass('d-none');
+            $('#createModal').find('.form-technician-name').prop('disabled', false);
+        } else {
+            $('#other_store_input_wrap').addClass('d-none');
+            $('#other_branch_name').val('');
+            $('#other_branch_code').val('');
+            $('#other_branch_email').val('');
+            $('#createModal').find('.form-technician-name').prop('disabled', true);
+        }
+    }
+
+    $(document).on('change', '#branch_name_select', function () {
+        toggleOtherStoreInput();
+    });
+
+    // Trường hợp edit hoặc reload form
+    toggleOtherStoreInput();
 });

@@ -9,25 +9,19 @@ class KTNBRoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Danh sách permission
-        $permissions = [
-            'view data',
-            'create data',
-            'export excel',
-            'export excel tech',
-            'delete data',
-            'confirm maintenance',
-            'remind maintenance',
-            'change-maintenance-status',
+        $roles = [
+            'admin',
+            'manager',
+            'technician',
+            'user',
         ];
 
-        $role = Role::firstOrCreate([
-            'name' => 'ktnb',
-            'guard_name' => 'web',
-        ]);
-
-        // Gán quyền cho role
-        $role->syncPermissions($permissions);
+        foreach ($roles as $role) {
+            Role::firstOrCreate([
+                'name' => $role,
+                'guard_name' => 'web',
+            ]);
+        }
 
         // Tạo user
         $users = [
@@ -53,7 +47,7 @@ class KTNBRoleSeeder extends Seeder
             );
 
             // Gán role
-            $user->assignRole($role);
+            $user->assignRole('manager');
         }
 
     }

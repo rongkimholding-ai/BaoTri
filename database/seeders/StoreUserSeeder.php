@@ -12,19 +12,34 @@ class StoreUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = resource_path('json/stores.json');
+        $paths = [
+            resource_path('json/stores.json'),
+            resource_path('json/stores_mn.json'),
+        ];
 
-        if (! File::exists($path)) {
-            $this->command->error("Không tìm thấy file: {$path}");
-            return;
+        $stores = [];
+
+        foreach ($paths as $path) {
+            if (!File::exists($path)) {
+                $this->command->error("Không tìm thấy file: {$path}");
+                continue;
+            }
+
+            $data = json_decode(File::get($path), true);
+
+            if (!is_array($data)) {
+                $this->command->error(basename($path) . ' không đúng định dạng');
+                continue;
+            }
+
+            $stores = array_merge($stores, $data);
         }
 
-        $stores = json_decode(File::get($path), true);
-
-        if (! is_array($stores)) {
-            $this->command->error('stores.json không đúng định dạng');
+        if (empty($stores)) {
+            $this->command->error('Không có dữ liệu cửa hàng hợp lệ để tạo tài khoản');
             return;
         }
+   
 
         // Tạo role user nếu chưa có
         $role = Role::firstOrCreate([

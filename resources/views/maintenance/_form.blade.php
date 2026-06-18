@@ -21,25 +21,28 @@
     </div>
 
     @php
-        use Illuminate\Support\Facades\Auth;
-        $user = Auth::user();
-        // Tìm chi nhánh tương ứng với tài khoản đăng nhập.
-        $userStore = null;
-        if($user) {
-            // Tuỳ dữ liệu user, sửa lại cho đúng business (ở đây ví dụ so với email)
-            $userStore = collect($stores)->first(function($store) use ($user) {
-                return isset($store['email']) && $store['email'] === $user->email;
-                // Hoặc nếu dùng branch_code:
-                // return isset($store['code']) && $store['code'] === $user->branch_code;
-            });
-        }
+use Illuminate\Support\Facades\Auth;
+$user = Auth::user();
+// Tìm chi nhánh tương ứng với tài khoản đăng nhập.
+$userStore = null;
+if ($user) {
+    // Tuỳ dữ liệu user, sửa lại cho đúng business (ở đây ví dụ so với email)
+    // Do dữ liệu stores đã là ['mien_bac' => [], 'mien_nam' => []], phải loop cả 2 mảng để tìm userStore phù hợp
+    $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['mien_nam'] ?? []);
+    $userStore = $allStores->first(function ($store) use ($user) {
+        return isset($store['email']) && $store['email'] === $user->email;
+        // Hoặc nếu dùng branch_code:
+        // return isset($store['code']) && $store['code'] === $user->branch_code;
+    });
+}
     @endphp
 
     <div class="col-md-6 mb-3">
         <label>{{ config('maintenance.fields.branch_name') }}</label>
         <select 
-            class="form-control form-branch-name select2-branch" 
+            class="form-control form-branch-name select2-branch"
             name="branch_name"
+            id="branch_name_select"
             @if($userStore) 
                 disabled 
                 tabindex="-1" 
@@ -47,22 +50,43 @@
             @endif
         >
             <option value="">-- Chọn cơ sở --</option>
-            @foreach($stores as $store)
-                <option value="{{ $store['name'] }}" 
-                    data-branch_email="{{ $store['email'] }}"
-                    data-technician_name="{{ $store['technician_name'] ?? '' }}"
-                    data-code="{{ $store['code'] }}"
-                    @if($userStore && $store['email'] === $userStore['email']) selected @endif
-                >
-                    {{ $store['name'] }}
-                </option>
-            @endforeach
+            @if(isset($stores['mien_bac']))
+                <optgroup label="Miền Bắc">
+                    @foreach($stores['mien_bac'] as $store)
+                        <option value="{{ $store['name'] }}"
+                            data-branch_email="{{ $store['email'] }}"
+                            data-technician_name="{{ $store['technician_name'] ?? '' }}"
+                            data-code="{{ $store['code'] }}"
+                            @if($userStore && $store['email'] === $userStore['email']) selected @endif
+                        >
+                            {{ $store['name'] }}
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endif
+            @if(isset($stores['mien_nam']))
+                <optgroup label="Miền Nam">
+                    @foreach($stores['mien_nam'] as $store)
+                        <option value="{{ $store['name'] }}"
+                            data-branch_email="{{ $store['email'] }}"
+                            data-technician_name="{{ $store['technician_name'] ?? '' }}"
+                            data-code="{{ $store['code'] }}"
+                            @if($userStore && $store['email'] === $userStore['email']) selected @endif
+                        >
+                            {{ $store['name'] }}
+                        </option>
+                    @endforeach
+                </optgroup>
+            @endif
+            <option value="other_store" data-custom="1">Cửa hàng khác</option>
         </select>
+        
         @if($userStore)
             <input type="hidden" name="branch_code" value="{{ $userStore['code'] }}">
             <input type="hidden" name="branch_email" value="{{ $userStore['email'] }}">
             <input type="hidden" name="technician_name" value="{{ $userStore['technician_name'] ?? '' }}">
         @endif
+   
     </div>
     
     <!-- <div class="col-md-4 mb-3">
@@ -89,7 +113,7 @@
                             data-issue="{{ $issue['name'] }}" data-severity="{{ $issue['severity'] }}"
                             data-handler="{{ $issue['handler'] }}" data-processing="{{ $issue['processing_time'] }}"
                             data-solution="{{ $issue['solution'] }}">
-                            {{ $check['name'] }} {{ $issue['severity'] ? '('.$issue['severity'].')': '' }} - {{ $issue['name'] }}
+                            {{ $check['name'] }} {{ $issue['severity'] ? '(' . $issue['severity'] . ')' : '' }} - {{ $issue['name'] }}
                         </option>
 
                     @endforeach
@@ -99,6 +123,21 @@
             @endforeach
 
         </select>
+    </div>
+
+    <div id="other_store_input_wrap" class="d-none d-flex mt-2 col-md-12 mb-3">
+        <div class="col-md-4 mr-2">
+            <input type="text" class="form-control mb-2" name="other_branch_name" id="other_branch_name"
+                placeholder="Nhập tên cửa hàng">
+        </div>
+        <div class="col-md-4 mr-2">
+            <input type="text" class="form-control mb-2" name="other_branch_code" id="other_branch_code"
+                placeholder="Nhập mã cửa hàng">
+        </div>
+        <div class="col-md-4 mr-2">
+            <input type="text" class="form-control" name="other_branch_email" id="other_branch_email"
+                placeholder="Nhập email cửa hàng">
+        </div>
     </div>
 
     <div class="col-md-12 mb-3">
@@ -121,10 +160,12 @@
             <option value="">-- {{ config('maintenance.fields.technician_name') }} --</option>
 
             @foreach($techs as $tech)
+            @if ($tech['email'] != 'liemhoang.support.hcm@tocototea.com')
                 <option value="{{ $tech['name'] }}"
                     data-email="{{ $tech['email'] }}" data-mobile="{{ $tech['mobile'] }}">
                     {{ $tech['name'] }}
                 </option>
+                @endif
             @endforeach
 
         </select>

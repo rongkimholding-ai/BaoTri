@@ -25,7 +25,7 @@ class StoreMaintenanceRequest extends FormRequest
     {
         return [
             'branch_name' => 'required|string|max:255',
-            'branch_code' => 'required|string|max:255',
+            'branch_code' => 'nullable|string|max:255',
             'branch_email' => 'required|string|max:255',
             'item_category' => 'required|string|max:255',
             'issue_description' => 'required|string',

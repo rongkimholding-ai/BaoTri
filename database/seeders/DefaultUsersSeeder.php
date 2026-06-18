@@ -69,7 +69,7 @@ class DefaultUsersSeeder extends Seeder
         //     $user->syncRoles(['technician']);
         // }
 
-        // $technician->syncRoles(['technician']);
+        $technician->syncRoles(['technician']);
 
         // // Technician truc T7 CN Le
         // $techtrucngoaigio = User::updateOrCreate(

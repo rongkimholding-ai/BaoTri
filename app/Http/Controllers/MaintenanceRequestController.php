@@ -674,8 +674,16 @@ class MaintenanceRequestController extends Controller
 
     public function getData()
     {
-        $jsonPath = resource_path('json/stores.json');
-        $data = json_decode(file_get_contents($jsonPath), true);
+        $jsonPathNorth = resource_path('json/stores.json');
+        $jsonPathSouth = resource_path('json/stores_mn.json');
+        $storesNorth = json_decode(file_get_contents($jsonPathNorth), true);
+        $storesSouth = json_decode(file_get_contents($jsonPathSouth), true);
+
+        // Tạo cấu trúc rõ 2 miền
+        $data = [
+            'mien_bac' => $storesNorth,
+            'mien_nam' => $storesSouth,
+        ];
 
         return $data;
     }
