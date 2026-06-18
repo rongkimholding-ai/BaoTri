@@ -70,12 +70,11 @@
                 <div class="card-header bg-light fw-semibold py-2 small">Thời gian & Tiến trình</div>
                 <div class="card-body pb-1 px-2 small d-flex flex-column gap-1">
                     <div><span class="fw-bold">Ngày làm: </span>
+                        <span class="badge bg-secondary me-1">Hành chính</span>
                         {!! 
                             ($maintenanceRequest->include_saturday ? '<span class="badge bg-primary me-1">T7</span>' : '') .
                             ($maintenanceRequest->include_sunday ? '<span class="badge bg-info me-1">CN</span>' : '') .
-                            ($maintenanceRequest->include_holiday ? '<span class="badge bg-warning me-1">Lễ</span>' : '') .
-                            (!$maintenanceRequest->include_saturday && !$maintenanceRequest->include_sunday && !$maintenanceRequest->include_holiday
-                                ? '<span class="badge bg-secondary me-1">Hành chính</span>' : '')
+                            ($maintenanceRequest->include_holiday ? '<span class="badge bg-warning me-1">Lễ</span>' : '')
                         !!}
                     </div>
                     <div><span class="fw-bold">Hạn: </span>{{ $timeName }}</div>

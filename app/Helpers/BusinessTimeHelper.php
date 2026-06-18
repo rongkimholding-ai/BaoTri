@@ -18,7 +18,8 @@ class BusinessTimeHelper
         Carbon|string $end,
         bool $includeSaturday = true,
         bool $includeSunday = false,
-        bool $includeHoliday = false
+        bool $includeHoliday = false,
+        ?string $severity = null
     ): int {
 
         $start = $start instanceof Carbon
@@ -33,8 +34,15 @@ class BusinessTimeHelper
             return 0;
         }
 
-        $seconds = 0;
+        /**
+         * CASE OVERRIDE:
+         * severity = 1A => tính full time, bỏ working hours
+         */
+        if ($severity === '1A') {
+            return $start->diffInSeconds($end);
+        }
 
+        $seconds = 0;
         $current = $start->copy();
 
         while ($current->lt($end)) {
@@ -48,38 +56,26 @@ class BusinessTimeHelper
 
             if ($calendar) {
 
-                if (
-                    ! $includeHoliday
-                    && ! $calendar->is_working_day
-                ) {
+                if (!$includeHoliday && !$calendar->is_working_day) {
                     $current->addDay()->startOfDay();
                     continue;
                 }
 
             } else {
 
-                if (
-                    ! $includeSaturday
-                    && $current->isSaturday()
-                ) {
+                if (!$includeSaturday && $current->isSaturday()) {
                     $current->addDay()->startOfDay();
                     continue;
                 }
 
-                if (
-                    ! $includeSunday
-                    && $current->isSunday()
-                ) {
+                if (!$includeSunday && $current->isSunday()) {
                     $current->addDay()->startOfDay();
                     continue;
                 }
             }
 
-            $dayStart = $current->copy()
-                ->setTime(8, 0, 0);
-
-            $dayEnd = $current->copy()
-                ->setTime(17, 0, 0);
+            $dayStart = $current->copy()->setTime(self::WORK_START_HOUR, 0, 0);
+            $dayEnd   = $current->copy()->setTime(self::WORK_END_HOUR, 0, 0);
 
             $from = $current->greaterThan($dayStart)
                 ? $current
@@ -99,18 +95,14 @@ class BusinessTimeHelper
         return $seconds;
     }
 
-    public static function formatDuration(
-        int $seconds
-    ): string {
-
+    /**
+     * Format giây -> HH:MM:SS
+     */
+    public static function formatDuration(int $seconds): string
+    {
         $hours = floor($seconds / 3600);
-
-        $minutes = floor(
-            ($seconds % 3600) / 60
-        );
-
-        $remainingSeconds =
-            $seconds % 60;
+        $minutes = floor(($seconds % 3600) / 60);
+        $remainingSeconds = $seconds % 60;
 
         return sprintf(
             '%02d:%02d:%02d',

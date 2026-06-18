@@ -239,10 +239,17 @@ $(function () {
             if (isUpdating) return;
             isUpdating = true;
 
-            fillIssueData(
-                $('#createModal'),
-                $(this).find(':selected')
-            );
+            let $modal = $('#createModal');
+            let $selected = $(this).find(':selected');
+            fillIssueData($modal, $selected);
+
+            // Check severity data
+            let severity = $selected.data('severity');
+            if (severity === '1A') {
+                // Auto check T7, CN
+                $modal.find('#include_saturday').prop('checked', true);
+                $modal.find('#include_sunday').prop('checked', true);
+            }
             isUpdating = false;
         }
     );
@@ -733,9 +740,6 @@ $(function () {
         e.preventDefault();
     
         const id = $(this).data('id');
-    
-        console.log('ID:', id);
-    
         const modal = new bootstrap.Modal(
             document.getElementById('detailModal')
         );

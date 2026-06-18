@@ -27,7 +27,7 @@
                     @foreach (config('maintenance.tbl_fields') as $key_field => $fields)
                         <th class="{{ in_array($key_field, ['severity','status']) ? $key_field.'_field' : '' }}">{{ $fields }}</th>
                     @endforeach
-                    <th>Nhắc việc</th>
+                    <!-- <th>Nhắc việc</th> -->
                     <th class="action-column">Thao tác</th>
                 </tr>
             </thead>
@@ -62,10 +62,10 @@
                         <td class="item_category_class">
                             Tên: {{ $item->item_category }} <br>
                             Loại sự cố: {{ $severityName }} <br>
-                            Trạng thái:
+                            <!-- Trạng thái:
                             <span class="{{ $slaStatusBadge }}">
                                 {{ $slaStatusName }}
-                            </span>
+                            </span> -->
                         </td>
                         <td class="textarea-field">{{ $item->issue_description }}</td>
                         <!-- <td class="textarea-field">{{ $item->solution_description }}</td> -->
@@ -135,10 +135,10 @@
                         <!-- <td>{{ $item->outsourced_provider }}</td> -->
                         <td>{{ $acceptanceList[$item->acceptance_result] ?? $item->acceptance_result }}</td>
                         <td class="confirmer-name">{{ $item->acceptance_confirmed_by }}</td>
-                        <td>
+                        <!-- <td>
                             Đã nhắc: {{ $item->reminder_count }}
                             {!! $item->last_reminded_at ? '<br>Nhắc lần cuối: '.\Carbon\Carbon::parse($item->last_reminded_at)->format('d/m/Y H:i:s') : '' !!}
-                        </td>
+                        </td> -->
                         <td class="action-column">
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác</button>

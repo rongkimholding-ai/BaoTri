@@ -444,7 +444,8 @@ class MaintenanceRequestController extends Controller
                         $completedAt,
                         $maintenanceRequest->include_saturday,
                         $maintenanceRequest->include_sunday,
-                        $maintenanceRequest->include_holiday
+                        $maintenanceRequest->include_holiday,
+                        $maintenanceRequest->severity,
                     );
                 // }
                 $data['actual_duration'] =
