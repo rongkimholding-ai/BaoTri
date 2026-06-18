@@ -14,15 +14,28 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->paginate(20);
+        $name = $request->input('name');
+        $email = $request->input('email');
+
+        $query = User::with('roles');
+
+        if ($name) {
+            $query->where('name', 'like', '%' . $name . '%');
+        }
+
+        if ($email) {
+            $query->where('email', 'like', '%' . $email . '%');
+        }
+
+        $users = $query->paginate(20)->appends([
+            'name' => $name,
+            'email' => $email,
+        ]);
         $roles = Role::all();
 
-        return view('users.index', compact(
-            'users',
-            'roles'
-        ));
+        return view('users.index', compact('users', 'roles', 'name', 'email'));
     }
 
     /**
@@ -135,5 +148,54 @@ class UserController extends Controller
                 'success',
                 'Đặt lại mật khẩu thành công.'
             );
+    }
+
+    public function exportExcel()
+    {
+        $users = User::with('roles')->get();
+
+        $filename = 'users_export_' . now()->format('Ymd_His') . '.xlsx';
+
+        // Sử dụng thư viện PhpSpreadsheet để xuất excel nếu không dùng Laravel Excel.
+        // Nếu đang dùng Laravel Excel (maatwebsite/excel), dùng cách sau.
+        $heading = [
+            'Tên',
+            'Email',
+            'Roles'
+        ];
+
+        $data = [];
+        foreach ($users as $user) {
+            $data[] = [
+                $user->name,
+                $user->email,
+                $user->getRoleNames()->join(', '),
+            ];
+        }
+
+        // Tạo file excel bằng maatwebsite/excel
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new class($data, $heading) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+                protected $data;
+                protected $heading;
+
+                public function __construct($data, $heading)
+                {
+                    $this->data = $data;
+                    $this->heading = $heading;
+                }
+
+                public function array(): array
+                {
+                    return $this->data;
+                }
+
+                public function headings(): array
+                {
+                    return $this->heading;
+                }
+            },
+            $filename
+        );
     }
 }

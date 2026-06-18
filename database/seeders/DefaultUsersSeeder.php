@@ -11,7 +11,11 @@ class DefaultUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        // Tạo role nếu chưa có
+        /**
+         * =========================
+         * 1. CREATE ROLES
+         * =========================
+         */
         $roles = [
             'admin',
             'manager',
@@ -26,70 +30,153 @@ class DefaultUsersSeeder extends Seeder
             ]);
         }
 
-        // Admin
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@tea.com'],
+        /**
+         * =========================
+         * 2. DEFAULT SYSTEM USERS
+         * =========================
+         */
+
+        $systemUsers = [
             [
                 'name' => 'Admin BaoTri',
-                'password' => Hash::make('abcd@1234'),
-            ]
-        );
-
-        $admin->syncRoles(['admin']);
-
-        // Manager
-        $manager = User::updateOrCreate(
-            ['email' => 'manager@tea.com'],
+                'email' => 'admin@tea.com',
+                'password' => 'abcd@1234',
+                'role' => 'admin',
+            ],
             [
                 'name' => 'Manager',
-                'password' => Hash::make('abcd@1234'),
-            ]
-        );
-
-        $manager->syncRoles(['manager']);
-
-        // Technician
-        $technician = User::updateOrCreate(
-            ['email' => 'technician@tea.com'],
+                'email' => 'manager@tea.com',
+                'password' => 'abcd@1234',
+                'role' => 'manager',
+            ],
             [
                 'name' => 'Technician',
-                'password' => Hash::make('abcd@1234'),
-            ]
-        );
-        // Thêm các kỹ thuật viên từ config/technician.php với vai trò technician
-        // $technicians = config('technician');
-        // foreach ($technicians as $tech) {
-        //     $user = User::updateOrCreate(
-        //         ['email' => $tech['email']],
-        //         [
-        //             'name' => $tech['name'],
-        //             'password' => Hash::make('12345678'),
-        //         ]
-        //     );
-        //     $user->syncRoles(['technician']);
-        // }
-
-        $technician->syncRoles(['technician']);
-
-        // // Technician truc T7 CN Le
-        // $techtrucngoaigio = User::updateOrCreate(
-        //     ['email' => 'baotri@tocotocotea.com'],
-        //     [
-        //         'name' => 'Trực ngoài giờ',
-        //         'password' => Hash::make('12345678'),
-        //     ]
-        // );
-        // $techtrucngoaigio->syncRoles(['technician']);
-
-        // User
-        $user = User::updateOrCreate(
-            ['email' => 'user@tea.com'],
+                'email' => 'technician@tea.com',
+                'password' => 'abcd@1234',
+                'role' => 'technician',
+            ],
             [
                 'name' => 'User',
-                'password' => Hash::make('abcd@1234'),
-            ]
-        );
+                'email' => 'user@tea.com',
+                'password' => 'abcd@1234',
+                'role' => 'user',
+            ],
+        ];
 
-        $user->syncRoles(['user']);
+        foreach ($systemUsers as $data) {
+            $user = User::updateOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'password' => Hash::make($data['password']),
+                ]
+            );
+
+            $user->syncRoles([$data['role']]);
+        }
+
+        /**
+         * =========================
+         * 3. HR / KDC / TROLY USERS
+         * =========================
+         */
+
+        $extraUsers = [
+            [
+                'name' => 'HR User',
+                'email' => 'hr@tea.com',
+                'role' => 'manager',
+            ],
+            [
+                'name' => 'KDC User',
+                'email' => 'kdc@tea.com',
+                'role' => 'manager',
+            ],
+            [
+                'name' => 'Trợ Lý 1',
+                'email' => 'troly1@tea.com',
+                'role' => 'manager',
+            ],
+            [
+                'name' => 'Trợ Lý 2',
+                'email' => 'troly2@tea.com',
+                'role' => 'manager',
+            ],
+        ];
+
+        foreach ($extraUsers as $data) {
+            $user = User::updateOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'password' => Hash::make('12345678'),
+                ]
+            );
+
+            $user->syncRoles([$data['role']]);
+        }
+
+        /**
+         * =========================
+         * 4. TECHNICIAN FROM CONFIG
+         * (merged from BPXDRoleSeeder)
+         * =========================
+         */
+
+        $technicians = config('technician', []);
+
+        foreach ($technicians as $tech) {
+            if (!is_array($tech) || !isset($tech['email']) || !isset($tech['name'])) {
+                continue;
+            }
+
+            $user = User::updateOrCreate(
+                ['email' => $tech['email']],
+                [
+                    'name' => $tech['name'],
+                    'password' => Hash::make('12345678'),
+                ]
+            );
+
+            // phân role theo email đặc biệt
+            if (in_array($tech['email'], [
+                'liemhoang.support.hcm@tocototea.com',
+                'dunguyen.support@tocotocotea.com',
+            ])) {
+                $user->syncRoles(['manager']);
+            } else {
+                $user->syncRoles(['technician']);
+            }
+        }
+
+        /**
+         * =========================
+         * 5. INTERNAL AUDIT USERS (KTNB)
+         * (merged from KTNBRoleSeeder)
+         * =========================
+         */
+
+        $ktnbUsers = [
+            [
+                'email' => 'ktnb1@tocotocotea.com',
+                'name' => 'KTNB 1',
+            ],
+            [
+                'email' => 'ktnb2@tocotocotea.com',
+                'name' => 'KTNB 2',
+            ],
+        ];
+
+        foreach ($ktnbUsers as $data) {
+            $user = User::updateOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'password' => Hash::make('12345678'),
+                ]
+            );
+
+            $user->syncRoles(['manager']);
+        }
     }
 }

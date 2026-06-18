@@ -44,6 +44,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         '/users/{user}/reset-password',
         [UserController::class, 'adminResetPassword']
     )->name('users.reset-password');
+    Route::get('/users/export-excel', [UserController::class, 'exportExcel'])->name('users.export-excel');
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);

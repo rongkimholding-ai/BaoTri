@@ -454,6 +454,7 @@ class MaintenanceRequestController extends Controller
                     );
 
                 if (auth()->user()->email === 'baotri@tocotocotea.com') {
+                    $data['is_off_worktime'] = true;
                     // Get selected technician email from request
                     $selectedTechEmail = $request->input('tech_mail');
                     if ($selectedTechEmail) {
@@ -476,16 +477,16 @@ class MaintenanceRequestController extends Controller
                 }
 
                 // Gửi mail thông báo khi hoàn thành công việc
-                try {
-                    Mail::to($maintenanceRequest->branch_email)
-                        ->send(new MaintenanceCompletedMail($maintenanceRequest));
-                } catch (\Throwable $e) {
-                    \Log::error('Failed to send maintenance completed email', [
-                        'id' => $maintenanceRequest->id,
-                        'branch_email' => $maintenanceRequest->branch_email,
-                        'error' => $e->getMessage(),
-                    ]);
-                }
+                // try {
+                //     Mail::to($maintenanceRequest->branch_email)
+                //         ->send(new MaintenanceCompletedMail($maintenanceRequest));
+                // } catch (\Throwable $e) {
+                //     \Log::error('Failed to send maintenance completed email', [
+                //         'id' => $maintenanceRequest->id,
+                //         'branch_email' => $maintenanceRequest->branch_email,
+                //         'error' => $e->getMessage(),
+                //     ]);
+                // }
    
                 break;
 
@@ -511,6 +512,7 @@ class MaintenanceRequestController extends Controller
                 'is_confirmed' => false,
             ]);
         }
+        // dd($data);
 
         $maintenanceRequest->update($data);
 

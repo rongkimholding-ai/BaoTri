@@ -39,11 +39,17 @@ class StoreUserSeeder extends Seeder
             $this->command->error('Không có dữ liệu cửa hàng hợp lệ để tạo tài khoản');
             return;
         }
-   
 
-        // Tạo role user nếu chưa có
-        $role = Role::firstOrCreate([
+        /**
+         * ROLE
+         */
+        $userRole = Role::firstOrCreate([
             'name' => 'user',
+            'guard_name' => 'web',
+        ]);
+
+        $managerRole = Role::firstOrCreate([
+            'name' => 'manager',
             'guard_name' => 'web',
         ]);
 
@@ -51,28 +57,68 @@ class StoreUserSeeder extends Seeder
 
         foreach ($stores as $store) {
 
+            /**
+             * =========================
+             * 1. STORE USER (USER ROLE)
+             * =========================
+             */
             $email = trim($store['email'] ?? '');
 
-            if (
-                empty($email) ||
-                ! filter_var($email, FILTER_VALIDATE_EMAIL)
-            ) {
-                continue;
+            if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+                $user = User::updateOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $store['name'] ?? $email,
+                        'password' => Hash::make('12345678'),
+                    ]
+                );
+
+                $user->syncRoles([$userRole->name]);
+                $count++;
             }
 
-            $user = User::updateOrCreate(
-                [
-                    'email' => $email,
-                ],
-                [
-                    'name' => $store['name'] ?? $email,
-                    'password' => Hash::make('12345678'),
-                ]
-            );
+            /**
+             * =========================
+             * 2. AM EMAIL -> MANAGER
+             * =========================
+             */
+            $amEmail = trim($store['am_email'] ?? '');
 
-            $user->syncRoles([$role->name]);
+            if (!empty($amEmail) && filter_var($amEmail, FILTER_VALIDATE_EMAIL)) {
 
-            $count++;
+                $amUser = User::updateOrCreate(
+                    ['email' => $amEmail],
+                    [
+                        'name' => $store['am_name'] ?? $amEmail,
+                        'password' => Hash::make('12345678'),
+                    ]
+                );
+
+                $amUser->syncRoles([$managerRole->name]);
+                $count++;
+            }
+
+            /**
+             * =========================
+             * 3. OM EMAIL -> MANAGER
+             * =========================
+             */
+            $omEmail = trim($store['om_email'] ?? '');
+
+            if (!empty($omEmail) && filter_var($omEmail, FILTER_VALIDATE_EMAIL)) {
+
+                $omUser = User::updateOrCreate(
+                    ['email' => $omEmail],
+                    [
+                        'name' => $store['om_name'] ?? $omEmail,
+                        'password' => Hash::make('12345678'),
+                    ]
+                );
+
+                $omUser->syncRoles([$managerRole->name]);
+                $count++;
+            }
         }
 
         $this->command->info("Da xu ly {$count} tai khoan.");

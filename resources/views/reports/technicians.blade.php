@@ -39,7 +39,7 @@
                         <th rowspan="2">CH phụ trách</th>
                         <th rowspan="2">ĐM/ngày</th>
                         <th rowspan="2">ĐM/tháng</th>
-                        <th colspan="2">Tổng yêu cầu</th>
+                        <th colspan="3">Tổng yêu cầu</th>
                         <th colspan="3">Đúng hạn</th>
                         <th colspan="2">Trễ hạn</th>
                         <th colspan="3">Chất lượng</th>
@@ -48,6 +48,7 @@
                     <tr>
                         <th>SL</th>
                         <th>%/ĐM</th>
+                        <th>Ngoài giờ</th>
                         <th>Đạt</th>
                         <th>%/ĐM</th>
                         <th>%/YC</th>
@@ -91,6 +92,7 @@
                                     {{ $item->completion_percent }}%
                                 </span>
                             </td>
+                            <td class="text-center">{{ $item->ngoai_gio_count }}</td>
                             <td class="text-center text-success fw-bold">{{ $item->dung_han_count }}</td>
                             <td class="text-center">{{ $item->dung_han_dm_percent }}%</td>
                             <td class="text-center">{{ $item->dung_han_total_percent }}%</td>
@@ -122,6 +124,7 @@
                         <td class="text-center text-success">
                             {{ $requests->sum('dung_han_count') }}
                         </td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-center text-danger">

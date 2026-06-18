@@ -64,6 +64,7 @@ class MaintenanceController extends Controller
         // Lấy maintenance_requests với mọi technician (không group chung tên)
         $requestsRaw = MaintenanceRequest::query()
             ->whereBetween('request_date', [$startDate, $endDate])
+            ->where('technician_email', '!=', 'liemhoang.support.hcm@tocototea.com')
             ->get();
 
         // Group đúng từng technician theo unique key (ưu tiên id hoặc sử dụng tên/email nếu unique)
@@ -96,6 +97,9 @@ class MaintenanceController extends Controller
             $quality_fail_count = $requests->where(function($item) {
                 return $item->acceptance_result === 'rejected' || is_null($item->acceptance_result);
             })->count();
+
+            // Số lượng ngoài giờ
+            $ngoai_gio_count = $requests->where('is_off_worktime', true)->count();
        
 
             $completion_percent =
@@ -143,6 +147,8 @@ class MaintenanceController extends Controller
                 'total_completed'            => $totalCompleted,
                 'dung_han_count'             => $dung_han_count,
                 'khong_dung_han_count'       => $khong_dung_han_count,
+                // Số lượng ngoài giờ
+                'ngoai_gio_count'            => (int) $ngoai_gio_count,
                 'quality_pass_count'         => $quality_pass_count,
                 'quality_fail_count'         => $quality_fail_count,
 

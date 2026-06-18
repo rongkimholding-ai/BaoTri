@@ -34,8 +34,8 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
         // Lấy maintenance_requests với mọi technician (không group chung tên)
         $requestsRaw = MaintenanceRequest::query()
             ->whereBetween('request_date', [$this->from_date, $this->to_date])
+            ->where('technician_email', '!=', 'liemhoang.support.hcm@tocototea.com')
             ->get();
-        // dd($this->from_date, $this->to_date);
 
         // Group đúng từng technician theo unique key (ưu tiên id hoặc sử dụng tên/email nếu unique)
         // Ở đây sẽ group theo technician_name + (technician_email nếu có để chính xác)
@@ -67,6 +67,9 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             $quality_fail_count = $requests->where(function ($item) {
                 return $item->acceptance_result === 'rejected' || is_null($item->acceptance_result);
             })->count();
+
+            // Số lượng ngoài giờ
+            $ngoai_gio_count = $requests->where('is_off_worktime', true)->count();
 
             $completion_percent =
                 $monthlyTarget > 0
@@ -112,6 +115,9 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
                 'total_completed' => (int) $totalCompleted,
                 'completion_percent' => (float) $completion_percent,
 
+                // Số lượng ngoài giờ
+                'ngoai_gio_count' => (int) $ngoai_gio_count,
+
                 'dung_han_count' => (int) $dung_han_count,
                 'dung_han_dm_percent' => (float) $dung_han_dm_percent,
                 'dung_han_total_percent' => (float) $dung_han_total_percent,
@@ -128,8 +134,6 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
             ];
         });
 
-        // dd($requests->toArray());
-
         return $requests;
     }
 
@@ -144,6 +148,8 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
 
             'Tổng sự vụ',
             'Tỷ lệ sự vụ/ĐM (%)',
+
+            'SL ngoài giờ',
 
             'Đúng hạn',
             'Tỷ lệ Đúng hạn/ĐM tháng (%)',

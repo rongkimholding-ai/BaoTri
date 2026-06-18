@@ -22,6 +22,7 @@ class MaintenanceRequest extends Model
         'include_saturday',
         'include_sunday',
         'include_holiday',
+        'is_off_worktime',
         'solution_description',
         'request_date',
         'actual_completion_date',

@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             DefaultUsersSeeder::class,
             StoreUserSeeder::class,
             HolidayCalendarSeeder::class,
-            KTNBRoleSeeder::class,
-            BPXDRoleSeeder::class,
+            // KTNBRoleSeeder::class,
+            // BPXDRoleSeeder::class,
         ]);
     }
 }

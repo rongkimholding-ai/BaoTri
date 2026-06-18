@@ -9,11 +9,46 @@
 
                 <h2 class="text-xl font-semibold">Users</h2>
 
+                <div>
                 <button onclick="openCreateModal()" class="bg-blue-500 text-white px-4 py-2 rounded">
                     + Thêm user
                 </button>
 
+                <a
+                    href="{{ route('users.export-excel') }}"
+                    class="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-600 btn"
+                >
+                    Xuất Excel
+                </a>
+                </div>
+       
+
             </div>
+
+            <form action="{{ route('users.index') }}" method="GET" class="mb-4 flex items-center gap-2">
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ request('name') }}"
+                    placeholder="Tìm theo tên..."
+                    class="border rounded px-3 py-2 focus:ring focus:ring-blue-200"
+                />
+                <input
+                    type="text"
+                    name="email"
+                    value="{{ request('email') }}"
+                    placeholder="Tìm theo email..."
+                    class="border rounded px-3 py-2 focus:ring focus:ring-blue-200"
+                />
+                <button type="submit" class="bg-blue-500 text-white px-3 py-2 rounded">
+                    Tìm kiếm
+                </button>
+                @if(request('name') || request('email'))
+                    <a href="{{ route('users.index') }}" class="btn ml-2 text-gray-500 btn-outline-secondary">
+                        Xóa tìm kiếm
+                    </a>
+                @endif
+            </form>
 
             @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
