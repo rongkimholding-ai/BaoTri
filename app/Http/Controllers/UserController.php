@@ -154,48 +154,40 @@ class UserController extends Controller
     {
         $users = User::with('roles')->get();
 
-        $filename = 'users_export_' . now()->format('Ymd_His') . '.xlsx';
+        $filename = 'users_' . now()->format('Ymd_His') . '.xlsx';
 
-        // Sử dụng thư viện PhpSpreadsheet để xuất excel nếu không dùng Laravel Excel.
-        // Nếu đang dùng Laravel Excel (maatwebsite/excel), dùng cách sau.
-        $heading = [
-            'Tên',
-            'Email',
-            'Roles'
-        ];
+        $headings = ['Tên', 'Email', 'Vai trò'];
 
-        $data = [];
-        foreach ($users as $user) {
-            $data[] = [
+        $rows = $users->map(function ($user) {
+            return [
                 $user->name,
                 $user->email,
-                $user->getRoleNames()->join(', '),
+                $user->getRoleNames()->implode(', ')
             ];
-        }
+        })->toArray();
 
-        // Tạo file excel bằng maatwebsite/excel
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new class($data, $heading) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
-                protected $data;
-                protected $heading;
+        // Sử dụng Export class ẩn danh cho gọn
+        $export = new class($rows, $headings) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+            protected $rows;
+            protected $headings;
 
-                public function __construct($data, $heading)
-                {
-                    $this->data = $data;
-                    $this->heading = $heading;
-                }
+            public function __construct(array $rows, array $headings)
+            {
+                $this->rows = $rows;
+                $this->headings = $headings;
+            }
 
-                public function array(): array
-                {
-                    return $this->data;
-                }
+            public function array(): array
+            {
+                return $this->rows;
+            }
 
-                public function headings(): array
-                {
-                    return $this->heading;
-                }
-            },
-            $filename
-        );
+            public function headings(): array
+            {
+                return $this->headings;
+            }
+        };
+
+        return \Maatwebsite\Excel\Facades\Excel::download($export, $filename);
     }
 }
