@@ -88,6 +88,16 @@ class DefaultUsersSeeder extends Seeder
                 'role' => 'manager',
             ],
             [
+                'name' => 'Loan Trần',
+                'email' => 'loantran@tocotocotea.com',
+                'role' => 'manager',
+            ],
+            [
+                'name' => 'Hạnh Hồ',
+                'email' => 'hanhho@tocotocotea.com',
+                'role' => 'manager',
+            ],
+            [
                 'name' => 'KDC User',
                 'email' => 'kdc@tea.com',
                 'role' => 'manager',
