@@ -1,4 +1,4 @@
-<h2>Yêu cầu bảo trì quá hạn</h2>
+<h2>Yêu cầu bảo trì</h2>
 
 <p>Mã cơ sở: {{ $request->branch_code }}</p>
 
