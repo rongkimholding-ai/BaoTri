@@ -284,7 +284,8 @@
                                     @endrole
                                     {{-- Delete --}}
                                     @can('delete data')
-                                        @if($item->sla_status == config('sla_status.code.NEW'))
+                                    @hasrole('admin')
+                                        @if($item->sla_status == config('sla_status.code.PROCESSING'))
                                             <li>
                                                 <form action="{{ route('maintenance-requests.destroy', $item->id) }}"
                                                       method="POST"
@@ -295,6 +296,7 @@
                                                 </form>
                                             </li>
                                         @endif
+                                    @endrole
                                     @endcan
                                 </ul>
                             </div>
