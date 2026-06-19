@@ -12,24 +12,21 @@
                         Danh sách Bảo trì
                     </a>
 
-                    @hasanyrole('manager|admin')
+                    @hasanyrole('manager|admin|am')
 
                     {{-- Báo cáo --}}
                     <a href="{{ route('reports.technicians') }}"
                         class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                         Báo cáo Công việc
                     </a>
+                    @endhasanyrole
+                    @role('admin')
 
                     {{-- Ngày lễ --}}
                     <a href="{{ route('holiday-calendars.index') }}"
                         class="nav-item {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">
                         Ngày lễ
                     </a>
-
-                    @endhasanyrole
-
-                    @role('admin')
-
                     {{-- Hệ thống --}}
                     <div class="relative h-16 flex items-center" x-data="{ openSystem: false }">
 
