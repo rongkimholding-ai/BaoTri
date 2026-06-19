@@ -28,7 +28,7 @@
 
 <p>
     <a href="{{ route('maintenance-requests.index', ['id' => $request->id]) }}">
-        Xem chi tiết yêu cầu bảo trì (ID: {{ $request->id }})
+        Xem chi tiết yêu cầu bảo trì
     </a>
 </p>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\BusinessTimeHelper;
 use App\Http\Requests\StoreMaintenanceRequest;
+use App\Mail\MaintenanceAcceptanceMail;
 use App\Mail\MaintenanceCompletedMail;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestLog;
@@ -520,16 +521,16 @@ class MaintenanceRequestController extends Controller
                 }
 
                 // Gửi mail thông báo khi hoàn thành công việc
-                // try {
-                //     Mail::to($maintenanceRequest->branch_email)
-                //         ->send(new MaintenanceCompletedMail($maintenanceRequest));
-                // } catch (\Throwable $e) {
-                //     \Log::error('Failed to send maintenance completed email', [
-                //         'id' => $maintenanceRequest->id,
-                //         'branch_email' => $maintenanceRequest->branch_email,
-                //         'error' => $e->getMessage(),
-                //     ]);
-                // }
+                try {
+                    Mail::to($maintenanceRequest->branch_email)
+                        ->send(new MaintenanceCompletedMail($maintenanceRequest));
+                } catch (\Throwable $e) {
+                    \Log::error('Failed to send maintenance completed email', [
+                        'id' => $maintenanceRequest->id,
+                        'branch_email' => $maintenanceRequest->branch_email,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
    
                 break;
 
@@ -692,6 +693,18 @@ class MaintenanceRequestController extends Controller
                     ]);
                 }
             }
+
+            try {
+                Mail::to($item->technician_email)
+                    ->send(new MaintenanceAcceptanceMail($item));
+            } catch (\Throwable $e) {
+                \Log::error('Failed to send maintenance acceptance email', [
+                    'id' => $item->id,
+                    'branch_email' => $item->technician_email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+       
 
             MaintenanceRequestLog::create([
                 'maintenance_request_id' => $item->id,

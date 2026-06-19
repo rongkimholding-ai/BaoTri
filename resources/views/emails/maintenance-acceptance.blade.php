@@ -1,4 +1,4 @@
-<h2>Yêu cầu bảo trì đã được hỗ trợ</h2>
+<h2>Yêu cầu bảo trì đã được nghiệm thu</h2>
 
 <p>Mã cơ sở: {{ $request->branch_code }}</p>
 
@@ -18,8 +18,8 @@
 
 <p>
     <a href="{{ route('maintenance-requests.index', ['id' => $request->id]) }}">
-        Xem chi tiết yêu cầu bảo trì 
+        Xem chi tiết yêu cầu bảo trì
     </a>
 </p>
 
-<p>Vui lòng vào xác nhận và nghiệm thu sớm.</p>
+<p>Yêu cầu đã được nghiệm thu.</p>
