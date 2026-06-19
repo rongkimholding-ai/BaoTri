@@ -79,8 +79,8 @@
                     </div>
                     <div><span class="fw-bold">Hạn: </span>{{ $timeName }}</div>
                     <div><span class="fw-bold">YC: </span>{{ $maintenanceRequest->request_date ? \Carbon\Carbon::parse($maintenanceRequest->request_date)->format('d/m/Y H:i') : '' }}</div>
-                    {{ $maintenanceRequest->pending_at ? '<div><span class="fw-bold">Tạm dừng: </span>'.\Carbon\Carbon::parse($maintenanceRequest->pending_at)->format('d/m/Y H:i').'</div>' : '' }}
-                    {{ $maintenanceRequest->processing_at ? '<div><span class="fw-bold">Tiếp tục: </span>'.\Carbon\Carbon::parse($maintenanceRequest->processing_at)->format('d/m/Y H:i').'</div>' : '' }}
+                    {!! $maintenanceRequest->pending_at ? '<div><span class="fw-bold">Tạm dừng: </span>'.\Carbon\Carbon::parse($maintenanceRequest->pending_at)->format('d/m/Y H:i').'</div>' : '' !!}
+                    {!! $maintenanceRequest->processing_at ? '<div><span class="fw-bold">Tiếp tục: </span>'.\Carbon\Carbon::parse($maintenanceRequest->processing_at)->format('d/m/Y H:i').'</div>' : '' !!}
                     <div><span class="fw-bold">HT: </span>{{ $maintenanceRequest->actual_completion_date ? \Carbon\Carbon::parse($maintenanceRequest->actual_completion_date)->format('d/m/Y H:i') : '' }}</div>
                     <div><span class="fw-bold">TG thực tế: </span>{{ $maintenanceRequest->actual_duration ? format_duration($maintenanceRequest->actual_duration) : '' }}</div>
                     <div><span class="fw-bold">Tạo: </span>{{ \Carbon\Carbon::parse($maintenanceRequest->created_at)->format('d/m/Y H:i') }}</div>
