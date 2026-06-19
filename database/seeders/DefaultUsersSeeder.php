@@ -150,7 +150,7 @@ class DefaultUsersSeeder extends Seeder
 
             // phân role theo email đặc biệt
             if (in_array($tech['email'], [
-                'liemhoang.support.hcm@tocototea.com',
+                'liemhoang.support.hcm@tocotocotea.com',
                 'dunguyen.support@tocotocotea.com',
             ])) {
                 $user->syncRoles(['manager']);

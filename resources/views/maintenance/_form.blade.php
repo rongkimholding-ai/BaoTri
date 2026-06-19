@@ -160,7 +160,7 @@ if ($user) {
             <option value="">-- {{ config('maintenance.fields.technician_name') }} --</option>
 
             @foreach($techs as $tech)
-            @if ($tech['email'] != 'liemhoang.support.hcm@tocototea.com')
+            @if ($tech['email'] != 'liemhoang.support.hcm@tocotocotea.com')
                 <option value="{{ $tech['name'] }}"
                     data-email="{{ $tech['email'] }}" data-mobile="{{ $tech['mobile'] }}">
                     {{ $tech['name'] }}

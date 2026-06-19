@@ -51,7 +51,7 @@ class BPXDRoleSeeder extends Seeder
             );
 
             // Gán role theo email
-            if ($userData['email'] === 'liemhoang.support.hcm@tocototea.com') {
+            if ($userData['email'] === 'liemhoang.support.hcm@tocotocotea.com') {
                 $user->assignRole('manager');
             } elseif ($userData['email'] === 'dunguyen.support@tocotocotea.com') {
                 $user->assignRole('manager');

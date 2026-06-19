@@ -43,7 +43,7 @@ class MaintenanceRequestController extends Controller
         // Lọc theo OM/AM email trùng với user
         else if ($user->hasRole('manager')) {
             // Nếu là user đặc biệt: xem full
-            if (strtolower($user->email) === 'liemhoang.support.hcm@tocototea.com') {
+            if (strtolower($user->email) === 'liemhoang.support.hcm@tocotocotea.com') {
                 // không giới hạn dữ liệu, bỏ qua filter này
             } else {
                 // Đọc file json từ storage hoặc resource

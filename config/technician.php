@@ -6,7 +6,7 @@ return [
         "name" => "Hoàng Thanh Liêm",
         "position" => "QL Bảo Trì",
         "mobile" => "",
-        "email" => "liemhoang.support.hcm@tocototea.com"
+        "email" => "liemhoang.support.hcm@tocotocotea.com"
     ],
     [
         "key" => "VP1706",
@@ -34,14 +34,14 @@ return [
         "name" => "Nguyễn Duy Thắng",
         "position" => "NV Bảo Trì",
         "mobile" => "0988124788",
-        "email" => "duythang.support.hcm@tocototea.com"
+        "email" => "duythang.support.hcm@tocotocotea.com"
     ],
     [
         "key" => "",
         "name" => "Phạm Văn Thắng",
         "position" => "NV Bảo Trì",
         "mobile" => "0378863638",
-        "email" => "vanthang.support.hcm@tocototea.com"
+        "email" => "vanthang.support.hcm@tocotocotea.com"
     ],
     'ngoai_gio' => [
         "key" => "VPBT002",

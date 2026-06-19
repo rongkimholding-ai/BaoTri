@@ -64,7 +64,7 @@ class MaintenanceController extends Controller
         // Lấy maintenance_requests với mọi technician (không group chung tên)
         $requestsRaw = MaintenanceRequest::query()
             ->whereBetween('request_date', [$startDate, $endDate])
-            ->where('technician_email', '!=', 'liemhoang.support.hcm@tocototea.com')
+            ->where('technician_email', '!=', 'liemhoang.support.hcm@tocotocotea.com')
             ->get();
 
         // Group đúng từng technician theo unique key (ưu tiên id hoặc sử dụng tên/email nếu unique)
