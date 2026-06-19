@@ -83,6 +83,12 @@ class MaintenanceRequestController extends Controller
                 }
             }
         }
+        else if ($user->hasRole('muasam')) {
+            // Chỉ cho phép xem các maintenance request có sla_status = PENDING
+            $pendingStatus = config('sla_status.code.PENDING');
+            $baseQuery->where('sla_status', $pendingStatus);
+        }
+
         // Nếu là admin, không giới hạn
 
         $filters = [
