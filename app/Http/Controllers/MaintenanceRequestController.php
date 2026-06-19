@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\BusinessTimeHelper;
 use App\Http\Requests\StoreMaintenanceRequest;
 use App\Mail\MaintenanceAcceptanceMail;
+use App\Mail\MaintenanceBuyerMail;
 use App\Mail\MaintenanceCompletedMail;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestLog;
@@ -555,7 +556,21 @@ class MaintenanceRequestController extends Controller
                 break;
         }
 
-        if (in_array($status, [config('sla_status.code.PENDING'), config('sla_status.code.PENDING_CONTRACTOR')])) {
+        if (in_array($status, [config('sla_status.code.PENDING')])) {
+            $data['pending_at'] = $now;
+            // Gửi mail thông báo khi mua sắm xong
+            try {
+                Mail::to($maintenanceRequest->technician_email)
+                    ->send(new MaintenanceBuyerMail($maintenanceRequest));
+            } catch (\Throwable $e) {
+                \Log::error('Failed to send maintenance completed email', [
+                    'id' => $maintenanceRequest->id,
+                    'branch_email' => $maintenanceRequest->technician_email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+        if (in_array($status,[config('sla_status.code.PENDING_CONTRACTOR')])) {
             $data['pending_at'] = $now;
         }
 

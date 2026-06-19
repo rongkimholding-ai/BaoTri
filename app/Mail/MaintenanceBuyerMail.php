@@ -5,7 +5,7 @@ namespace App\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Envelope;
 
-class MaintenanceCompletedMail extends Mailable
+class MaintenanceBuyerMail extends Mailable
 {
     public $request;
 
@@ -17,8 +17,8 @@ class MaintenanceCompletedMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Yêu cầu bảo trì đã được hỗ trợ')
-            ->view('emails.maintenance-completed');
+            ->subject('Yêu cầu bảo trì cần được mua sắm bổ sung')
+            ->view('emails.maintenance-buyer');
     }
 
     public function envelope(): Envelope
@@ -46,15 +46,19 @@ class MaintenanceCompletedMail extends Mailable
                             if (!empty($store['om_email'])) {
                                 $cc[] = $store['om_email'];
                             }
+                            if (!empty($store['muasam_email'])) {
+                                $cc[] = $store['muasam_email'];
+                            }
                             break 2; // Đã tìm thấy, dừng cả 2 vòng lặp
                         }
                     }
                 }
             }
+       
         }
 
         return new Envelope(
-            subject: 'Yêu cầu bảo trì đã được hỗ trợ',
+            subject: 'Yêu cầu bảo trì cần được mua sắm bổ sung',
             cc: config('mail.notification_cc', $cc),
         );
     }
