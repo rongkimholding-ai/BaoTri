@@ -39,6 +39,44 @@ class MaintenanceRequestController extends Controller
         else if ($user->hasRole('user')) {
             $baseQuery->where('branch_email', $user->email);
         }
+        // Lọc theo OM/AM email trùng với user
+        else if ($user->hasRole('manager')) {
+            // Đọc file json từ storage hoặc resource
+            $stores = [];
+            $jsonPaths = [
+                resource_path('json/stores.json'),
+                resource_path('json/stores_mn.json')
+            ];
+            foreach ($jsonPaths as $path) {
+                if (file_exists($path)) {
+                    $fileContent = file_get_contents($path);
+                    $array = json_decode($fileContent, true);
+                    if (is_array($array)) {
+                        $stores = array_merge($stores, $array);
+                    }
+                }
+            }
+
+            // Lấy các mã cửa hàng được OM/AM quản lý theo email
+            $emails = [];
+            foreach ($stores as $store) {
+                if (
+                    (isset($store['om_email']) && strtolower($store['om_email']) == strtolower($user->email)) 
+                    || (isset($store['am_email']) && strtolower($store['am_email']) == strtolower($user->email))
+                ) {
+                    if (isset($store['email'])) {
+                        $emails[] = $store['email'];
+                    }
+                }
+            }
+
+            if (!empty($emails)) {
+                $baseQuery->whereIn('branch_email', $emails);
+            } else {
+                // Nếu không quản lý cửa hàng nào, trả về rỗng
+                $baseQuery->whereRaw('1=0');
+            }
+        }
         // Nếu là admin, không giới hạn
 
         $filters = [
