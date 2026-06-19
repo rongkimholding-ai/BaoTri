@@ -162,6 +162,12 @@ $(function () {
         let severity = String($(this).val()).trim();
         let issueSelector = $('.issue-selector');
 
+        // kiểm tra nếu option được chọn của issueSelector có data-key là 'OTHER' hoặc value là 'other_store' thì bỏ qua không xử lý
+        let $selected = issueSelector.find('option:selected');
+        if ($selected.data('key') === 'OTHER' || issueSelector.val() === 'other_store') {
+            return;
+        }
+
         if (isUpdating) return;
         isUpdating = true;
 
@@ -242,6 +248,14 @@ $(function () {
             let $modal = $('#createModal');
             let $selected = $(this).find(':selected');
             fillIssueData($modal, $selected);
+
+            // Nếu select "OTHER" thì show trường severity
+            if ($selected.val() === 'other_store' || $selected.data('key') === 'OTHER') {
+                $modal.find('.severity-field').closest('.mb-3').removeClass('hidden');
+            } else {
+                $modal.find('.severity-field').closest('.mb-3').addClass('hidden');
+            }
+    
 
             // Check severity data
             let severity = $selected.data('severity');
@@ -1096,4 +1110,6 @@ $(function () {
 
     // Trường hợp edit hoặc reload form
     toggleOtherStoreInput();
+
+    
 });

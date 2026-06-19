@@ -5,20 +5,7 @@
         <input class="form-control form-branch-code" name="branch_code">
     </div>
 
-    <div class="col-md-6 mb-3 hidden">
-        <label>{{ config('maintenance.fields.severity') }}</label>
-
-        <select class="form-control severity-field select2-branch" name="severity">
-            <option value="">-- Chọn {{ config('maintenance.fields.severity') }} --</option>
-
-            @foreach($severities as $severity)
-                <option value="{{ $severity['key'] }}"
-                    data-processing_time="{{ $severity['processing_time'] }}">
-                    {{ $severity['name'] }}
-                </option>
-            @endforeach
-        </select>
-    </div>
+    
 
     @php
 use Illuminate\Support\Facades\Auth;
@@ -138,6 +125,21 @@ if ($user) {
             <input type="text" class="form-control" name="other_branch_email" id="other_branch_email"
                 placeholder="Nhập email cửa hàng">
         </div>
+    </div>
+
+    <div class="col-md-6 mb-3 hidden">
+        <label>{{ config('maintenance.fields.severity') }}</label>
+
+        <select class="form-control severity-field select2-branch" name="severity">
+            <option value="">-- Chọn {{ config('maintenance.fields.severity') }} --</option>
+
+            @foreach($severities as $severity)
+                <option value="{{ $severity['key'] }}"
+                    data-processing_time="{{ $severity['processing_time'] }}">
+                    {{ $severity['name'] }}
+                </option>
+            @endforeach
+        </select>
     </div>
 
     <div class="col-md-12 mb-3">
