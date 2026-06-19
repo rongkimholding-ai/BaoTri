@@ -411,38 +411,35 @@ $(function () {
     );
 
     function initSelect2() {
-
-        $('.select2-branch').select2({
+        $('.select2-branch, .select2-category')
+        .not('#createModal .select2-branch, #createModal .select2-category')
+        .select2({
             width: '100%'
         });
-
-        $('.select2-category').select2({
-            width: '100%'
-        });
-
-        $('.select2-branch').select2({
-            dropdownParent: $('#createModal'),
-            width: '100%'
-        });
-    
-        $('.select2-category').select2({
-            dropdownParent: $('#createModal'),
-            width: '100%'
-        });
-
     }
 
+    function initSelect2Modal() {
+        let $modal = $('#createModal');
+        $modal.find('.select2-branch').select2({
+            dropdownParent: $modal,
+            width: '100%'
+        });
+        $modal.find('.select2-category').select2({
+            dropdownParent: $modal,
+            width: '100%'
+        });
+    }
+
+    $('#createModal').on('shown.bs.modal', function () {
+        initSelect2Modal();
+    });
+
     $('#createModal').on('hidden.bs.modal', function () {
-        const form = $(this).find('form')[0];
-
-        if (form) {
-            form.reset();
-        }
-
-        $(this)
-            .find('.select2-branch, .select2-category')
-            .val(null)
-            .trigger('change');
+        const $modal = $(this);
+        $modal.find('form')[0].reset();
+        $modal.find('select').each(function () {
+            $(this).val(null).trigger('change.select2');
+        });
     });
 
     $(document).on('submit', '#createForm', function (e) {
