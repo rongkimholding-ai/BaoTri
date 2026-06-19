@@ -52,8 +52,9 @@
                         $timeName = $item->standard_completion_time
                             ? ($realTimeMap[$item->standard_completion_time]['name'] ?? $item->standard_completion_time)
                             : '';
+                        $detailRoute = route('maintenance-requests.show', $item->id);
                     @endphp
-                    <tr data-id="{{ $item->id }}" class="{{ $isOverdue ? 'table-danger' : '' }}">
+                    <tr data-id="{{ $item->id }}" class="{{ $isOverdue ? 'table-danger' : '' }} tr-row-link" data-detail-url="{{ $detailRoute }}">
                         <td>{{ $item->id }}</td>
                         <td class="branch_data">
                             Mã: {{ $item->branch_code }} <br>
@@ -139,7 +140,7 @@
                             Đã nhắc: {{ $item->reminder_count }}
                             {!! $item->last_reminded_at ? '<br>Nhắc lần cuối: '.\Carbon\Carbon::parse($item->last_reminded_at)->format('d/m/Y H:i:s') : '' !!}
                         </td> -->
-                        <td class="action-column">
+                        <td class="action-column action-cell">
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác</button>
                                 <ul class="dropdown-menu">
@@ -320,3 +321,26 @@
         {{ $requests->links() }}
     </div>
 </div>
+<style>
+    .tr-row-link {
+    cursor: pointer;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.tr-row-link').forEach(function (row) {
+        row.addEventListener('click', function (e) {
+
+            // ❗ chặn click vào button / link / dropdown
+            if (e.target.closest('a, button, .dropdown, .dropdown-menu')) {
+                return;
+            }
+
+            const url = this.dataset.detailUrl;
+            if (url) {
+                window.location.href = url;
+            }
+        });
+    });
+});
+</script>
