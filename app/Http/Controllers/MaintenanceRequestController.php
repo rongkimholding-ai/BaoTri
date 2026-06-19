@@ -240,7 +240,17 @@ class MaintenanceRequestController extends Controller
      */
     public function show(MaintenanceRequest $maintenanceRequest)
     {
-        return response()->json($maintenanceRequest);
+        $maintenanceRequest->load([
+            'images',
+            'logs.user',
+        ]);
+
+        $title = 'Chi tiết yêu cầu #' . $maintenanceRequest->id;
+    
+        return view(
+            'maintenance.show',
+            compact('maintenanceRequest','title')
+        );
     }
 
     public function detail(MaintenanceRequest $maintenanceRequest)

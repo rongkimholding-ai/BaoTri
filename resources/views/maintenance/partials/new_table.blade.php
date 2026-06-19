@@ -144,10 +144,16 @@
                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác</button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a
+                                        <!-- <a
                                             role="button"
                                             class="dropdown-item btn-detail"
                                             data-id="{{ $item->id }}"
+                                        >
+                                            Chi tiết
+                                        </a> -->
+                                        <a
+                                            href="{{ route('maintenance-requests.show', $item->id) }}"
+                                            class="dropdown-item"
                                         >
                                             Chi tiết
                                         </a>
@@ -196,17 +202,20 @@
                                                     Hoàn thành Y/C
                                                 </a>
                                             </li>
-                                        @elseif($item->sla_status == config('sla_status.code.PENDING'))
-                                            <li>
-                                                <a class="dropdown-item change-status-btn"
-                                                    href=""
-                                                    data-id="{{ $item->id }}"
-                                                    data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
-                                                    Tiếp tục xử lý
-                                                </a>
-                                            </li>
                                         @endif
                                     @endhasanyrole
+                                    @role('muasam')
+                                        @if($item->sla_status == config('sla_status.code.PENDING'))
+                                        <li>
+                                            <a class="dropdown-item change-status-btn"
+                                                href=""
+                                                data-id="{{ $item->id }}"
+                                                data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
+                                                Tiếp tục xử lý
+                                            </a>
+                                        </li>
+                                        @endif
+                                    @endrole
                                     @hasanyrole('manager|admin')
                                         @if(in_array($item->sla_status,[config('sla_status.code.WAITING_CONFIRM')]))
                                             <li>

@@ -17,7 +17,7 @@
 <p>Kỹ thuật viên: {{ $request->technician_name }}</p>
 
 <p>
-    <a href="{{ route('maintenance-requests.index', ['id' => $request->id]) }}">
+    <a href="{{ route('maintenance-requests.show', $request->id) }}">
         Xem chi tiết yêu cầu bảo trì
     </a>
 </p>

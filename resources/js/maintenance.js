@@ -135,14 +135,22 @@ $(function () {
         });
     }
 
+    $(document).on('select2:open', function () {
+        setTimeout(function () {
+            document.querySelector('.select2-container--open .select2-search__field')?.focus();
+        }, 0);
+    });
+
     function fillIssueData(container, option) {
 
         container.find('.issue-description')
             .val(option.data('issue'));
 
+        // container.find('.severity-field')
+        //     .val(option.data('severity'))
+        //     .trigger('change');
         container.find('.severity-field')
-            .val(option.data('severity'))
-            .trigger('change');
+        .val(option.data('severity'));
 
         container.find('.processing-time')
             .val(option.data('processing'));
@@ -412,30 +420,29 @@ $(function () {
             width: '100%'
         });
 
+        $('.select2-branch').select2({
+            dropdownParent: $('#createModal'),
+            width: '100%'
+        });
+    
+        $('.select2-category').select2({
+            dropdownParent: $('#createModal'),
+            width: '100%'
+        });
+
     }
 
-    $('#createModal').on('shown.bs.modal', function () {
-
-        $(this)
-            .find('.select2-branch')
-            .select2({
-                dropdownParent: $('#createModal'),
-                width: '100%'
-            });
-
-        $(this)
-            .find('.select2-category')
-            .select2({
-                dropdownParent: $('#createModal'),
-                width: '100%'
-            });
-
-    });
-
     $('#createModal').on('hidden.bs.modal', function () {
-        $(this).find('form')[0].reset();
+        const form = $(this).find('form')[0];
 
-        $(this).find('.select2').val(null).trigger('change');
+        if (form) {
+            form.reset();
+        }
+
+        $(this)
+            .find('.select2-branch, .select2-category')
+            .val(null)
+            .trigger('change');
     });
 
     $(document).on('submit', '#createForm', function (e) {
@@ -506,16 +513,58 @@ $(function () {
             url: $(this).attr('action'),
             type: 'POST',
             data: $(this).serialize(),
+        
             success: function () {
-
+        
+                $('#create-form-errors')
+                    .addClass('d-none')
+                    .html('');
+        
                 let modalEl = document.getElementById('createModal');
                 let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        
                 modal.hide();
-
+        
                 location.reload();
             },
+        
             error: function (xhr) {
-                console.log(xhr.responseJSON?.errors);
+        
+                let errorBox = $('#create-form-errors');
+        
+                errorBox.html('');
+        
+                if (
+                    xhr.responseJSON &&
+                    xhr.responseJSON.errors
+                ) {
+        
+                    let html = '<ul class="mb-0">';
+        
+                    $.each(
+                        xhr.responseJSON.errors,
+                        function (field, messages) {
+        
+                            messages.forEach(function (message) {
+                                html += `<li>${message}</li>`;
+                            });
+        
+                        }
+                    );
+        
+                    html += '</ul>';
+        
+                    errorBox
+                        .removeClass('d-none')
+                        .html(html);
+        
+                } else {
+        
+                    errorBox
+                        .removeClass('d-none')
+                        .html(xhr.responseJSON?.message || 'Có lỗi xảy ra');
+                }
+        
             }
         });
     });
@@ -837,7 +886,14 @@ $(function () {
 
         // Khóa toàn bộ trước
         modal.find('input, textarea')
-            .not('.form-branch-name, .issue-selector, #other_branch_name, #other_branch_code, #other_branch_email')
+            .not(
+                '.form-branch-name,' +
+                '.issue-selector,' +
+                '#other_branch_name,' +
+                '#other_branch_code,' +
+                '#other_branch_email,' +
+                '.select2-search__field'
+            )
             .prop('readonly', true);
 
         modal.find('select')
