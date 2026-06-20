@@ -62,9 +62,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT, Bảo trì sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -124,9 +124,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT, Bảo trì sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -162,9 +162,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity":"3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -200,9 +200,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -230,9 +230,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -260,9 +260,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -290,9 +290,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -312,9 +312,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -334,9 +334,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -356,9 +356,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -378,9 +378,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -400,9 +400,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -422,9 +422,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -444,9 +444,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -466,9 +466,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -488,9 +488,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -510,9 +510,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -532,9 +532,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -562,9 +562,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -600,9 +600,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -630,9 +630,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -660,9 +660,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -690,9 +690,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -712,9 +712,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -742,9 +742,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -764,9 +764,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -794,9 +794,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -824,9 +824,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -846,9 +846,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -868,9 +868,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -898,9 +898,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -920,9 +920,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -950,9 +950,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -972,9 +972,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1002,9 +1002,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1024,9 +1024,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1078,9 +1078,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1108,9 +1108,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1138,9 +1138,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1152,9 +1152,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1182,9 +1182,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1212,9 +1212,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1242,9 +1242,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1280,9 +1280,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1310,9 +1310,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1332,9 +1332,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1362,9 +1362,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1400,9 +1400,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1422,9 +1422,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1452,9 +1452,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1474,9 +1474,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1496,9 +1496,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1518,9 +1518,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1540,9 +1540,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1562,9 +1562,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1584,9 +1584,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1606,9 +1606,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]
@@ -1628,9 +1628,9 @@
       {
         "key": "OTHER",
         "name": "Các lỗi khác",
-        "severity": null,
+        "severity": "3A",
         "handler": "BPBT",
-        "processing_time": "Theo phương án xử lý",
+        "processing_time": "3_5_DAYS",
         "solution": "Đơn vị sử dụng liên hệ báo lại thông tin cho BP.BT sẽ kiểm tra và lên phương án xử lý."
       }
     ]

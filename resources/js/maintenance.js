@@ -171,10 +171,10 @@ $(function () {
         let issueSelector = $('.issue-selector');
 
         // kiểm tra nếu option được chọn của issueSelector có data-key là 'OTHER' hoặc value là 'other_store' thì bỏ qua không xử lý
-        let $selected = issueSelector.find('option:selected');
-        if ($selected.data('key') === 'OTHER' || issueSelector.val() === 'other_store') {
-            return;
-        }
+        // let $selected = issueSelector.find('option:selected');
+        // if ($selected.data('key') === 'OTHER' || issueSelector.val() === 'other_store') {
+        //     return;
+        // }
 
         if (isUpdating) return;
         isUpdating = true;
@@ -258,11 +258,11 @@ $(function () {
             fillIssueData($modal, $selected);
 
             // Nếu select "OTHER" thì show trường severity
-            if ($selected.val() === 'other_store' || $selected.data('key') === 'OTHER') {
-                $modal.find('.severity-field').closest('.mb-3').removeClass('hidden');
-            } else {
-                $modal.find('.severity-field').closest('.mb-3').addClass('hidden');
-            }
+            // if ($selected.val() === 'other_store' || $selected.data('key') === 'OTHER') {
+            //     $modal.find('.severity-field').closest('.mb-3').removeClass('hidden');
+            // } else {
+            //     $modal.find('.severity-field').closest('.mb-3').addClass('hidden');
+            // }
     
 
             // Check severity data
@@ -903,8 +903,9 @@ $(function () {
 
         // Nếu là OTHER thì mở các trường được phép sửa
         if (key === 'OTHER') {
+            // .severity-field,  .processing-time
             modal.find(
-                '.severity-field, .issue-description, .solution-description, .processing-time'
+                ' .issue-description, .solution-description'
             )
                 .prop('readonly', false)
                 .prop('disabled', false)
