@@ -115,11 +115,11 @@
                                 @endif
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                             <label for="id" class="form-label mb-1">ID</label>
                             <input type="text" name="id" id="id" class="form-control"
                                 placeholder="Nhập ID" value="{{ request('id') }}">
-                        </div>
+                        </div> -->
                         <div class="col-md-3 d-flex gap-2 pt-md-3">
                             <button type="submit" class="btn btn-primary flex-fill mt-2 mt-md-0">Tìm kiếm</button>
                             <a href="{{ route('maintenance-requests.index') }}" class="btn btn-outline-secondary flex-fill mt-2 mt-md-0">Bỏ lọc</a>

@@ -33,6 +33,9 @@
             </thead>
             <tbody>
                 @isset($requests)
+                @php
+                    $stt = ($requests->currentPage() - 1) * $requests->perPage();
+                @endphp
                 @foreach($requests as $item)
                     @php
                         // Đặt lên đầu foreach để tận dụng biến chung
@@ -55,7 +58,7 @@
                         $detailRoute = route('maintenance-requests.show', $item->id);
                     @endphp
                     <tr data-id="{{ $item->id }}" class="{{ $isOverdue ? 'table-danger' : '' }} tr-row-link" data-detail-url="{{ $detailRoute }}">
-                        <td>{{ $item->id }}</td>
+                        <td>{{ ++$stt }}</td>
                         <td class="branch_data">
                             Mã: {{ $item->branch_code }} <br>
                             Tên: {{ $item->branch_name }}

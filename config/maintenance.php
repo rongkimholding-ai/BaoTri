@@ -28,7 +28,7 @@ return [
     ],
 
     'tbl_fields' => [
-        'id' => 'ID',
+        'stt' => 'STT',
         'branch' => 'Cơ sở',
         'item_category' => 'Hạng mục',
         'issue_description' => 'Diễn giải sự cố',
