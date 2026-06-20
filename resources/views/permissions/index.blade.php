@@ -2,7 +2,7 @@
 
     <div class="py-6">
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-10xl mx-auto sm:px-6 lg:px-8">
 
             {{-- HEADER --}}
             <div class="flex justify-between items-center mb-4">

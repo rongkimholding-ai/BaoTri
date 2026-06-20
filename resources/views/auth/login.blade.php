@@ -180,7 +180,7 @@
                         Quản lý yêu cầu bảo trì và theo dõi tiến độ xử lý.
                     </p>
 
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" autocomplete="on">
                         @csrf
 
                         <label class="input-label">
@@ -192,6 +192,7 @@
                             name="email"
                             value="{{ old('email') }}"
                             class="form-input"
+                            autocomplete="username"
                             required
                             autofocus
                         >
@@ -204,8 +205,20 @@
                             type="password"
                             name="password"
                             class="form-input"
+                            autocomplete="current-password"
                             required
                         >
+
+                        <div class="mb-3">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="remember"
+                                    class="rounded border-gray-300"
+                                >
+                                <span>Ghi nhớ đăng nhập</span>
+                            </label>
+                        </div>
 
                         <button
                             type="submit"
