@@ -1,33 +1,33 @@
 <h2>Yêu cầu bảo trì</h2>
 
-<p>Mã cơ sở: {{ $request->branch_code }}</p>
+<p>Mã cơ sở: {{ $maintenanceRequest->branch_code }}</p>
 
-<p>Cơ sở: {{ $request->branch_name }}</p>
+<p>Cơ sở: {{ $maintenanceRequest->branch_name }}</p>
 
-<p>Hạng mục: {{ $request->item_category }}</p>
+<p>Hạng mục: {{ $maintenanceRequest->item_category }}</p>
 
 @php
     $severities = collect(config('severities'));
-    $severityLabel = $severities->where('key', $request->severity)->first()['name'] ?? $request->severity;
+    $severityLabel = $severities->where('key', $maintenanceRequest->severity)->first()['name'] ?? $maintenanceRequest->severity;
 @endphp
 <p>Loại sự cố: {{ $severityLabel }}</p>
 
-<p>Sự cố: {{ $request->issue_description }}</p>
+<p>Sự cố: {{ $maintenanceRequest->issue_description }}</p>
 
-<p>Kỹ thuật viên: {{ $request->technician_name }}</p>
+<p>Kỹ thuật viên: {{ $maintenanceRequest->technician_name }}</p>
 
-<p>Đề xuất khắc phục: {{ $request->solution_description }}</p>
+<p>Đề xuất khắc phục: {{ $maintenanceRequest->solution_description }}</p>
 
 @php
     $realTimeMap = collect(config('real_time'))->keyBy('key');
-    $timeName = isset($request->standard_completion_time) && $request->standard_completion_time
-        ? ($realTimeMap[$request->standard_completion_time]['name'] ?? $request->standard_completion_time)
+    $timeName = isset($maintenanceRequest->standard_completion_time) && $maintenanceRequest->standard_completion_time
+        ? ($realTimeMap[$maintenanceRequest->standard_completion_time]['name'] ?? $maintenanceRequest->standard_completion_time)
         : '';
 @endphp
 <p>Yêu cầu hoàn thành: {{ $timeName }}</p>
 
 <p>
-    <a href="{{ route('maintenance-requests.show', $request->id) }}">
+    <a href="{{ route('maintenance-requests.show', $maintenanceRequest->id) }}">
         Xem chi tiết yêu cầu bảo trì
     </a>
 </p>

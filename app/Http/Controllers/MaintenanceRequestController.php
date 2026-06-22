@@ -357,12 +357,18 @@ class MaintenanceRequestController extends Controller
 
         try {
             $email = $item->technician_email;
-            // $email = env('MAIL_NOTIFICATION_CC');
-            Mail::to($email)->send(new MaintenanceReminderMail($item));
-            $item->increment('reminder_count', 1, ['last_reminded_at' => now()]);
+
+            Mail::to($email)->queue(new MaintenanceReminderMail($item));
+
+            $item->increment('reminder_count');
+            $item->update([
+                'last_reminded_at' => now()
+            ]);
 
             return response()->json(['success' => true]);
+
         } catch (\Throwable $e) {
+
             \Log::error('Failed to send maintenance reminder email', [
                 'id' => $item->id,
                 'email' => $item->technician_email,
@@ -644,17 +650,16 @@ class MaintenanceRequestController extends Controller
             'result' => 'required|in:accepted,rejected',
             'note'   => 'nullable|string|max:1000',
 
-            'images'     => 'nullable|array',
-            'images.*'   => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'images'   => 'nullable|array',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $item = MaintenanceRequest::findOrFail($request->id);
 
-        if (!in_array($item->sla_status,[
-                config('sla_status.code.COMPLETED'),
-                config('sla_status.code.LATED')
-            ])
-        ) {
+        if (!in_array($item->sla_status, [
+            config('sla_status.code.COMPLETED'),
+            config('sla_status.code.LATED')
+        ])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Yêu cầu chưa đủ điều kiện nghiệm thu.'
@@ -669,6 +674,7 @@ class MaintenanceRequestController extends Controller
         }
 
         DB::transaction(function () use ($request, $item) {
+
             $item->acceptance_result       = $request->result;
             $item->acceptance_note         = $request->note;
             $item->acceptance_confirmed_by = auth()->user()->name;
@@ -676,16 +682,17 @@ class MaintenanceRequestController extends Controller
             $item->is_confirmed            = ($request->result === 'accepted');
 
             if ($request->result === 'rejected') {
-                // Lấy danh sách thời gian chuẩn từ config
-                $realTimeList   = config('real_time');
-                $realTimeMap    = collect($realTimeList)->keyBy('key');
-                $sla            = $realTimeMap[$item->standard_completion_time] ?? null;
-                $createdAt      = Carbon::parse($item->request_date);
-                $elapsedSeconds = $createdAt->diffInSeconds(now());
-                $isOverdue      = $elapsedSeconds > (int) $sla['max_seconds'];
+
+                $realTimeMap = collect(config('real_time'))->keyBy('key');
+                $sla = $realTimeMap[$item->standard_completion_time] ?? null;
+
+                $elapsedSeconds = Carbon::parse($item->request_date)
+                    ->diffInSeconds(now());
+
+                $isOverdue = $sla && $elapsedSeconds > (int) $sla['max_seconds'];
+
                 if ($isOverdue) {
-                    $item->is_confirmed            = ($request->result === 'rejected');
-                    $item->sla_status              = config('sla_status.code.LATED');
+                    $item->sla_status = config('sla_status.code.LATED');
                 } else {
                     $item->is_confirmed            = false;
                     $item->acceptance_result       = null;
@@ -697,57 +704,61 @@ class MaintenanceRequestController extends Controller
             }
 
             $item->save();
-            $item->refresh();
-
-            if ($request->hasFile('images')) {
-                $manager = new ImageManager(new Driver());
-                foreach ($request->file('images') as $file) {
-                    $image = $manager->read($file);
-                    $image->scaleDown(
-                        width: 1280,
-                        height: 1280
-                    );
-                    $fileName = uniqid() . '.jpg';
-                    $dateFolder = now()->format('Y_m_d');
-                    $path = 'images/' . $dateFolder . '/' . $fileName;
-                    $encoded = $image->encode(
-                        new JpegEncoder(quality: 70)
-                    );
-                    Storage::disk('public')->put(
-                        $path,
-                        $encoded
-                    );
-            
-                    MaintenanceRequestImage::create([
-                        'maintenance_request_id' => $item->id,
-                        'path'                   => $path,
-                        'uploaded_by'            => auth()->user()->email,
-                    ]);
-                }
-            }
-
-            try {
-                Mail::to($item->technician_email)
-                    ->send(new MaintenanceAcceptanceMail($item));
-            } catch (\Throwable $e) {
-                \Log::error('Failed to send maintenance acceptance email', [
-                    'id' => $item->id,
-                    'branch_email' => $item->technician_email,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-       
 
             MaintenanceRequestLog::create([
                 'maintenance_request_id' => $item->id,
                 'user_id'                => auth()->id(),
                 'old_status'             => $item->sla_status,
                 'new_status'             => $item->sla_status,
-                'note'                   => $request->result === 'accepted' 
-                                            ? 'Nghiệm thu đạt' 
-                                            : 'Nghiệm thu không đạt: ' . $request->note,
+                'note'                   => $request->result === 'accepted'
+                                            ? 'Nghiệm thu đạt'
+                                            : ('Nghiệm thu không đạt: ' . $request->note),
             ]);
         });
+
+        // refresh để lấy data mới
+        $item->refresh();
+
+        /*
+        |--------------------------------------------------------------------------
+        | 1. UPLOAD ẢNH → QUEUE (KHÔNG làm trong request nữa)
+        |--------------------------------------------------------------------------
+        */
+        if ($request->hasFile('images')) {
+
+            $tempFiles = [];
+
+            foreach ($request->file('images') as $file) {
+
+                $name = \Str::uuid() . '.' . $file->getClientOriginalExtension();
+
+                $file->storeAs('temp-maintenance', $name);
+
+                $tempFiles[] = $name;
+            }
+
+            UploadMaintenanceImagesJob::dispatch(
+                $item->id,
+                $tempFiles,
+                auth()->user()->email
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2. SEND MAIL → QUEUE (KHÔNG send sync)
+        |--------------------------------------------------------------------------
+        */
+        try {
+            Mail::to($item->technician_email)
+                ->queue(new MaintenanceAcceptanceMail($item));
+
+        } catch (\Throwable $e) {
+            \Log::error('Failed to queue acceptance email', [
+                'id' => $item->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'success' => true

@@ -7,11 +7,11 @@ use Illuminate\Mail\Mailables\Envelope;
 
 class MaintenanceAcceptanceMail extends Mailable
 {
-    public $request;
+    public $maintenanceRequest;
 
-    public function __construct($request)
+    public function __construct($maintenanceRequest)
     {
-        $this->request = $request;
+        $this->maintenanceRequest = $maintenanceRequest;
     }
 
     public function build()
@@ -23,39 +23,49 @@ class MaintenanceAcceptanceMail extends Mailable
 
     public function envelope(): Envelope
     {
-        // Lấy am_email, om_email từ stores.json dựa trên thông tin request (branch_code, branch_name, ...)
-        $cc = [];
-        $storeCode = $this->request['branch_code'] ?? null;
+        return new Envelope(
+            subject: 'Yêu cầu bảo trì đã được nghiệm thu',
+            cc: $this->getCC()
+        );
+    }
 
-        if ($storeCode) {
-            $storesFiles = [
-                resource_path('json/stores.json'),
-                resource_path('json/stores_mn.json')
-            ];
+    private function getCC(): array
+    {
+        $cc = config('mail.notification_cc', []);
+        $storeCode = $this->maintenanceRequest->branch_code ?? null;
 
-            foreach ($storesFiles as $storesPath) {
-                if (file_exists($storesPath)) {
-                    $jsonData = file_get_contents($storesPath);
-                    $stores = json_decode($jsonData, true);
+        if (!$storeCode) {
+            return $cc;
+        }
 
-                    foreach ($stores as $store) {
-                        if (isset($store['code']) && $store['code'] == $storeCode) {
-                            if (!empty($store['am_email'])) {
-                                $cc[] = $store['am_email'];
-                            }
-                            if (!empty($store['om_email'])) {
-                                $cc[] = $store['om_email'];
-                            }
-                            break 2; // Đã tìm thấy, dừng cả 2 vòng lặp
-                        }
+        $files = [
+            resource_path('json/stores.json'),
+            resource_path('json/stores_mn.json')
+        ];
+
+        foreach ($files as $file) {
+            if (!file_exists($file)) {
+                continue;
+            }
+
+            $stores = json_decode(file_get_contents($file), true);
+
+            foreach ($stores as $store) {
+                if (($store['code'] ?? null) === $storeCode) {
+
+                    if (!empty($store['am_email'])) {
+                        $cc[] = $store['am_email'];
                     }
+
+                    if (!empty($store['om_email'])) {
+                        $cc[] = $store['om_email'];
+                    }
+
+                    break 2;
                 }
             }
         }
 
-        return new Envelope(
-            subject: 'Yêu cầu bảo trì đã được nghiệm thu',
-            cc: config('mail.notification_cc', $cc),
-        );
+        return array_values(array_unique($cc));
     }
 }
