@@ -77,14 +77,26 @@
                             @endphp
                             @foreach($inputs as [$field, $value, $width])
                                 <td style="width:{{ $width }}px">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        class="form-control form-control-sm inline-target"
-                                        data-tech="{{ $item->technician_name }}"
-                                        data-field="{{ $field }}"
-                                        value="{{ $value }}">
+                                    @can('can edit report')
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            class="form-control form-control-sm inline-target"
+                                            data-tech="{{ $item->technician_name }}"
+                                            data-field="{{ $field }}"
+                                            value="{{ $value }}">
+                                    @else
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-sm"
+                                            value="{{ $value }}"
+                                            readonly
+                                            tabindex="-1"
+                                            style="background-color: #e9ecef; pointer-events: none;"
+                                        >
+                                    @endcan
                                 </td>
+                           
                             @endforeach
                             <td class="text-center fw-bold">{{ $item->total_completed }}</td>
                             <td class="text-center">

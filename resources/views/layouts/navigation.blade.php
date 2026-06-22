@@ -12,14 +12,14 @@
                         Danh sách Bảo trì
                     </a>
 
-                    @hasanyrole('manager|admin|am')
+                    @can('view report')
 
                     {{-- Báo cáo --}}
                     <a href="{{ route('reports.technicians') }}"
                         class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                         Báo cáo Công việc
                     </a>
-                    @endhasanyrole
+                    @endcan
                     @role('admin')
 
                     {{-- Ngày lễ --}}
