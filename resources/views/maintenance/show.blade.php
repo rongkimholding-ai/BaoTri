@@ -18,7 +18,7 @@
 
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 @can('change-maintenance-status')
-                    @hasanyrole('technician|admin')
+                    @hasanyrole('technician|leadtech|admin')
                         @if(in_array($maintenanceRequest->sla_status, [config('sla_status.code.NEW'), config('sla_status.code.REOPEN')]))
                             <a
                                 href="#"
