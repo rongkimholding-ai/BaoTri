@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/technician-update', [MaintenanceController::class, 'updateTarget'])->name('reports.technician-update');
     Route::get('/reports/technician-export', [MaintenanceController::class, 'exportTechs'])->name('reports.technician-export');
     Route::get('/maintenance/export', [MaintenanceController::class, 'exportFromTo'])->name('maintenance.export-fromto');
-    Route::resource('maintenance-requests', MaintenanceRequestController::class);
+    Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

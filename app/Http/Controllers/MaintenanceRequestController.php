@@ -590,6 +590,7 @@ class MaintenanceRequestController extends Controller
         // dd($data);
 
         $maintenanceRequest->update($data);
+        $maintenanceRequest->refresh();
 
         if (
             $status === config('sla_status.code.WAITING_CONFIRM')
@@ -697,6 +698,7 @@ class MaintenanceRequestController extends Controller
             }
 
             $item->save();
+            $item->refresh();
 
             if ($request->hasFile('images')) {
                 $manager = new ImageManager(new Driver());
