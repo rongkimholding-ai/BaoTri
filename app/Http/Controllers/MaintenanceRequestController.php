@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\BusinessTimeHelper;
+use App\Http\Requests\ChangeMaintenanceStatusRequest;
 use App\Http\Requests\StoreMaintenanceRequest;
+use App\Jobs\UploadMaintenanceImagesJob;
 use App\Mail\MaintenanceAcceptanceMail;
 use App\Mail\MaintenanceBuyerMail;
 use App\Mail\MaintenanceCompletedMail;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestLog;
+use App\Services\MaintenanceImageService;
 use App\Services\MaintenanceRequestService;
+use App\Services\SlaCalculatorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +27,9 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class MaintenanceRequestController extends Controller
 {
+    public function __construct(
+        protected MaintenanceImageService $imageService
+    ) {}
     /**
      * Display a listing of the resource.
      */
@@ -444,30 +451,14 @@ class MaintenanceRequestController extends Controller
         ]);
     }
 
-    public function changeStatus(Request $request, MaintenanceRequest $maintenanceRequest)
+    public function changeStatus(
+        ChangeMaintenanceStatusRequest $request,
+        MaintenanceRequest $maintenanceRequest
+    )
     {
-        $allowedStatuses = config('sla_status.code');
-
-        $request->validate([
-            'status' => ['string', 'in:' . implode(',', $allowedStatuses)],
-        ]);
-
-        if ($request->status === config('sla_status.code.WAITING_CONFIRM')) {
-            $request->validate([
-                'images' => ['required', 'array', 'min:1'],
-                'images.*' => [
-                    'image',
-                    'mimes:jpg,jpeg,png,webp',
-                    'max:10240',
-                ],
-            ]);
-        }
-
-        // Kiểm tra quyền
-        abort_unless(auth()->user()->can('change-maintenance-status'), 403);
-
+        $validated = $request->validated();
+        $status = $validated['status'];
         $oldStatus = $maintenanceRequest->sla_status;
-        $status    = $request->status;
         $now = now();
 
         $data = [
@@ -480,39 +471,12 @@ class MaintenanceRequestController extends Controller
                 $completedAt = $now;
                 $data['actual_completion_date'] = $completedAt;
                 $data['delay_reason'] = '';
-                // if ($maintenanceRequest->pending_at && $maintenanceRequest->processing_at) {
-                //     $beforePendingSeconds =
-                //         BusinessTimeHelper::diffInBusinessSeconds(
-                //             $maintenanceRequest->request_date,
-                //             $maintenanceRequest->pending_at,
-                //             $maintenanceRequest->include_saturday,
-                //             $maintenanceRequest->include_sunday,
-                //             $maintenanceRequest->include_holiday
-                //         );
-                //     $afterResumeSeconds =
-                //         BusinessTimeHelper::diffInBusinessSeconds(
-                //             $maintenanceRequest->processing_at,
-                //             $completedAt,
-                //             $maintenanceRequest->include_saturday,
-                //             $maintenanceRequest->include_sunday,
-                //             $maintenanceRequest->include_holiday
-                //         );
-                //     $totalSeconds = $beforePendingSeconds + $afterResumeSeconds;
-                // } else {
-                $totalSeconds =
-                    BusinessTimeHelper::diffInBusinessSeconds(
-                        $maintenanceRequest->request_date,
-                        $completedAt,
-                        $maintenanceRequest->include_saturday,
-                        $maintenanceRequest->include_sunday,
-                        $maintenanceRequest->include_holiday,
-                        $maintenanceRequest->severity,
-                    );
-                // }
-                $data['actual_duration'] =
-                    BusinessTimeHelper::formatDuration(
-                        $totalSeconds
-                    );
+
+                $data['actual_duration'] = app(SlaCalculatorService::class)
+                ->calculate(
+                    $maintenanceRequest,
+                    $completedAt
+                );
 
                 if (auth()->user()->email === 'baotri@tocotocotea.com') {
                     $data['is_off_worktime'] = true;
@@ -537,18 +501,6 @@ class MaintenanceRequestController extends Controller
                     }
                 }
 
-                // Gửi mail thông báo khi hoàn thành công việc
-                try {
-                    Mail::to($maintenanceRequest->branch_email)
-                        ->send(new MaintenanceCompletedMail($maintenanceRequest));
-                } catch (\Throwable $e) {
-                    \Log::error('Failed to send maintenance completed email', [
-                        'id' => $maintenanceRequest->id,
-                        'branch_email' => $maintenanceRequest->branch_email,
-                        'error' => $e->getMessage(),
-                    ]);
-                }
-   
                 break;
 
             case config('sla_status.code.CONFIRMED'):
@@ -556,12 +508,12 @@ class MaintenanceRequestController extends Controller
                 break;
         }
 
-        if (in_array($status, [config('sla_status.code.PENDING')])) {
+        if ($status === config('sla_status.code.PENDING')) {
             $data['pending_at'] = $now;
             // Gửi mail thông báo khi mua sắm xong
             try {
                 Mail::to($maintenanceRequest->technician_email)
-                    ->send(new MaintenanceBuyerMail($maintenanceRequest));
+                    ->queue(new MaintenanceBuyerMail($maintenanceRequest));
             } catch (\Throwable $e) {
                 \Log::error('Failed to send maintenance completed email', [
                     'id' => $maintenanceRequest->id,
@@ -570,7 +522,7 @@ class MaintenanceRequestController extends Controller
                 ]);
             }
         }
-        if (in_array($status,[config('sla_status.code.PENDING_CONTRACTOR')])) {
+        if ($status === config('sla_status.code.PENDING_CONTRACTOR')) {
             $data['pending_at'] = $now;
         }
 
@@ -589,50 +541,97 @@ class MaintenanceRequestController extends Controller
         }
         // dd($data);
 
-        $maintenanceRequest->update($data);
-        $maintenanceRequest->refresh();
+        DB::transaction(function () use (
+            $maintenanceRequest,
+            $data,
+            $oldStatus,
+            $status,
+            $request
+        ) {
+
+            $maintenanceRequest->update($data);
+
+            MaintenanceRequestLog::create([
+                'maintenance_request_id' => $maintenanceRequest->id,
+                'user_id'                => auth()->id(),
+                'old_status'             => $oldStatus,
+                'new_status'             => $status,
+                'note'                   => $request->note,
+            ]);
+
+        });
+
+
 
         if (
             $status === config('sla_status.code.WAITING_CONFIRM')
             && $request->hasFile('images')
         ) {
-            $manager = new ImageManager(new Driver());
-            foreach ($request->file('images') as $file) {
-                $image = $manager->read($file);
-                $image->scaleDown(
-                    width: 1280,
-                    height: 1280
-                );
-                $fileName = uniqid() . '.jpg';
-                $dateFolder = now()->format('Y_m_d');
-                $path = 'images/' . $dateFolder . '/' . $fileName;
-                $encoded = $image->encode(
-                    new JpegEncoder(quality: 70)
-                );
-                Storage::disk('public')->put(
-                    $path,
-                    $encoded
-                );
+            // $this->imageService->upload(
+            //     $maintenanceRequest->id,
+            //     $request->file('images'),
+            //     $request->input('tech_mail')
+            //         ?: auth()->user()->email
+            // );
+            $tempFiles = [];
 
-                MaintenanceRequestImage::create([
-                    'maintenance_request_id' => $maintenanceRequest->id,
-                    'path' => $path,
-                    'uploaded_by' => $request->input('tech_mail') ?: auth()->user()->email,
+            foreach ($request->file('images') as $file) {
+
+                $tempName =
+                    \Illuminate\Support\Str::uuid()
+                    . '.'
+                    . $file->getClientOriginalExtension();
+            
+                $file->storeAs(
+                    'temp-maintenance',
+                    $tempName
+                );
+            
+                $tempFiles[] = $tempName;
+            }
+            
+            UploadMaintenanceImagesJob::dispatch(
+                $maintenanceRequest->id,
+                $tempFiles,
+                $request->input('technician_mail')
+                    ?: auth()->user()->email
+            )->afterCommit();
+        }
+
+        $maintenanceRequest->refresh();
+
+        if ($status === config('sla_status.code.WAITING_CONFIRM')) {
+            // Gửi mail thông báo khi hoàn thành công việc
+            try {
+                Mail::to($maintenanceRequest->branch_email)
+                    ->queue(new MaintenanceCompletedMail($maintenanceRequest));
+            } catch (\Throwable $e) {
+                \Log::error('Failed to send maintenance completed email', [
+                    'id' => $maintenanceRequest->id,
+                    'branch_email' => $maintenanceRequest->branch_email,
+                    'error' => $e->getMessage(),
                 ]);
+                throw $e;
+            }
+        }
+        if ($status === config('sla_status.code.PENDING')) {
+            // Gửi mail thông báo khi mua sắm xong
+            try {
+                Mail::to($maintenanceRequest->technician_email)
+                    ->queue(new MaintenanceBuyerMail($maintenanceRequest));
+            } catch (\Throwable $e) {
+                \Log::error('Failed to send maintenance completed email', [
+                    'id' => $maintenanceRequest->id,
+                    'branch_email' => $maintenanceRequest->technician_email,
+                    'error' => $e->getMessage(),
+                ]);
+                throw $e;
             }
         }
 
-        MaintenanceRequestLog::create([
-            'maintenance_request_id' => $maintenanceRequest->id,
-            'user_id'                => auth()->id(),
-            'old_status'             => $oldStatus,
-            'new_status'             => $status,
-            'note'                   => $request->note,
-        ]);
-
         return response()->json([
             'success'    => true,
-            'sla_status' => $maintenanceRequest->status,
+            'sla_status' => $maintenanceRequest->sla_status,
         ]);
     }
 

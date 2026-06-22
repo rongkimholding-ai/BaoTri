@@ -2,60 +2,76 @@
 
 namespace App\Mail;
 
+use App\Services\StoreService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
 
-class MaintenanceCompletedMail extends Mailable
+class MaintenanceCompletedMail extends Mailable implements ShouldQueue
 {
-    public $request;
+    use Queueable;
+    use SerializesModels;
 
-    public function __construct($request)
-    {
-        $this->request = $request;
-    }
+    public $maintenanceRequest;
 
-    public function build()
+    public function __construct($maintenanceRequest)
     {
-        return $this
-            ->subject('Yêu cầu bảo trì đã được hỗ trợ')
-            ->view('emails.maintenance-completed');
+        $this->maintenanceRequest = $maintenanceRequest;
     }
 
     public function envelope(): Envelope
     {
-        // Lấy am_email, om_email từ stores.json dựa trên thông tin request (branch_code, branch_name, ...)
         $cc = [];
-        $storeCode = $this->request['branch_code'] ?? null;
 
-        if ($storeCode) {
-            $storesFiles = [
-                resource_path('json/stores.json'),
-                resource_path('json/stores_mn.json')
-            ];
+        $storeCode = $this->maintenanceRequest->branch_code;
 
-            foreach ($storesFiles as $storesPath) {
-                if (file_exists($storesPath)) {
-                    $jsonData = file_get_contents($storesPath);
-                    $stores = json_decode($jsonData, true);
+        $store = app(StoreService::class)
+            ->findByCode($storeCode);
 
-                    foreach ($stores as $store) {
-                        if (isset($store['code']) && $store['code'] == $storeCode) {
-                            if (!empty($store['am_email'])) {
-                                $cc[] = $store['am_email'];
-                            }
-                            if (!empty($store['om_email'])) {
-                                $cc[] = $store['om_email'];
-                            }
-                            break 2; // Đã tìm thấy, dừng cả 2 vòng lặp
-                        }
-                    }
-                }
+        if ($store) {
+
+            if (!empty($store['am_email'])) {
+                $cc[] = $store['am_email'];
+            }
+
+            if (!empty($store['om_email'])) {
+                $cc[] = $store['om_email'];
             }
         }
 
+        $defaultCc = config(
+            'mail.notification_cc',
+            []
+        );
+
+        $cc = array_unique(
+            array_merge(
+                $defaultCc,
+                $cc
+            )
+        );
+
         return new Envelope(
             subject: 'Yêu cầu bảo trì đã được hỗ trợ',
-            cc: config('mail.notification_cc', $cc),
+            cc: $cc
         );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.maintenance-completed',
+            with: [
+                'maintenanceRequest' => $this->maintenanceRequest,
+            ]
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
     }
 }
