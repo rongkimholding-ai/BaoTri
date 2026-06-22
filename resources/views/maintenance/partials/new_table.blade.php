@@ -162,65 +162,66 @@
                                             Chi tiết
                                         </a>
                                     </li>
-                                    @hasanyrole('technician|admin')
-                                        @if(in_array($item->sla_status, [config('sla_status.code.NEW'), config('sla_status.code.REOPEN')]))
+                                    @can('change-maintenance-status')
+                                        @hasanyrole('technician|admin')
+                                            @if(in_array($item->sla_status, [config('sla_status.code.NEW'), config('sla_status.code.REOPEN')]))
+                                                <li>
+                                                    <a class="dropdown-item change-status-btn"
+                                                        href=""
+                                                        data-id="{{ $item->id }}"
+                                                        data-status="{{ config('sla_status.code.PROCESSING') }}">
+                                                        {{ $item->sla_status == config('sla_status.code.NEW') ? 'Tiếp nhận' : 'Xử lý lại' }}
+                                                    </a>
+                                                </li>
+                                            @elseif(in_array($item->sla_status, [config('sla_status.code.PROCESSING'), config('sla_status.code.CONTINUE_PROCESSING')]))
+                                                <li>
+                                                    <a class="dropdown-item text-warning change-status-btn"
+                                                        href=""
+                                                        data-id="{{ $item->id }}"
+                                                        data-status="{{ config('sla_status.code.PENDING') }}">
+                                                        {{ config('sla_status.names.PENDING') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-warning change-status-btn"
+                                                        href=""
+                                                        data-id="{{ $item->id }}"
+                                                        data-status="{{ config('sla_status.code.PENDING_CONTRACTOR') }}">
+                                                        {{ config('sla_status.names.PENDING_CONTRACTOR') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item change-status-btn"
+                                                        href=""
+                                                        data-id="{{ $item->id }}"
+                                                        data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
+                                                        Hoàn thành Y/C
+                                                    </a>
+                                                </li>
+                                            @elseif($item->sla_status == config('sla_status.code.PENDING_CONTRACTOR'))
+                                                <li>
+                                                    <a class="dropdown-item change-status-btn"
+                                                        href=""
+                                                        data-id="{{ $item->id }}"
+                                                        data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
+                                                        Hoàn thành Y/C
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endhasallroles
+                                        @hasanyrole('muasam|admin')
+                                            @if($item->sla_status == config('sla_status.code.PENDING'))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
                                                     href=""
                                                     data-id="{{ $item->id }}"
-                                                    data-status="{{ config('sla_status.code.PROCESSING') }}">
-                                                    {{ $item->sla_status == config('sla_status.code.NEW') ? 'Tiếp nhận' : 'Xử lý lại' }}
+                                                    data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
+                                                    Tiếp tục xử lý
                                                 </a>
                                             </li>
-                                        @elseif(in_array($item->sla_status, [config('sla_status.code.PROCESSING'), config('sla_status.code.CONTINUE_PROCESSING')]))
-                                            <li>
-                                                <a class="dropdown-item text-warning change-status-btn"
-                                                    href=""
-                                                    data-id="{{ $item->id }}"
-                                                    data-status="{{ config('sla_status.code.PENDING') }}">
-                                                    {{ config('sla_status.names.PENDING') }}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-warning change-status-btn"
-                                                    href=""
-                                                    data-id="{{ $item->id }}"
-                                                    data-status="{{ config('sla_status.code.PENDING_CONTRACTOR') }}">
-                                                    {{ config('sla_status.names.PENDING_CONTRACTOR') }}
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item change-status-btn"
-                                                    href=""
-                                                    data-id="{{ $item->id }}"
-                                                    data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
-                                                    Hoàn thành Y/C
-                                                </a>
-                                            </li>
-                                        @elseif($item->sla_status == config('sla_status.code.PENDING_CONTRACTOR'))
-                                            <li>
-                                                <a class="dropdown-item change-status-btn"
-                                                    href=""
-                                                    data-id="{{ $item->id }}"
-                                                    data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
-                                                    Hoàn thành Y/C
-                                                </a>
-                                            </li>
-                                        @endif
-                                    @endhasanyrole
-                                    @role('muasam')
-                                        @if($item->sla_status == config('sla_status.code.PENDING'))
-                                        <li>
-                                            <a class="dropdown-item change-status-btn"
-                                                href=""
-                                                data-id="{{ $item->id }}"
-                                                data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
-                                                Tiếp tục xử lý
-                                            </a>
-                                        </li>
-                                        @endif
-                                    @endrole
-                                    @hasanyrole('manager|admin')
+                                            @endif
+                                        @endhasallroles
+                                        @hasanyrole('am|om|admin')    
                                         @if(in_array($item->sla_status,[config('sla_status.code.WAITING_CONFIRM')]))
                                             <li>
                                                 <a class="dropdown-item change-status-btn"
@@ -248,7 +249,8 @@
                                                 </a>
                                             </li>
                                         @endif
-                                    @endhasanyrole
+                                        @endhasanyrole
+                                    @endcan
                                     @can('confirm maintenance')
                                         @if(in_array($item->sla_status,[
                                                     config('sla_status.code.COMPLETED'),

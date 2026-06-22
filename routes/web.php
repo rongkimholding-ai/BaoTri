@@ -81,6 +81,7 @@ Route::prefix('holiday-calendars')
 Route::get('/health-check', function () {
     return response()->json([
         'ok' => true,
+        'app' => config('app.name'),
         'time' => now(),
     ]);
 });
