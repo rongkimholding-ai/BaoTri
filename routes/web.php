@@ -78,4 +78,11 @@ Route::prefix('holiday-calendars')
             ->name('destroy');
     });
 
+Route::get('/health-check', function () {
+    return response()->json([
+        'ok' => true,
+        'time' => now(),
+    ]);
+});
+
 require __DIR__ . '/auth.php';
