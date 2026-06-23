@@ -36,7 +36,7 @@
                     }, ARRAY_FILTER_USE_KEY);
                 @endphp
 
-                @if($user && $user->email === $baotriEmail)
+                @if($user && ($user->email === $baotriEmail || $user->hasRole('admin')))
                     <div class="mb-3">
                         <label class="form-label">Kỹ thuật viên phụ trách</label>
                         <select id="technicianSelect" name="technician_email" class="form-select">

@@ -811,6 +811,38 @@ $(function () {
         });
     });
 
+    $(document).on('click', '.delete-image', function () {
+        const button = $(this);
+        const imageId = $(this).data('id');
+
+        if (!confirm('Bạn có chắc muốn xóa ảnh này?')) {
+            return;
+        }
+
+        $.ajax({
+            url: `/maintenance-request-images/${imageId}`,
+            type: 'DELETE',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.success) {
+                    Loading.hide();
+                    button.closest('.img-item').fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                }
+            },
+            error: function (xhr) {
+                alert(xhr.responseJSON?.message || 'Xóa ảnh thất bại');
+            },
+            complete: function () {
+                Loading.hide();
+            }
+        });
+
+    });
+
     $(document).on('change', '.inline-target', function () {
 
         let row = $(this).closest('tr');

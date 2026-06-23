@@ -166,10 +166,6 @@
                     Quay lại
                 </a>
             </div>
-       
-
-            
-
         </div>
 
         @include('maintenance.partials.detail')

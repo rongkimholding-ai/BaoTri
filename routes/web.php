@@ -36,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/technician-update', [MaintenanceController::class, 'updateTarget'])->name('reports.technician-update');
     Route::get('/reports/technician-export', [MaintenanceController::class, 'exportTechs'])->name('reports.technician-export');
     Route::get('/maintenance/export', [MaintenanceController::class, 'exportFromTo'])->name('maintenance.export-fromto');
+    Route::delete(
+        '/maintenance-request-images/{image}',
+        [MaintenanceRequestController::class, 'destroyImage']
+    )->name('maintenance-request-images.destroy');
     Route::get('/maintenance-requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])->name('maintenance-requests.show');
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
 });

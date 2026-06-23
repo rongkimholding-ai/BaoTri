@@ -107,19 +107,51 @@
 
     <!-- Hình ảnh -->
     <div class="tab-pane fade" id="images-tab-pane" role="tabpanel" aria-labelledby="images-tab">
-        <div class="card mb-3 border-0">
-            <div class="card-header fw-semibold py-2 small">Hình ảnh</div>
-            <div class="card-body pb-1">
-                <div class="row g-1">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header fw-semibold py-2">
+                Hình ảnh ({{ $maintenanceRequest->images->count() }})
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
                     @forelse($maintenanceRequest->images as $image)
-                        <div class="col-6 col-sm-4 col-md-3 mb-1">
-                            <a href="{{ Storage::url($image->path) }}" target="_blank">
-                                <img src="{{ Storage::url($image->path) }}" class="img-fluid border rounded"
-                                    style="max-height: 100px;object-fit:cover;">
-                            </a>
+                        <div class="col-6 col-md-4 col-lg-3 img-item">
+                            <div class="card h-100 border shadow-sm image-card">
+                                <div class="position-relative">
+                                    <a href="{{ Storage::url($image->path) }}" target="_blank">
+                                        <img
+                                            src="{{ Storage::url($image->path) }}"
+                                            class="card-img-top"
+                                            style="height:180px; object-fit:cover;">
+                                    </a>
+
+                                    @role('admin')
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0 m-2 delete-image"
+                                            data-id="{{ $image->id }}"
+                                            title="Xóa ảnh"
+                                        >
+                                            X
+                                        </button>
+                                    @endrole
+                                </div>
+
+                                <div class="card-footer bg-white py-2 text-center">
+                                    <a
+                                        href="{{ Storage::url($image->path) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-outline-primary w-100">
+                                        Xem ảnh
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     @empty
-                        <div class="col-12 text-muted">Không có hình ảnh</div>
+                        <div class="col-12">
+                            <div class="alert alert-light border text-center mb-0">
+                                Chưa có hình ảnh đính kèm
+                            </div>
+                        </div>
                     @endforelse
                 </div>
             </div>
@@ -167,3 +199,24 @@
     </div>
 </div>
 {{-- Ensure Bootstrap JS is loaded for tab functionality --}}
+<style>
+.image-card {
+    transition: all .2s ease;
+}
+
+.image-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
+.delete-image {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    opacity: .85;
+}
+
+.delete-image:hover {
+    opacity: 1;
+}
+</style>
