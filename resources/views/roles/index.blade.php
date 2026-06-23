@@ -33,6 +33,8 @@
                 </div>
             @endif
 
+            <div class="mb-3">{{ $roles->links() }}</div>
+
             {{-- TABLE --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
 

@@ -33,6 +33,8 @@
                 </div>
             @endif
 
+            <div class="mb-3">{{ $permissions->links() }}</div>
+
             {{-- TABLE --}}
             <div class="bg-white shadow-sm rounded-lg p-6">
 

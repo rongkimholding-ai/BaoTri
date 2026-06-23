@@ -36,6 +36,8 @@
                 </div>
             @endif
 
+            <div class="mb-3">{{ $holidays->links() }}</div>
+
             <div class="table-responsive">
 
                 <table class="table table-bordered table-hover">
@@ -136,7 +138,7 @@
 
             </div>
 
-            {{ $holidays->links() }}
+            <div class="mt-3">{{ $holidays->links() }}</div>
 
         </div>
     </div>

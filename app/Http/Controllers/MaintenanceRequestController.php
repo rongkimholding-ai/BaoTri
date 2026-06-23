@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\BusinessTimeHelper;
 use App\Http\Requests\ChangeMaintenanceStatusRequest;
 use App\Http\Requests\StoreMaintenanceRequest;
 use App\Jobs\UploadMaintenanceImagesJob;
@@ -19,11 +18,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MaintenanceReminderMail;
-use Intervention\Image\Drivers\Gd\Encoders\JpegEncoder;
-use Storage;
-use App\Models\MaintenanceRequestImage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class MaintenanceRequestController extends Controller
 {
@@ -36,81 +30,70 @@ class MaintenanceRequestController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-
+        $role = $user->getRoleNames()->first();
+        $email = strtolower($user->email);
         $baseQuery = MaintenanceRequest::query();
 
-        // Phân quyền dữ liệu
-        // Nếu là technician, chỉ nhìn thấy những request có technician_email == user email
-        if ($user->hasRole('technician')) {
-            $baseQuery->where('technician_email', $user->email);
-        }
-        // Nếu là user, chỉ nhìn thấy những request có branch_email == user email
-        else if ($user->hasRole('user')) {
-            $baseQuery->where('branch_email', $user->email);
-        }
-        // Lọc theo OM/AM email trùng với user
-        else if ($user->hasRole('manager')) {
-            // Nếu là user đặc biệt: xem full
-            if (strtolower($user->email) === 'liemhoang.support.hcm@tocotocotea.com') {
-                // không giới hạn dữ liệu, bỏ qua filter này
-            } else {
-                // Đọc file json từ storage hoặc resource
-                $stores = [];
-                $jsonPaths = [
-                    resource_path('json/stores.json'),
-                    resource_path('json/stores_mn.json')
-                ];
-                foreach ($jsonPaths as $path) {
-                    if (file_exists($path)) {
-                        $fileContent = file_get_contents($path);
-                        $array = json_decode($fileContent, true);
-                        if (is_array($array)) {
-                            $stores = array_merge($stores, $array);
+        // ----------------------------------------
+        // Data access control
+        // ----------------------------------------
+        switch ($role) {
+            case 'technician':
+                $baseQuery->where('technician_email', $user->email);
+                break;
+            case 'user':
+                $baseQuery->where('branch_email', $user->email);
+                break;
+            case 'manager':
+                // Allow special user to see all
+                if ($email !== 'liemhoang.support.hcm@tocotocotea.com') {
+                    $jsonPaths = [
+                        resource_path('json/stores.json'),
+                        resource_path('json/stores_mn.json')
+                    ];
+                    $stores = [];
+                    foreach ($jsonPaths as $path) {
+                        if (is_file($path)) {
+                            $arr = json_decode(file_get_contents($path), true);
+                            if (is_array($arr)) {
+                                $stores = array_merge($stores, $arr);
+                            }
                         }
                     }
-                }
+                    $emails = collect($stores)
+                        ->filter(function ($store) use ($email) {
+                            return (
+                                    (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
+                                    (isset($store['am_email']) && strtolower($store['am_email']) == $email)
+                                ) && isset($store['email']);
+                        })
+                        ->pluck('email')
+                        ->unique()
+                        ->values()
+                        ->all();
 
-                // Lấy các mã cửa hàng được OM/AM quản lý theo email
-                $emails = [];
-                foreach ($stores as $store) {
-                    if (
-                        (isset($store['om_email']) && strtolower($store['om_email']) == strtolower($user->email)) 
-                        || (isset($store['am_email']) && strtolower($store['am_email']) == strtolower($user->email))
-                    ) {
-                        if (isset($store['email'])) {
-                            $emails[] = $store['email'];
-                        }
-                    }
+                    $baseQuery->when(!empty($emails),
+                        fn($q) => $q->whereIn('branch_email', $emails),
+                        fn($q) => $q->whereRaw('1=0')
+                    );
                 }
-
-                if (!empty($emails)) {
-                    $baseQuery->whereIn('branch_email', $emails);
-                } else {
-                    // Nếu không quản lý cửa hàng nào, trả về rỗng
-                    $baseQuery->whereRaw('1=0');
-                }
-            }
-        }
-        else if ($user->hasRole('muasam')) {
-            // Chỉ cho phép xem các maintenance request có sla_status = PENDING
-            $pendingStatus = config('sla_status.code.PENDING');
-            $baseQuery->where('sla_status', $pendingStatus);
+                // else: allow all
+                break;
+            case 'muasam':
+                $baseQuery->where('sla_status', config('sla_status.code.PENDING'));
+                break;
+            // admin and others: no restriction
         }
 
-        // Nếu là admin, không giới hạn
-
+        // ----------------------------------------
+        // Filter processing
+        // ----------------------------------------
         $filters = [
             'from_date' => function ($q, $v) {
-                if (!empty($v)) {
-                    $startOfDay = Carbon::parse($v)->startOfDay();
-                    $q->where('request_date', '>=', $startOfDay);
-                }
+                if ($v) $q->where('request_date', '>=', Carbon::parse($v)->startOfDay());
             },
             'to_date' => function ($q, $v) {
-                if (!empty($v)) {
-                    $endOfDay = Carbon::parse($v)->endOfDay();
-                    $q->whereDate('request_date', '<=', $endOfDay);
-                }
+                if ($v) $q->where('request_date', '<=', Carbon::parse($v)->endOfDay());
             },
             'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
             'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
@@ -118,53 +101,53 @@ class MaintenanceRequestController extends Controller
             'status'      => fn($q, $v) => $q->where('sla_status', $v),
             'id'          => fn($q, $v) => $q->where('id', $v),
         ];
-
-        foreach ($filters as $field => $closure) {
+        foreach ($filters as $field => $filter) {
             if ($request->filled($field)) {
-                $closure($baseQuery, $request->$field);
+                $filter($baseQuery, $request->$field);
             }
         }
 
         $completedStatus = config('sla_status.code.COMPLETED');
         $newStatus = config('sla_status.code.NEW');
-
-        // Thứ tự severity mong muốn từ config
-        $severityOrder = array_map(function ($item) {
-            return $item['key'];
-        }, config('severities'));
-
-        // Tạo chuỗi cho FIELD() mysql
+        $severityOrder = collect(config('severities'))->pluck('key')->all();
         $severityOrderStr = implode("','", $severityOrder);
 
-        // Định nghĩa một hàm order theo thứ tự severity
-        $ordered = function ($query) use ($severityOrderStr) {
-            return $query->orderByRaw("FIELD(severity, '$severityOrderStr')")->orderByDesc('id');
-        };
+        // Order helper
+        $addOrderBySeverity = fn($query) =>
+            $query->orderByRaw("FIELD(severity, '$severityOrderStr')")->orderByDesc('id');
 
-        // Pagination queries
-        $allRequests = $ordered(clone $baseQuery)->paginate(20, ['*'], 'all_page')->withQueryString();
+        // ----------------------------------------
+        // Paginations and counts (only clone once per major query type)
+        // ----------------------------------------
+        $baseQueryClone = fn() => clone $baseQuery;
 
-        $processingRequests = $ordered(
-            (clone $baseQuery)
-                ->where('sla_status', '!=', $completedStatus)
-                ->where('sla_status', '!=', $newStatus)
-                ->where('is_confirmed', '!=', true)
+        $allRequests = $addOrderBySeverity($baseQueryClone())->paginate(20, ['*'], 'all_page')->withQueryString();
+
+        $processingRequests = $addOrderBySeverity(
+            tap($baseQueryClone(), function ($q) use ($completedStatus, $newStatus) {
+                $q->whereNotIn('sla_status', [$completedStatus, $newStatus])
+                  ->where('is_confirmed', '!=', true);
+            })
         )->paginate(20, ['*'], 'processing_page')->withQueryString();
 
-        $completedRequests = $ordered(
-            (clone $baseQuery)->where('is_confirmed', true)
+        $completedRequests = $addOrderBySeverity(
+            tap($baseQueryClone(), function ($q) {
+                $q->where('is_confirmed', true);
+            })
         )->paginate(20, ['*'], 'completed_page')->withQueryString();
 
-        // Counts
-        $totalCount = (clone $baseQuery)->count();
+        // Use more efficient count queries (remove unnecessary withNotNull .etc)
+        $totalCount = $baseQueryClone()->count();
 
-        $processingCount = (clone $baseQuery)
+        $processingCount = $baseQueryClone()
             ->whereNotNull('technician_name')
-            ->where('sla_status', '!=', $completedStatus)
-            ->where('sla_status', '!=', $newStatus)
-            ->where('is_confirmed', '!=', true)->count();
+            ->whereNotIn('sla_status', [$completedStatus, $newStatus])
+            ->where('is_confirmed', '!=', true)
+            ->count();
 
-        $completedCount = (clone $baseQuery)->where('is_confirmed', true)->count();
+        $completedCount = $baseQueryClone()
+            ->where('is_confirmed', true)
+            ->count();
 
         // Data for selects
         $stores     = $this->getData();
@@ -231,7 +214,7 @@ class MaintenanceRequestController extends Controller
         if (!empty($created->technician_email)) {
             try {
                 $sendMail = $created->technician_email;
-                \Mail::to($sendMail)->send(new MaintenanceReminderMail($created));
+                \Mail::to($sendMail)->queue(new MaintenanceReminderMail($created));
                 $created->increment('reminder_count', 1, ['last_reminded_at' => now()]);
             } catch (\Throwable $e) {
                 \Log::error('Failed to send maintenance reminder email', [
@@ -384,49 +367,36 @@ class MaintenanceRequestController extends Controller
 
     public function confirm(Request $request)
     {
-        abort_unless(
-            auth()->user()->can('confirm maintenance'),
-            403
-        );
+        // Check permission
+        if (!auth()->user()->can('confirm maintenance')) {
+            abort(403);
+        }
 
-        $item = MaintenanceRequest::findOrFail(
-            $request->id
-        );
-
+        $item = MaintenanceRequest::findOrFail($request->id);
         $item->is_confirmed = filter_var($request->confirmed, FILTER_VALIDATE_BOOLEAN);
 
-        if ($request->confirmed) {
-            // Lấy giờ thực tế dạng HH:ii:ss và chuyển đổi sang giây
-            $actualDuration = $item->actual_duration; // dạng "HH:ii:ss"
+        if ($item->is_confirmed) {
+            // Parse actual_duration (format: HH:ii:ss)
             $actualSeconds = 0;
-            if ($actualDuration) {
-                list($h, $i, $s) = explode(':', $actualDuration);
-                $actualSeconds = ((int) $h) * 3600 + ((int) $i) * 60 + ((int) $s);
+            if (!empty($item->actual_duration)) {
+                [$h, $i, $s] = array_map('intval', explode(':', $item->actual_duration . '::'));
+                $actualSeconds = $h * 3600 + $i * 60 + $s;
             }
 
-            // Lấy danh sách thời gian chuẩn từ config
-            $realTimeList = config('real_time');
-            $realTimeMap = collect($realTimeList)->keyBy('key');
-
+            // Get time standard from config
             $stdKey = $item->standard_completion_time;
-            $minSeconds = null;
-            $maxSeconds = null;
-            if ($stdKey && isset($realTimeMap[$stdKey])) {
-                $minSeconds = $realTimeMap[$stdKey]['min_seconds'];
-                $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
+            $realTime = collect(config('real_time'))->keyBy('key');
+            $maxSeconds = $realTime[$stdKey]['max_seconds'] ?? null;
+
+            // Validate against standard time if needed
+            if ($maxSeconds !== null && $actualSeconds > 0 && $actualSeconds > $maxSeconds) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thời gian thực hiện thực tế không hợp lệ so với tiêu chuẩn cho công việc này!'
+                ], 422);
             }
 
-            // So sánh actualSeconds với max (nếu tồn tại)
-            if (!is_null($maxSeconds) && $actualSeconds > 0) {
-                if ($actualSeconds > $maxSeconds) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Thời gian thực hiện thực tế không hợp lệ so với tiêu chuẩn cho công việc này!'
-                    ], 422);
-                }
-            }
-
-
+            // Log status change
             MaintenanceRequestLog::create([
                 'maintenance_request_id' => $item->id,
                 'user_id' => auth()->id(),
@@ -435,17 +405,14 @@ class MaintenanceRequestController extends Controller
                 'note' => 'Xác nhận hoàn thành',
             ]);
 
-            $item->confirmed_at = now();
-            $item->delay_reason = '';
-            $item->sla_status = config('sla_status.code.COMPLETED');
-            $item->acceptance_confirmed_by = auth()->user()->name;
-            $item->acceptance_result = 'accepted';
+            $item->fill([
+                'confirmed_at' => now(),
+                'delay_reason' => '',
+                'sla_status' => config('sla_status.code.COMPLETED'),
+                'acceptance_confirmed_by' => auth()->user()->name,
+                'acceptance_result' => 'accepted'
+            ]);
         }
-        //  else {
-        //     $item->confirmed_at = null;
-        //     $item->acceptance_confirmed_by = null;
-        // }
-
         $item->save();
 
         return response()->json([
@@ -710,9 +677,11 @@ class MaintenanceRequestController extends Controller
                 'user_id'                => auth()->id(),
                 'old_status'             => $item->sla_status,
                 'new_status'             => $item->sla_status,
-                'note'                   => $request->result === 'accepted'
-                                            ? 'Nghiệm thu đạt'
-                                            : ('Nghiệm thu không đạt: ' . $request->note),
+                'note'                   => $request->note ?: ($request->result === 'accepted'
+                                            ? 'Nghiệm thu đạt' : 'Nghiệm thu không đạt'),
+                // 'note'                   => $request->result === 'accepted'
+                //                             ? 'Nghiệm thu đạt'
+                //                             : ('Nghiệm thu không đạt: ' . $request->note),
             ]);
         });
 
@@ -831,37 +800,6 @@ class MaintenanceRequestController extends Controller
     {
         $data = config('severities');
         return $data;
-    }
-    public function getActualDurationTextAttribute($actual_duration)
-    {
-        if (!$actual_duration) {
-            return null;
-        }
-
-        [$hours, $minutes, $seconds] = explode(':', $actual_duration);
-
-        $days = floor($hours / 24);
-        $hours = $hours % 24;
-
-        $parts = [];
-
-        if ($days > 0) {
-            $parts[] = "{$days} ngày";
-        }
-
-        if ($hours > 0) {
-            $parts[] = "{$hours} giờ";
-        }
-
-        if ($minutes > 0) {
-            $parts[] = "{$minutes} phút";
-        }
-
-        if ($seconds > 0) {
-            $parts[] = "{$seconds} giây";
-        }
-
-        return implode(' ', $parts);
     }
 
     private function determineSlaStatus(MaintenanceRequest $item): string

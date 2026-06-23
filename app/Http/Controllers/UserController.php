@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ResetUserPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -167,7 +167,7 @@ class UserController extends Controller
         })->toArray();
 
         // Sử dụng Export class ẩn danh cho gọn
-        $export = new class($rows, $headings) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+        $export = new class($rows, $headings) implements FromArray, WithHeadings {
             protected $rows;
             protected $headings;
 
