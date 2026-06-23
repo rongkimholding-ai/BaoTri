@@ -59,14 +59,14 @@
             <!-- Page Header -->
             @isset($header)
                 <div class="mb-6">
-                    <div class="bg-white rounded-xl shadow-sm border px-6 py-4">
+                    <div class="bg-white rounded-xl shadow-sm border px-3 px-md-4 py-3">
                         {{ $header }}
                     </div>
                 </div>
             @endisset
 
             <!-- Main Content Card -->
-            <div class="bg-white rounded-xl shadow-sm border p-6">
+            <div class="bg-white rounded-xl shadow-sm border p-3 p-md-4 p-lg-6">
                 {{ $slot }}
             </div>
             <div id="global-loading" class="loading-overlay d-none">

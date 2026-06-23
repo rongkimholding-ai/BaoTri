@@ -145,7 +145,7 @@
                         </td> -->
                         <td class="action-column action-cell">
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác</button>
+                                <button class="btn btn-primary dropdown-toggle action-btn" type="button" data-bs-toggle="dropdown">Thao tác</button>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <!-- <a

@@ -12,6 +12,12 @@
 
                     <h5>Thêm mới</h5>
 
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                    </button>
+
                 </div>
                 <div id="create-form-errors"
                     class="alert alert-danger d-none">

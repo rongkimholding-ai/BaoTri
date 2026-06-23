@@ -142,6 +142,26 @@ TABLE
     background: #f8fafc;
 }
 
+#requestTabs {
+    white-space: nowrap;
+}
+
+#requestTabs .nav-item{
+    flex-shrink:0;
+}
+
+#requestTabs .nav-link {
+    min-width: max-content;
+}
+
+.action-btn{
+    min-width:100px;
+}
+
+.tr-row-link:hover{
+    background:#f8f9fa;
+}
+
 /* =========================
 BADGE SLA
 ========================= */
@@ -180,6 +200,10 @@ BADGE SLA
 
 .select2-container {
     width: 100% !important;
+}
+
+.select2-selection {
+    min-height: 38px !important;
 }
 
 .select2-container .select2-selection--single {
@@ -237,14 +261,12 @@ MOBILE
 ========================= */
 
 @media (max-width: 768px) {
-
     .detail-row {
         flex-direction: column;
     }
 
     .detail-label {
         width: 100%;
-        min-width: 100%;
         margin-bottom: 5px;
     }
 
@@ -255,6 +277,7 @@ MOBILE
 
     .inline-edit-success {
         border: 2px solid #198754 !important;
+        background: #e8fff1 !important;
     }
 
     .inline-edit {
@@ -268,11 +291,6 @@ MOBILE
         background: #fff;
     }
 
-    .inline-edit-success {
-        background: #e8fff1 !important;
-        border: 1px solid #198754 !important;
-    }
-
     .inline-edit.saving {
         background: #fff3cd !important;
         opacity: 0.7;
@@ -282,5 +300,50 @@ MOBILE
         min-width: 250px;
         min-height: 80px;
         resize: vertical;
+    }
+
+    .modal-dialog {
+        margin: .5rem;
+    }
+
+    .modal-dialog.modal-lg,
+    .modal-dialog.modal-xl {
+        max-width: 100%;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    h1, h2, h3, h4 {
+        word-break: break-word;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .btn {
+        min-height: 42px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    #requestTabs {
+        white-space: nowrap;
+    }
+
+    #requestTabs .nav-link {
+        min-width: max-content;
+    }
+
+    .search-card .row > div{
+        margin-bottom:10px;
+    }
+
+    .search-card .btn{
+        width:100%;
     }
 }

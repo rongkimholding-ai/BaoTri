@@ -9,9 +9,9 @@
 <x-app-layout :title="$title">
     <x-slot name="header">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">{{ $title }}</h3>
-            <div class="d-flex gap-2">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+            <h3 class="mb-0 fs-5 fs-md-3">{{ $title }}</h3>
+            <div class="d-flex flex-column flex-md-row gap-2">
                 @can('create data')
                     <button class="btn btn-outline-primary flex-fill mt-2 mt-md-0" data-bs-toggle="modal" data-bs-target="#createModal">
                         <i class="bi bi-plus-circle"></i> Thêm mới
@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="card mb-3">
-            <div class="card-body">
+            <div class="card-body search-card">
                 <form method="GET" action="{{ route('maintenance-requests.index') }}">
                     <div class="row g-2 align-items-end">
                         <div class="col-md-3">
@@ -153,7 +153,7 @@
         ];
     @endphp
 
-    <ul class="nav nav-tabs mb-3" id="requestTabs">
+    <ul class="nav nav-tabs mb-3 flex-nowrap overflow-auto" id="requestTabs">
         @foreach ($tabs as $idx => $tab)
             <li class="nav-item">
                 <button class="nav-link @if($idx===0)active @endif" data-bs-toggle="tab" data-bs-target="#{{ $tab['id'] }}">

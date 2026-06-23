@@ -9,6 +9,12 @@
                 <h5 class="modal-title">
                     Nghiệm thu công việc
                 </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
             </div>
 
             <div class="modal-body">
