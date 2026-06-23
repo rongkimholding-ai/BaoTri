@@ -47,8 +47,8 @@ class SlaAutoAcceptanceService
 
         // log
         MaintenanceRequestLog::create([
-            'maintenance_request_id' => $item->id,
-            'user_id' => 1,
+            'maintenance_request_id' => $item->id, 
+            'user_id' => 1, //admin
             'old_status' => 'CONFIRMED',
             'new_status' => $status,
             'note' => 'auto nghiệm thu hệ thống',

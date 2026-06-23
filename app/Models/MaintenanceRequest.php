@@ -30,10 +30,13 @@ class MaintenanceRequest extends Model
         'sla_status',
         'delay_reason',
         'outsourced_provider',
+        'is_confirmed',
         'acceptance_result',
+        'acceptance_note',
         'acceptance_confirmed_by',
         'pending_at',
         'processing_at',
+        'confirmed_at',
     ];
 
     
