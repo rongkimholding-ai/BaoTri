@@ -1,7 +1,7 @@
 @php
     $title = 'Danh sách công việc bảo trì';
     $realTimeMap = collect(config('real_time'))->keyBy('key');
-    $statuses = config('sla_status.names');
+    $statuses = config('sla_status.search_status');
     $fromDate = request('from_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
     $toDate = request('to_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
 @endphp
@@ -17,14 +17,14 @@
                         <i class="bi bi-plus-circle"></i> Thêm mới
                     </button>
                 @endcan
-                @can('export excel')
+                <!-- @can('export excel')
                     <a href="{{ route('maintenance-requests.export', [
                         'from-date' => $fromDate,
                         'to-date' => $toDate
                     ]) }}" class="btn btn-outline-success flex-fill mt-2 mt-md-0">
                         <i class="bi bi-file-earmark-excel"></i> Xuất báo cáo
                     </a>
-                @endcan
+                @endcan -->
                 <!-- <div class="card mb-3">
                 <div class="card-body">
                     <form method="GET"

@@ -49,8 +49,9 @@ class MaintenanceRequestController extends Controller
             case 'manager':
             case 'am':
             case 'om':
+            case 'viewer':
                 // Allow special user to see all (for managers, am, om roles)
-                if ($email !== 'liemhoang.support.hcm@tocotocotea.com') {
+                if (!in_array($email, config('special_user.full_view'))) {
                     $jsonPaths = [
                         resource_path('json/stores.json'),
                         resource_path('json/stores_mn.json')

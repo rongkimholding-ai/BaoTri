@@ -39,5 +39,18 @@ return [
         'COMPLETED' => "badge badge-success",
         'LATED' => "badge badge-danger",
         'REOPEN' => "badge badge-default"
+    ],
+    'search_status' => [
+        'NEW' => "Mới tạo",
+        'PROCESSING' => "Đang thực hiện",
+        'CONTINUE_PROCESSING' => "Tiếp tục thực hiện",
+        'PENDING' => "Chờ mua sắm",
+        'PENDING_CONTRACTOR' => "Chuyển nhà thầu",
+        'WAITING_CONFIRM' => "Chờ duyệt",
+        'REJECTED' => "Từ chối",
+        // 'CONFIRMED' => "Đã duyệt",
+        'COMPLETED' => "Đúng hạn",
+        'LATED' => "Trễ hạn",
+        'REOPEN' => "Cần thực hiện lại"
     ]
 ];

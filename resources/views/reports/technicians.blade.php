@@ -16,13 +16,39 @@
                     Bỏ lọc
                 </a>
                 @can('export excel tech')
-                    <a href="{{ route('reports.technician-export', [
-                        'from-date' => $fromDate,
-                        'to-date' => $toDate
-                    ]) }}" class="btn btn-outline-success">
-                        Xuất báo cáo
-                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Xuất báo cáo
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('reports.technician-export', [
+                                    'from-date' => $fromDate,
+                                    'to-date' => $toDate
+                                ]) }}">
+                                    Xuất tổng hợp theo KTV
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('maintenance-requests.export', [
+                                    'from-date' => $fromDate,
+                                    'to-date' => $toDate
+                                ]) }}">
+                                    Xuất tổng hợp yêu cầu
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
+                                    href="{{ route('maintenance.export-fromto') }}?from_date={{ $fromDate }}&to_date={{ $toDate }}"
+                                >
+                                    Xuất thống kê
+                                </a>
+                           
+                            </li>
+                        </ul>
+                    </div>
                 @endcan
+           
             </div>
         </div>
     </x-slot>
