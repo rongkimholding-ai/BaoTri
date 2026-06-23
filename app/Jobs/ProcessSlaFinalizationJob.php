@@ -32,14 +32,14 @@ class ProcessSlaFinalizationJob implements ShouldQueue
 
         $oldStatus = $item->sla_status;
 
-        $status = $service->evaluate($item);
+        // $status = $service->evaluate($item);
 
         \Log::info('AUTO SLA', [
             'id' => $item->id,
         ]);
 
         $item->update([
-            'sla_status' => $status,
+            // 'sla_status' => $status,
             'is_confirmed' => true,
             'acceptance_result' => 'accepted',
             'acceptance_note' => 'AUTO nghiệm thu từ hệ thống',
@@ -51,7 +51,7 @@ class ProcessSlaFinalizationJob implements ShouldQueue
             'maintenance_request_id' => $item->id,
             'user_id'                => 1,
             'old_status'             => $oldStatus,
-            'new_status'             => $status,
+            'new_status'             => $oldStatus,
             'note'                   => 'Tự động nghiệm thu sau 3 ngày không phản hồi',
         ]);
     }
