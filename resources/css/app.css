@@ -260,7 +260,34 @@ MODAL
 MOBILE
 ========================= */
 
+.mobile-request-card{
+    background:#fff;
+    border:1px solid #dee2e6;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.mobile-request-card hr{
+    margin:10px 0;
+}
+
+.mobile-request-card .badge{
+    font-size:.75rem;
+}
+
+.status-group .status_badge{
+    display:inline-block;
+}
+
 @media (max-width: 768px) {
+    .status-group{
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+    }
+
     .detail-row {
         flex-direction: column;
     }
