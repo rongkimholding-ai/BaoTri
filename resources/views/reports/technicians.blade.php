@@ -159,10 +159,10 @@
                             {{ $requests->sum('total_completed') }}
                         </td>
                         <td></td>
+                        <td></td>
                         <td class="text-center text-success">
                             {{ $requests->sum('dung_han_count') }}
                         </td>
-                        <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-center text-danger">
