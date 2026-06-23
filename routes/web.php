@@ -25,10 +25,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/maintenance-requests', [MaintenanceRequestController::class, 'index'])->name('maintenance-requests.index');
-    Route::get(
-        '/maintenance-requests/{maintenanceRequest}',
-        [MaintenanceRequestController::class, 'show']
-    )->name('maintenance-requests.show');
     Route::get('/maintenance-requests/{maintenanceRequest}/detail', [MaintenanceRequestController::class, 'detail'])->name('maintenance-requests.detail');
     Route::get('/maintenance-requests/export', [MaintenanceController::class, 'export'])->name('maintenance-requests.export');
     Route::post('/maintenance-requests/inline-update', [MaintenanceRequestController::class, 'inlineUpdate'])->name('maintenance-requests.inline-update');
@@ -40,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/technician-update', [MaintenanceController::class, 'updateTarget'])->name('reports.technician-update');
     Route::get('/reports/technician-export', [MaintenanceController::class, 'exportTechs'])->name('reports.technician-export');
     Route::get('/maintenance/export', [MaintenanceController::class, 'exportFromTo'])->name('maintenance.export-fromto');
+    Route::get('/maintenance-requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])->name('maintenance-requests.show');
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
 });
 

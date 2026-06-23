@@ -160,7 +160,7 @@
                 @endhasrole
                 @endcan
                 <a
-                    href="{{ url()->previous() }}"
+                    href="{{ route('maintenance-requests.index') }}"
                     class="btn btn-secondary"
                 >
                     Quay lại
