@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\MaintenanceRequestImage;
@@ -8,49 +9,73 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\JpegEncoder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+
 class MaintenanceImageService
 {
+    protected ImageManager $imageManager;
+    protected int $maxWidth = 1280;
+    protected int $maxHeight = 1280;
+    protected int $jpegQuality = 70;
+    protected string $imagePathPrefix = 'images/';
+
+    public function __construct()
+    {
+        $this->imageManager = new ImageManager(new Driver());
+    }
+
+    /**
+     * Save a processed image and create a record.
+     */
+    protected function processAndStoreImage(
+        int $requestId,
+        mixed $input,
+        string $uploadedBy,
+        string $storagePath,
+        ?callable $afterSave = null,
+        ?string $logFileName = null
+    ): void {
+        try {
+            $image = $this->imageManager->read($input);
+            $image->scaleDown(width: $this->maxWidth, height: $this->maxHeight);
+
+            $fileName = Str::uuid() . '.jpg';
+            $dateFolder = now()->format('Y_m_d');
+            $fullPath = $this->imagePathPrefix . $dateFolder . '/' . $fileName;
+
+            $encodedImage = $image->encode(new JpegEncoder(quality: $this->jpegQuality));
+            Storage::disk('public')->put($fullPath, (string) $encodedImage);
+
+            MaintenanceRequestImage::create([
+                'maintenance_request_id' => $requestId,
+                'path' => $fullPath,
+                'uploaded_by' => $uploadedBy,
+            ]);
+
+            if ($afterSave) {
+                $afterSave($storagePath);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Upload maintenance image failed', [
+                'request_id' => $requestId,
+                'file_name' => $logFileName ?? (is_object($input) && method_exists($input, 'getClientOriginalName') ? $input->getClientOriginalName() : (string)$storagePath),
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
     public function upload(
         int $requestId,
         array $files,
         string $uploadedBy
     ): void {
-        $manager = new ImageManager(new Driver());
-    
         foreach ($files as $file) {
+            // Prevent exception stopping the rest
             try {
-                $image = $manager->read($file);
-                $image->scaleDown(
-                    width: 1280,
-                    height: 1280
-                );
-                $fileName =  Str::uuid() . '.jpg';
-                $dateFolder = now()->format('Y_m_d');
-                $path = 'images/' . $dateFolder . '/' . $fileName;
-    
-                $encodedImage = $image->encode(
-                    new JpegEncoder(
-                        quality: 70
-                    )
-                );
-                
-                Storage::disk('public')->put(
-                    $path,
-                    (string) $encodedImage
-                );
-    
-                MaintenanceRequestImage::create([
-                    'maintenance_request_id' => $requestId,
-                    'path' => $path,
-                    'uploaded_by' => $uploadedBy,
-                ]);
-    
+                $this->processAndStoreImage($requestId, $file, $uploadedBy, '', null);
             } catch (\Throwable $e) {
-                Log::error('Upload maintenance image failed', [
-                    'request_id' => $requestId,
-                    'file_name' => $file->getClientOriginalName(),
-                    'error' => $e->getMessage(),
-                ]);
+                // Already logged in processAndStoreImage
+                // Optionally: continue; // Already logical
             }
         }
     }
@@ -59,76 +84,28 @@ class MaintenanceImageService
         int $requestId,
         array $tempFiles,
         string $uploadedBy
-    ): void
-    {
-        $manager = new ImageManager(
-            new Driver()
-        );
-    
+    ): void {
         foreach ($tempFiles as $tempFile) {
-    
-            $filePath = Storage::path(
-                'temp-maintenance/' . $tempFile
-            );
-    
-            if (! file_exists($filePath)) {
+            $filePath = Storage::path('temp-maintenance/' . $tempFile);
+
+            if (!file_exists($filePath)) {
                 continue;
             }
-    
+
             try {
-    
-                $image = $manager->read(
-                    $filePath
+                $this->processAndStoreImage(
+                    $requestId,
+                    $filePath,
+                    $uploadedBy,
+                    $filePath,
+                    function ($p) {
+                        @unlink($p);
+                    },
+                    $tempFile
                 );
-    
-                $image->scaleDown(
-                    width: 1280,
-                    height: 1280
-                );
-    
-                $fileName =
-                    Str::uuid()
-                    . '.jpg';
-    
-                $dateFolder =
-                    now()->format('Y_m_d');
-    
-                $path =
-                    'images/' .
-                    $dateFolder .
-                    '/' .
-                    $fileName;
-    
-                $encodedImage =
-                    $image->encode(
-                        new JpegEncoder(
-                            quality: 70
-                        )
-                    );
-    
-                Storage::disk('public')->put(
-                    $path,
-                    (string) $encodedImage
-                );
-    
-                MaintenanceRequestImage::create([
-                    'maintenance_request_id' => $requestId,
-                    'path' => $path,
-                    'uploaded_by' => $uploadedBy,
-                ]);
-    
-                unlink($filePath);
-    
             } catch (\Throwable $e) {
-    
-                Log::error(
-                    'Upload maintenance image failed',
-                    [
-                        'request_id' => $requestId,
-                        'file_name' => $tempFile,
-                        'error' => $e->getMessage(),
-                    ]
-                );
+                // Stop further uploading if desired, or remove throw to proceed next
+                // For consistency with original: re-throw to halt further
                 throw $e;
             }
         }

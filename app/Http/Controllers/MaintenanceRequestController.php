@@ -45,7 +45,9 @@ class MaintenanceRequestController extends Controller
                 $baseQuery->where('branch_email', $user->email);
                 break;
             case 'manager':
-                // Allow special user to see all
+            case 'am':
+            case 'om':
+                // Allow special user to see all (for managers, am, om roles)
                 if ($email !== 'liemhoang.support.hcm@tocotocotea.com') {
                     $jsonPaths = [
                         resource_path('json/stores.json'),
@@ -63,9 +65,9 @@ class MaintenanceRequestController extends Controller
                     $emails = collect($stores)
                         ->filter(function ($store) use ($email) {
                             return (
-                                    (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
-                                    (isset($store['am_email']) && strtolower($store['am_email']) == $email)
-                                ) && isset($store['email']);
+                                (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
+                                (isset($store['am_email']) && strtolower($store['am_email']) == $email)
+                            ) && isset($store['email']);
                         })
                         ->pluck('email')
                         ->unique()
@@ -79,6 +81,7 @@ class MaintenanceRequestController extends Controller
                 }
                 // else: allow all
                 break;
+ 
             case 'muasam':
                 $baseQuery->where('sla_status', config('sla_status.code.PENDING'));
                 break;
