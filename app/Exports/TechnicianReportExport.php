@@ -4,144 +4,90 @@ namespace App\Exports;
 
 use App\Models\MaintenanceRequest;
 use App\Models\TechnicianTarget;
+use App\Services\TechnicianReportService;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithStrictNullComparison
-{
-    protected $from_date;
-    protected $to_date;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-    public function __construct($from_date, $to_date)
-    {
-        $this->from_date = Carbon::parse($from_date)->startOfDay();
-        $this->to_date = Carbon::parse($to_date)->endOfDay();
+class TechnicianReportExport implements
+    FromCollection,
+    WithHeadings,
+    WithStyles,
+    ShouldAutoSize,
+    WithStrictNullComparison
+{
+    protected Carbon $fromDate;
+    protected Carbon $toDate;
+    protected array $techEmails;
+    protected $service;
+
+    public function __construct(
+        string $fromDate,
+        string $toDate,
+        array $techEmails = []
+    ) {
+        $this->fromDate = Carbon::parse($fromDate)->startOfDay();
+        $this->toDate = Carbon::parse($toDate)->endOfDay();
+
+        $this->techEmails = collect($techEmails)
+            ->filter()
+            ->map(fn ($email) => strtolower(trim($email)))
+            ->values()
+            ->toArray();
+
+            $this->service = app(TechnicianReportService::class);
     }
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+
     public function collection()
     {
-        // Lấy danh sách technicians từ technician_targets (mỗi người 1 record)
-        $technicians = TechnicianTarget::all();
+        return $this->service
+            ->getReport(
+                $this->fromDate,
+                $this->toDate,
+                $this->techEmails
+            )
+            ->map(function ($item) {
 
-        // Lấy maintenance_requests với mọi technician (không group chung tên)
-        $requestsRaw = MaintenanceRequest::query()
-            ->whereBetween('request_date', [$this->from_date, $this->to_date])
-            ->where('technician_email', '!=', 'liemhoang.support.hcm@tocotocotea.com')
-            ->get();
+                return [
+                    $item->technician_name,
 
-        // Group đúng từng technician theo unique key (ưu tiên id hoặc sử dụng tên/email nếu unique)
-        // Ở đây sẽ group theo technician_name + (technician_email nếu có để chính xác)
-        $keyBy = function ($item) {
-            // Nếu có field email, dùng cả tên+email, nếu không chỉ technician_name
-            return $item->technician_name . '|' . ($item->technician_email ?? '');
-        };
+                    $item->store_count,
+                    $item->daily_target,
+                    $item->monthly_target,
 
-        $requestsByTech = $requestsRaw->groupBy($keyBy);
+                    $item->total_completed,
+                    $item->completion_percent,
 
-        // Map theo technician_targets: mỗi record chỉ thống kê cho đúng person
-        $requests = $technicians->map(function ($tech) use ($requestsByTech) {
-            $key = $tech->technician_name . '|' . ($tech->technician_email ?? '');
+                    $item->ngoai_gio_count,
 
-            $requests = $requestsByTech->get($key, collect());
-            $totalCompleted = $requests->count();
+                    $item->dung_han_count,
+                    $item->dung_han_dm_percent,
+                    $item->dung_han_total_percent,
 
-            $monthlyTarget = (int) $tech->monthly_target;
+                    $item->khong_dung_han_count,
+                    $item->khong_dung_han_percent,
 
-            // Số đúng hạn (sla_status COMPLETED): 
-            $dung_han_count = $requests
-                ->where('sla_status', config('sla_status.code.COMPLETED'))->count();
+                    $item->quality_pass_count,
+                    $item->quality_pass_dm_percent,
+                    $item->quality_pass_total_percent,
 
-            // Số KHÔNG đúng hạn: tất cả bản ghi completion nhưng sla_status != COMPLETED
-            $khong_dung_han_count = $requests
-                ->where('sla_status', '!=', config('sla_status.code.COMPLETED'))->count();
-
-            $quality_pass_count = $requests->where('acceptance_result', 'accepted')->count();
-            $quality_fail_count = $requests->where(function ($item) {
-                return $item->acceptance_result === 'rejected' || is_null($item->acceptance_result);
-            })->count();
-
-            // Số lượng ngoài giờ
-            $ngoai_gio_count = $requests->where('is_off_worktime', true)->count();
-
-            $completion_percent =
-                $monthlyTarget > 0
-                ? round($totalCompleted * 100 / $monthlyTarget, 2)
-                : 0;
-
-            $dung_han_dm_percent =
-                $monthlyTarget > 0
-                ? round($dung_han_count * 100 / $monthlyTarget, 2)
-                : 0;
-
-            $dung_han_total_percent =
-                $totalCompleted > 0
-                ? round($dung_han_count * 100 / $totalCompleted, 2)
-                : 0;
-
-            $khong_dung_han_percent =
-                $totalCompleted > 0
-                ? round($khong_dung_han_count * 100 / $totalCompleted, 2)
-                : 0;
-
-            $quality_pass_dm_percent =
-                $monthlyTarget > 0
-                ? round($quality_pass_count * 100 / $monthlyTarget, 2)
-                : 0;
-
-            $quality_pass_total_percent =
-                $totalCompleted > 0
-                ? round($quality_pass_count * 100 / $totalCompleted, 2)
-                : 0;
-
-            $quality_fail_total_percent =
-                $totalCompleted > 0
-                ? round($quality_fail_count * 100 / $totalCompleted, 2)
-                : 0;
-
-            return (object) [
-                'technician_name' => $tech->technician_name,
-                'store_count' => (int) $tech->store_count,
-                'daily_target' => (int) $tech->daily_target,
-                'monthly_target' => (int) $tech->monthly_target,
-
-                'total_completed' => (int) $totalCompleted,
-                'completion_percent' => (float) $completion_percent,
-
-                // Số lượng ngoài giờ
-                'ngoai_gio_count' => (int) $ngoai_gio_count,
-
-                'dung_han_count' => (int) $dung_han_count,
-                'dung_han_dm_percent' => (float) $dung_han_dm_percent,
-                'dung_han_total_percent' => (float) $dung_han_total_percent,
-
-                'khong_dung_han_count' => (int) $khong_dung_han_count,
-                'khong_dung_han_percent' => (float) $khong_dung_han_percent,
-
-                'quality_pass_count' => (int) $quality_pass_count,
-                'quality_pass_dm_percent' => (float) $quality_pass_dm_percent,
-                'quality_pass_total_percent' => (float) $quality_pass_total_percent,
-
-                'quality_fail_count' => (int) $quality_fail_count,
-                'quality_fail_total_percent' => (float) $quality_fail_total_percent,
-            ];
-        });
-
-        return $requests;
+                    $item->quality_fail_count,
+                    $item->quality_fail_total_percent,
+                ];
+            });
     }
 
     public function headings(): array
     {
         return [
             'Kỹ thuật viên',
-
             'Số CH phụ trách',
             'Định mức/ngày',
             'Định mức/tháng',
@@ -172,38 +118,57 @@ class TechnicianReportExport implements FromCollection, WithHeadings, WithStyles
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
 
-        // ===== Freeze header =====
         $sheet->freezePane('A2');
 
-        // ===== Header style =====
-        $sheet->getStyle('A1:' . $highestColumn . '1')->applyFromArray([
-            'font' => [
-                'bold' => true,
-                'color' => ['rgb' => '000000'],
-                'size' => 13,
-            ],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => 'FFD700'], // vàng tiêu chuẩn
-            ],
-
-        ]);
-
-        // ===== Border toàn bảng =====
-        $sheet->getStyle('A1:' . $highestColumn . $highestRow)
+        // Header
+        $sheet->getStyle("A1:{$highestColumn}1")
             ->applyFromArray([
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => 'D9D9D9'],
+                'font' => [
+                    'bold' => true,
+                    'size' => 13,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'rgb' => 'FFD700',
                     ],
                 ],
             ]);
 
-        // ===== Auto row height =====
-        foreach (range(2, $highestRow) as $row) {
-            $sheet->getRowDimension($row)->setRowHeight(18);
-        }
+        // Căn giữa toàn bộ dữ liệu từ cột B trở đi
+        $sheet->getStyle("B2:{$highestColumn}{$highestRow}")
+            ->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+
+        // Cột tên kỹ thuật viên căn trái
+        $sheet->getStyle("A2:A{$highestRow}")
+            ->getAlignment()
+            ->setVertical(Alignment::VERTICAL_CENTER);
+
+        // Header căn giữa
+        $sheet->getStyle("A1:{$highestColumn}1")
+            ->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+
+        // Border
+        $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
+            ->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => [
+                            'rgb' => 'D9D9D9',
+                        ],
+                    ],
+                ],
+            ]);
+
+        $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
+            ->getAlignment()
+            ->setWrapText(true);
+
         return [];
     }
 }

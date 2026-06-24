@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\MaintenanceRequest;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -24,13 +25,15 @@ class MaintenanceByBranchExport implements
 {
     protected $fromDate;
     protected $toDate;
+    protected $techEmails;
 
     protected Collection $stores;
 
-    public function __construct($fromDate, $toDate)
+    public function __construct($fromDate, $toDate,array $techEmails = [])
     {
-        $this->fromDate = $fromDate;
-        $this->toDate = $toDate;
+        $this->fromDate = Carbon::parse($fromDate)->startOfDay();
+        $this->toDate = Carbon::parse($toDate)->endOfDay();
+        $this->techEmails = $techEmails;
 
         $this->stores = collect(
             json_decode(
@@ -42,7 +45,7 @@ class MaintenanceByBranchExport implements
 
     public function collection()
     {
-        return MaintenanceRequest::query()
+        $query = MaintenanceRequest::query()
             ->select(
                 'branch_code',
                 'branch_name'
@@ -72,13 +75,20 @@ class MaintenanceByBranchExport implements
                     $this->fromDate,
                     $this->toDate
                 ]
-            )
-            ->groupBy(
-                'branch_code',
-                'branch_name'
-            )
-            ->orderBy('branch_code')
-            ->get();
+                );
+
+            // if (!empty($this->techEmails)) {
+            //     $query->whereIn(
+            //         'technician_email',
+            //         $this->techEmails
+            //     );
+            // }
+            return $query->groupBy(
+                        'branch_code',
+                        'branch_name'
+                    )
+                    ->orderBy('branch_code')
+                    ->get();
     }
 
     public function headings(): array

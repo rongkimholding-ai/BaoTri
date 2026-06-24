@@ -16,7 +16,7 @@
                     Bỏ lọc
                 </a>
                 @can('export excel tech')
-                    <div class="dropdown">
+                    <!-- <div class="dropdown">
                         <button class="btn btn-outline-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             Xuất báo cáo
                         </button>
@@ -46,7 +46,15 @@
                            
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
+                    <button
+                        type="button"
+                        class="btn btn-outline-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exportsModal">
+                        <i class="fas fa-file-excel"></i>
+                        Xuất báo cáo
+                    </button>
                 @endcan
            
             </div>
@@ -183,5 +191,6 @@
             </table>
         </div>
     </div>
-    @include('reports.modals.export_by_date')
+    <!-- @include('reports.modals.export_by_date') -->
+    @include('reports.modals.export')
 </x-app-layout>

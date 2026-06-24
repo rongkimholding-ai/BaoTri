@@ -16,16 +16,17 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
 {
     protected $from_date;
     protected $to_date;
+    protected $techEmails;
 
-    public function __construct($from_date, $to_date)
+    public function __construct($from_date, $to_date,array $techEmails = [])
     {
         $this->from_date = Carbon::parse($from_date)->startOfDay();
         $this->to_date = Carbon::parse($to_date)->endOfDay();
-   
+        $this->techEmails = $techEmails;
     }
     public function collection()
     {
-        return MaintenanceRequest::select([
+        $query = MaintenanceRequest::select([
             'id',
             'branch_code',
             'branch_name',
@@ -43,9 +44,20 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             'outsourced_provider',
             'acceptance_result',
             'acceptance_confirmed_by',
-            // 'created_at',
-            // 'updated_at',
-        ])->whereBetween('request_date', [$this->from_date, $this->to_date])->get();
+        ])
+        ->whereBetween(
+            'request_date',
+            [$this->from_date, $this->to_date]
+        );
+
+        if (!empty($this->techEmails)) {
+            $query->whereIn(
+                'technician_email',
+                $this->techEmails
+            );
+        }
+
+        return $query->get();
     }
 
     public function map($row): array
