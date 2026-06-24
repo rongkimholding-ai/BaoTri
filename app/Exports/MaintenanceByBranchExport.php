@@ -35,12 +35,23 @@ class MaintenanceByBranchExport implements
         $this->toDate = Carbon::parse($toDate)->endOfDay();
         $this->techEmails = $techEmails;
 
-        $this->stores = collect(
+        // Lấy dữ liệu từ cả stores.json và stores_mn.json, sau đó merge lại theo 'code'
+        $storesJson = collect(
             json_decode(
                 file_get_contents(resource_path('json/stores.json')),
                 true
             )
-        )->keyBy('code');
+        );
+        $storesMnJson = collect(
+            json_decode(
+                file_get_contents(resource_path('json/stores_mn.json')),
+                true
+            )
+        );
+        // Gộp 2 collection, ưu tiên dữ liệu từ stores_mn.json khi trùng 'code'
+        $this->stores = $storesJson
+            ->concat($storesMnJson)
+            ->keyBy('code');
     }
 
     public function collection()
