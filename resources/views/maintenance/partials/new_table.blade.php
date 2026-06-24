@@ -60,18 +60,24 @@
                         @endphp
                         <tr data-id="{{ $item->id }}" class="{{ $isOverdue ? 'table-danger' : '' }} tr-row-link" data-detail-url="{{ $detailRoute }}">
                             <td>{{ ++$stt }}</td>
-                            <td class="branch_data">
+                            <td class="textarea-field">
                                 Mã: {{ $item->branch_code }} <br>
-                                Tên: {{ $item->branch_name }}
+                                Tên: <b>{{ $item->branch_name }}</b>
+                                <hr>
+                                Hạng mục: <b>{{ $item->item_category }}</b> <br>
+                                Loại sự cố: <b>{{ $severityName }}</b>
+                                <hr>
+                                KTV: {{ $item->technician_name }} {{ $item->technician_mobile ? '('.$item->technician_mobile.')': '' }}<br>
+                                Email: {{ $item->technician_email }}
                             </td>
-                            <td class="item_category_class">
+                            <!-- <td class="item_category_class">
                                 Tên: {{ $item->item_category }} <br>
                                 Loại sự cố: {{ $severityName }} <br>
-                                <!-- Trạng thái:
+                                Trạng thái:
                                 <span class="{{ $slaStatusBadge }}">
                                     {{ $slaStatusName }}
-                                </span> -->
-                            </td>
+                                </span>
+                            </td> -->
                             <td class="textarea-field">{{ $item->issue_description }}</td>
                             <!-- <td class="textarea-field">{{ $item->solution_description }}</td> -->
                             <!-- <td class="tech_data">
@@ -138,7 +144,7 @@
                                 </span>
                             </td>
                             <!-- <td>{{ $item->outsourced_provider }}</td> -->
-                            <td>{{ $acceptanceList[$item->acceptance_result] ?? $item->acceptance_result }}</td>
+                            <td class="text-center">{{ $acceptanceList[$item->acceptance_result] ?? $item->acceptance_result }}</td>
                             <td class="confirmer-name">{{ $item->acceptance_confirmed_by }}</td>
                             <!-- <td>
                                 Đã nhắc: {{ $item->reminder_count }}
@@ -344,11 +350,11 @@
                 data-url="{{ route('maintenance-requests.show',$item->id) }}">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="fw-bold">
+                        <div>
                             {{ $item->branch_code }}
                         </div>
 
-                        <div>
+                        <div class="fw-bold">
                             {{ $item->branch_name }}
                         </div>
                     </div>
@@ -381,10 +387,10 @@
                 <div class="mt-2">
                     <strong>Ngày yêu cầu:</strong> {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
                     <strong>Yêu cầu hoàn thành:</strong> {{ $timeName }}<br>
-                    <strong>Ngày hoàn thành:</strong>
-                    {{ $item->actual_completion_date ? \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') : '' }}<br>
-                    <strong>Thời gian thực tế:</strong>
-                    {{ $item->actual_duration ? format_duration($item->actual_duration) : '' }}
+                    
+                    {!! $item->actual_completion_date ? '<strong>Ngày hoàn thành:</strong> '.\Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s').'<br>' : '' !!}
+                    
+                    {!! $item->actual_duration ? '<strong>Thời gian thực tế:</strong> '.format_duration($item->actual_duration) : '' !!}
                 </div>
 
                 <div class="mt-3 d-grid">

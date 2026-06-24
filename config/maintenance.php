@@ -30,7 +30,7 @@ return [
     'tbl_fields' => [
         'stt' => 'STT',
         'branch' => 'Cơ sở',
-        'item_category' => 'Hạng mục',
+        // 'item_category' => 'Hạng mục',
         'issue_description' => 'Diễn giải sự cố',
         // 'severity' => 'Loại sự cố',
         // 'solution_description' => 'Khắc phục',
