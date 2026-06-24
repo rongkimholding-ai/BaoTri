@@ -7,39 +7,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Hiển thị danh sách người dùng với chức năng tìm kiếm cơ bản.
      */
     public function index(Request $request)
     {
         $name = $request->input('name');
         $email = $request->input('email');
 
-        $query = User::with('roles');
+        $users = User::with('roles')
+            ->when($name, fn($query) => $query->where('name', 'like', "%{$name}%"))
+            ->when($email, fn($query) => $query->where('email', 'like', "%{$email}%"))
+            ->paginate(20)
+            ->appends(['name' => $name, 'email' => $email]);
 
-        if ($name) {
-            $query->where('name', 'like', '%' . $name . '%');
-        }
-
-        if ($email) {
-            $query->where('email', 'like', '%' . $email . '%');
-        }
-
-        $users = $query->paginate(20)->appends([
-            'name' => $name,
-            'email' => $email,
-        ]);
         $roles = Role::all();
 
         return view('users.index', compact('users', 'roles', 'name', 'email'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Hiển thị form tạo người dùng mới.
      */
     public function create()
     {
@@ -48,7 +41,7 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Lưu người dùng mới.
      */
     public function store(Request $request)
     {
@@ -62,7 +55,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password'],
+            'password' => bcrypt($validated['password']),
         ]);
 
         $user->syncRoles($validated['roles']);
@@ -71,7 +64,7 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Không sử dụng method show.
      */
     public function show(string $id)
     {
@@ -79,19 +72,17 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Hiển thị form chỉnh sửa người dùng.
      */
     public function edit(User $user)
     {
         $roles = Role::orderBy('name')->get();
-
         $user->load('roles');
-
         return view('users._form', compact('user', 'roles'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Cập nhật thông tin người dùng.
      */
     public function update(Request $request, User $user)
     {
@@ -108,86 +99,73 @@ class UserController extends Controller
         ];
 
         if (!empty($validated['password'])) {
-            $data['password'] = $validated['password'];
+            $data['password'] = bcrypt($validated['password']);
         }
 
         $user->update($data);
-
         $user->syncRoles($validated['roles']);
 
         return redirect()->route('users.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Không sử dụng method destroy.
      */
     public function destroy(string $id)
     {
         //
     }
 
-    public function adminResetPassword(
-        // ResetUserPasswordRequest $request,
-        User $user
-    ) {
+    /**
+     * Admin đặt lại mật khẩu mặc định cho người dùng.
+     */
+    public function adminResetPassword(User $user)
+    {
         $newPass = '12345678';
-        $data = [
-            'password' => Hash::make(
-                $newPass
-            ),
+        $user->update([
+            'password' => Hash::make($newPass),
             'reset_password_at' => now(),
-            'reset_password_by' => auth()->user()->email,
-        ];
-        // dd($data);
+            'reset_password_by' => auth()->user()?->email,
+        ]);
 
-        $user->update($data);
-    
         return redirect()
             ->back()
-            ->with(
-                'success',
-                'Đặt lại mật khẩu thành công.'
-            );
+            ->with('success', 'Đặt lại mật khẩu thành công.');
     }
 
+    /**
+     * Xuất danh sách người dùng ra file Excel.
+     */
     public function exportExcel()
     {
         $users = User::with('roles')->get();
-
         $filename = 'users_' . now()->format('Ymd_His') . '.xlsx';
 
         $headings = ['Tên', 'Email', 'Vai trò'];
+        $rows = $users->map(fn($user) => [
+            $user->name,
+            $user->email,
+            $user->getRoleNames()->implode(', ')
+        ])->toArray();
 
-        $rows = $users->map(function ($user) {
-            return [
-                $user->name,
-                $user->email,
-                $user->getRoleNames()->implode(', ')
-            ];
-        })->toArray();
-
-        // Sử dụng Export class ẩn danh cho gọn
         $export = new class($rows, $headings) implements FromArray, WithHeadings {
             protected $rows;
             protected $headings;
-
             public function __construct(array $rows, array $headings)
             {
                 $this->rows = $rows;
                 $this->headings = $headings;
             }
-
             public function array(): array
             {
                 return $this->rows;
             }
-
             public function headings(): array
             {
                 return $this->headings;
             }
         };
 
-        return \Maatwebsite\Excel\Facades\Excel::download($export, $filename);
+        return Excel::download($export, $filename);
     }
 }

@@ -10,11 +10,7 @@ class PermissionController extends Controller
     public function index()
     {
         $permissions = Permission::orderBy('name')->paginate(20);
-
-        return view(
-            'permissions.index',
-            compact('permissions')
-        );
+        return view('permissions.index', compact('permissions'));
     }
 
     public function create()
@@ -24,14 +20,14 @@ class PermissionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|unique:permissions,name'
         ]);
 
-        $permission = new Permission();
-        $permission->name = $request->name;
-        $permission->guard_name = 'web';
-        $permission->save();
+        Permission::create([
+            'name' => $validated['name'],
+            'guard_name' => 'web'
+        ]);
 
         return redirect()
             ->route('permissions.index')
@@ -43,26 +39,22 @@ class PermissionController extends Controller
         return view('permissions._form', compact('permission'));
     }
 
-    public function update(
-        Request $request,
-        Permission $permission
-    ) {
-        $request->validate([
+    public function update(Request $request, Permission $permission)
+    {
+        $validated = $request->validate([
             'name' => 'required'
         ]);
 
-        $permission->forceFill([
-            'name' => $request->name,
-        ])->save();
+        $permission->update([
+            'name' => $validated['name']
+        ]);
 
-        return redirect()
-            ->route('permissions.index');
+        return redirect()->route('permissions.index');
     }
 
     public function destroy(Permission $permission)
     {
         $permission->delete();
-
         return back();
     }
 }

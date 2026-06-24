@@ -9,99 +9,88 @@ use Spatie\Permission\Models\Role;
 class RoleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Hiển thị danh sách vai trò.
      */
     public function index()
     {
         $roles = Role::orderBy('name')->paginate(20);
-
-        return view(
-            'roles.index',
-            compact('roles')
-        );
+        return view('roles.index', compact('roles'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Hiển thị form tạo vai trò mới.
      */
     public function create()
     {
         $permissions = Permission::orderBy('name')->get();
-
         return view('roles._form', compact('permissions'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Lưu vai trò mới.
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|unique:roles,name',
+            'permissions' => 'array'
         ]);
 
-        $role = new Role();
-        $role->name = $request->name;
-        $role->guard_name = 'web';
-        $role->save();
+        $role = Role::create([
+            'name' => $validated['name'],
+            'guard_name' => 'web'
+        ]);
 
-        return redirect()
-            ->route('roles.index')
-            ->with('success', 'Tạo vai trò thành công');
+        if (!empty($validated['permissions'])) {
+            $role->syncPermissions($validated['permissions']);
+        }
+
+        return redirect()->route('roles.index')->with('success', 'Tạo vai trò thành công');
     }
 
     /**
-     * Display the specified resource.
+     * Hiển thị chi tiết vai trò (tạm thời chưa sử dụng).
      */
-    public function show(string $id)
+    public function show(Role $role)
     {
-        //
+        // Tuỳ ý bổ sung nếu cần show chi tiết vai trò
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Hiển thị form chỉnh sửa vai trò.
      */
     public function edit(Role $role)
     {
         $permissions = Permission::orderBy('name')->get();
-
         $role->load('permissions');
-
         return view('roles._form', compact('role', 'permissions'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Cập nhật vai trò.
      */
-    public function update(
-        Request $request,
-        Role $role
-    ) {
-        $request->validate([
-            'name' => 'required'
+    public function update(Request $request, Role $role)
+    {
+        $validated = $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+            'permissions' => 'array'
         ]);
 
-        $role->forceFill([
-            'name' => $request->name,
-        ])->save();
+        $role->update([
+            'name' => $validated['name'],
+        ]);
 
-        $role->syncPermissions(
-            $request->permissions ?? []
-        );
+        $role->syncPermissions($validated['permissions'] ?? []);
 
-        return redirect()
-            ->route('roles.index')
-            ->with(
-                'success',
-                'Cập nhật thành công'
-            );
+        return redirect()->route('roles.index')->with('success', 'Cập nhật thành công');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Xoá vai trò.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
-        //
+        $role->delete();
+        return redirect()->route('roles.index')->with('success', 'Đã xoá vai trò');
     }
 }

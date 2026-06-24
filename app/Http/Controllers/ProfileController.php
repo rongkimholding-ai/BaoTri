@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Hiển thị form hồ sơ người dùng.
      */
     public function edit(Request $request): View
     {
@@ -22,23 +22,24 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Cập nhật thông tin hồ sơ người dùng.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (isset($validated['email']) && $validated['email'] !== $user->email) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->fill($validated)->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
-     * Delete the user's account.
+     * Xóa tài khoản người dùng.
      */
     public function destroy(Request $request): RedirectResponse
     {
@@ -49,7 +50,6 @@ class ProfileController extends Controller
         $user = $request->user();
 
         Auth::logout();
-
         $user->delete();
 
         $request->session()->invalidate();
