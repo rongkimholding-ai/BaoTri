@@ -162,6 +162,13 @@ TABLE
     background:#f8f9fa;
 }
 
+.mobile-danger {
+    background: #ffe5e5 !important;
+    border: 2px solid #dc3545 !important;
+    /* Optional: subtle red shadow for extra visibility */
+    box-shadow: 0 0 8px 0 #ffcccc7a;
+}
+
 /* =========================
 BADGE SLA
 ========================= */

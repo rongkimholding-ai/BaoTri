@@ -344,9 +344,17 @@
                     $item->sla_status,
                     $item->sla_status
                 );
+                $sla = $realTimeMap[$item->standard_completion_time] ?? null;
+                $isOverdue = false;
+                if ($sla && !empty($item->request_date)) {
+                    $createdAt = \Carbon\Carbon::parse($item->request_date);
+                    $elapsedSeconds = $createdAt->diffInSeconds(now());
+                    $isOverdue = $elapsedSeconds > (int) ($sla['max_seconds'] ?? 0)
+                        && !in_array($item->sla_status, [config('sla_status.code.COMPLETED'), config('sla_status.code.LATED')]);
+                }
             @endphp
 
-            <div class="mobile-request-card mobile-row-link"
+            <div class="mobile-request-card mobile-row-link {{ $isOverdue ? 'mobile-danger' : '' }}"
                 data-url="{{ route('maintenance-requests.show',$item->id) }}">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
