@@ -2,51 +2,16 @@
     <x-slot name="header">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <div class="d-flex justify-content-between mb-3">
-            <h3>Báo cáo SLA theo kỹ thuật viên</h3>
+            <h3 class="mb-0">Báo cáo SLA theo kỹ thuật viên</h3>
             <div class="d-flex gap-2 align-items-center">
                 @php
-                    $fromDate = request('from-date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
-                    $toDate = request('to-date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
+                    $fromDate = request('from-date', now()->startOfMonth()->format('Y-m-d'));
+                    $toDate = request('to-date', now()->endOfMonth()->format('Y-m-d'));
                 @endphp
-                <input type="date" id="from-date" class="form-control" style="width: 180px"
-                    value="{{ $fromDate }}">
-                <input type="date" id="to-date" class="form-control" style="width: 180px"
-                    value="{{ $toDate }}">
-                <a href="{{ route('reports.technicians') }}" class="btn btn-outline-secondary">
-                    Bỏ lọc
-                </a>
+                <input type="date" id="from-date" class="form-control" style="width: 180px" value="{{ $fromDate }}">
+                <input type="date" id="to-date" class="form-control" style="width: 180px" value="{{ $toDate }}">
+                <a href="{{ route('reports.technicians') }}" class="btn btn-outline-secondary">Bỏ lọc</a>
                 @can('export excel tech')
-                    <!-- <div class="dropdown">
-                        <button class="btn btn-outline-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            Xuất báo cáo
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('reports.technician-export', [
-                                    'from-date' => $fromDate,
-                                    'to-date' => $toDate
-                                ]) }}">
-                                    Xuất tổng hợp theo KTV
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('maintenance-requests.export', [
-                                    'from-date' => $fromDate,
-                                    'to-date' => $toDate
-                                ]) }}">
-                                    Xuất tổng hợp yêu cầu
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item"
-                                    href="{{ route('maintenance.export-fromto') }}?from_date={{ $fromDate }}&to_date={{ $toDate }}"
-                                >
-                                    Xuất thống kê
-                                </a>
-                           
-                            </li>
-                        </ul>
-                    </div> -->
                     <button
                         type="button"
                         class="btn btn-outline-success"
@@ -56,16 +21,18 @@
                         Xuất báo cáo
                     </button>
                 @endcan
-           
             </div>
         </div>
     </x-slot>
 
     <div class="py-4">
-            <small class="text-muted">Ghi chú: <i><b>ĐM</b>: Định mức</i>, <i><b>YC</b>: Tổng số yêu cầu</i>, <i><b>CH</b>: Cửa hàng</i>
-            </small>
+        <small class="text-muted d-block mb-2">
+            Ghi chú: <i><b>ĐM</b>: Định mức</i>,
+            <i><b>YC</b>: Tổng số yêu cầu</i>,
+            <i><b>CH</b>: Cửa hàng</i>
+        </small>
         <div class="table-responsive">
-            <table class="table table-bordered table-striped table-report">
+            <table class="table table-bordered table-striped table-report mb-0">
                 <thead class="table-dark align-middle text-center">
                     <tr>
                         <th rowspan="2">STT</th>
@@ -98,10 +65,8 @@
                 <tbody>
                     @forelse($requests as $index => $item)
                         <tr class="align-middle">
-                            <td class="text-center">{{ $index + 1 }}</td>
-                            <td>
-                                <strong>{{ $item->technician_name }}</strong>
-                            </td>
+                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td><strong>{{ $item->technician_name }}</strong></td>
                             @php
                                 $inputs = [
                                     ['store_count', $item->store_count, 90],
@@ -126,11 +91,10 @@
                                             value="{{ $value }}"
                                             readonly
                                             tabindex="-1"
-                                            style="background-color: #e9ecef; pointer-events: none;"
+                                            style="background-color:#e9ecef; pointer-events:none;"
                                         >
                                     @endcan
                                 </td>
-                           
                             @endforeach
                             <td class="text-center fw-bold">{{ $item->total_completed }}</td>
                             <td class="text-center">
@@ -152,7 +116,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="17" class="text-center">
+                            <td colspan="18" class="text-center">
                                 Không có dữ liệu
                             </td>
                         </tr>
@@ -160,37 +124,24 @@
                 </tbody>
                 <tfoot class="table-secondary fw-bold">
                     <tr>
-                        <td colspan="5" class="text-end">
-                            Tổng cộng
-                        </td>
-                        <td class="text-center">
-                            {{ $requests->sum('total_completed') }}
-                        </td>
+                        <td colspan="5" class="text-end">Tổng cộng</td>
+                        <td class="text-center">{{ $requests->sum('total_completed') }}</td>
                         <td></td>
                         <td></td>
-                        <td class="text-center text-success">
-                            {{ $requests->sum('dung_han_count') }}
-                        </td>
+                        <td class="text-center text-success">{{ $requests->sum('dung_han_count') }}</td>
                         <td></td>
                         <td></td>
-                        <td class="text-center text-danger">
-                            {{ $requests->sum('khong_dung_han_count') }}
-                        </td>
+                        <td class="text-center text-danger">{{ $requests->sum('khong_dung_han_count') }}</td>
                         <td></td>
-                        <td class="text-center text-success">
-                            {{ $requests->sum('quality_pass_count') }}
-                        </td>
+                        <td class="text-center text-success">{{ $requests->sum('quality_pass_count') }}</td>
                         <td></td>
                         <td></td>
-                        <td class="text-center text-danger">
-                            {{ $requests->sum('quality_fail_count') }}
-                        </td>
+                        <td class="text-center text-danger">{{ $requests->sum('quality_fail_count') }}</td>
                         <td></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
     </div>
-    <!-- @include('reports.modals.export_by_date') -->
     @include('reports.modals.export')
 </x-app-layout>

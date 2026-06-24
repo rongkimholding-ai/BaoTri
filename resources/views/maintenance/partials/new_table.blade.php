@@ -16,16 +16,24 @@
     </div>
 @endif
 
+@php
+    // Khởi tạo chung cho cả view tránh lặp lại trong mỗi foreach
+    $severities = collect(config('severities'))->keyBy('key');
+    $acceptanceList = collect(config('acceptance'))->pluck('name', 'key');
+    $tblFields = config('maintenance.tbl_fields');
+    $slaStatusBadgeList = config('sla_status.badge');
+    $slaStatusNames = config('sla_status.names');
+    $slaStatusCode = config('sla_status.code');
+@endphp
+
 <div class="py-4">
-    <div class="table-scroll-top">
-        <div></div>
-    </div>
+    <div class="table-scroll-top"><div></div></div>
     <div class="d-none d-md-block">
         <div class="table-responsive">
             <table id="tbData" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        @foreach (config('maintenance.tbl_fields') as $key_field => $fields)
+                        @foreach ($tblFields as $key_field => $fields)
                             <th class="{{ in_array($key_field, ['severity','status']) ? $key_field.'_field' : '' }}">{{ $fields }}</th>
                         @endforeach
                         <!-- <th>Nhắc việc</th> -->
@@ -34,28 +42,19 @@
                 </thead>
                 <tbody>
                     @isset($requests)
-                    @php
-                        $stt = ($requests->currentPage() - 1) * $requests->perPage();
-                    @endphp
+                    @php $stt = ($requests->currentPage() - 1) * $requests->perPage(); @endphp
                     @foreach($requests as $item)
                         @php
-                            // Đặt lên đầu foreach để tận dụng biến chung
-                            $severities = $severities ?? collect(config('severities'))->keyBy('key');
-                            $acceptanceList = $acceptanceList ?? collect(config('acceptance'))->pluck('name', 'key');
+                            // Tính toán dữ liệu sử dụng nhiều lần
                             $sla = $realTimeMap[$item->standard_completion_time] ?? null;
-                            $isOverdue = false;
-                            if ($sla && !empty($item->request_date)) {
-                                $createdAt = \Carbon\Carbon::parse($item->request_date);
-                                $elapsedSeconds = $createdAt->diffInSeconds(now());
-                                $isOverdue = $elapsedSeconds > (int) ($sla['max_seconds'] ?? 0)
-                                    && !in_array($item->sla_status, [config('sla_status.code.COMPLETED'), config('sla_status.code.LATED')]);
-                            }
+                            $isOverdue = $sla && !empty($item->request_date)
+                                ? (\Carbon\Carbon::parse($item->request_date)->diffInSeconds(now()) > (int) ($sla['max_seconds'] ?? 0)
+                                    && !in_array($item->sla_status, [$slaStatusCode['COMPLETED'], $slaStatusCode['LATED']]))
+                                : false;
                             $severityName = $severities[$item->severity]['name'] ?? $item->severity;
-                            $slaStatusBadge = data_get(config('sla_status.badge'), $item->sla_status, 'badge badge-default');
-                            $slaStatusName = data_get(config('sla_status.names'), $item->sla_status, $item->sla_status);
-                            $timeName = $item->standard_completion_time
-                                ? ($realTimeMap[$item->standard_completion_time]['name'] ?? $item->standard_completion_time)
-                                : '';
+                            $slaStatusBadge = data_get($slaStatusBadgeList, $item->sla_status, 'badge badge-default');
+                            $slaStatusName = data_get($slaStatusNames, $item->sla_status, $item->sla_status);
+                            $timeName = $item->standard_completion_time ? ($realTimeMap[$item->standard_completion_time]['name'] ?? $item->standard_completion_time) : '';
                             $detailRoute = route('maintenance-requests.show', $item->id);
                         @endphp
                         <tr data-id="{{ $item->id }}" class="{{ $isOverdue ? 'table-danger' : '' }} tr-row-link" data-detail-url="{{ $detailRoute }}">
@@ -67,14 +66,13 @@
                                 Hạng mục: <b>{{ $item->item_category }}</b> <br>
                                 Loại sự cố: <b>{{ $severityName }}</b>
                                 <hr>
-                                KTV: {{ $item->technician_name }} {{ $item->technician_mobile ? '('.$item->technician_mobile.')': '' }}<br>
+                                KTV: {{ $item->technician_name }}{{ $item->technician_mobile ? ' ('.$item->technician_mobile.')': '' }}<br>
                                 Email: {{ $item->technician_email }}
                             </td>
                             <!-- <td class="item_category_class">
                                 Tên: {{ $item->item_category }} <br>
                                 Loại sự cố: {{ $severityName }} <br>
-                                Trạng thái:
-                                <span class="{{ $slaStatusBadge }}">
+                                Trạng thái: <span class="{{ $slaStatusBadge }}">
                                     {{ $slaStatusName }}
                                 </span>
                             </td> -->
@@ -87,33 +85,21 @@
                             </td> -->
                             <!-- <td>
                                 @if($item->include_saturday)
-                                    <span class="badge bg-primary">
-                                        T7
-                                    </span>
+                                    <span class="badge bg-primary">T7</span>
                                 @endif
-
                                 @if($item->include_sunday)
-                                    <span class="badge bg-info">
-                                        CN
-                                    </span>
+                                    <span class="badge bg-info">CN</span>
                                 @endif
-
                                 @if($item->include_holiday)
-                                    <span class="badge bg-warning">
-                                        Lễ
-                                    </span>
+                                    <span class="badge bg-warning">Lễ</span>
                                 @endif
-
                                 @if(
                                     !$item->include_saturday
                                     && !$item->include_sunday
                                     && !$item->include_holiday
                                 )
-                                    <span class="badge bg-secondary">
-                                        Hành chính
-                                    </span>
+                                    <span class="badge bg-secondary">Hành chính</span>
                                 @endif
-
                             </td> -->
                             <td class="time_field">
                                 Ngày yêu cầu: {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
@@ -155,103 +141,66 @@
                                     <button class="btn btn-primary dropdown-toggle action-btn" type="button" data-bs-toggle="dropdown">Thao tác</button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <!-- <a
-                                                role="button"
-                                                class="dropdown-item btn-detail"
-                                                data-id="{{ $item->id }}"
-                                            >
-                                                Chi tiết
-                                            </a> -->
-                                            <a
-                                                href="{{ route('maintenance-requests.show', $item->id) }}"
-                                                class="dropdown-item"
-                                            >
+                                            <a href="{{ $detailRoute }}" class="dropdown-item">
                                                 Chi tiết
                                             </a>
                                         </li>
                                         @can('change-maintenance-status')
                                             @hasanyrole('technician|admin')
-                                                @if(in_array($item->sla_status, [config('sla_status.code.NEW'), config('sla_status.code.REOPEN')]))
+                                                @if(in_array($item->sla_status, [$slaStatusCode['NEW'], $slaStatusCode['REOPEN']]))
                                                     <li>
-                                                        <a class="dropdown-item change-status-btn"
-                                                            href=""
-                                                            data-id="{{ $item->id }}"
-                                                            data-status="{{ config('sla_status.code.PROCESSING') }}">
-                                                            {{ $item->sla_status == config('sla_status.code.NEW') ? 'Tiếp nhận' : 'Xử lý lại' }}
+                                                        <a class="dropdown-item change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['PROCESSING'] }}">
+                                                            {{ $item->sla_status == $slaStatusCode['NEW'] ? 'Tiếp nhận' : 'Xử lý lại' }}
                                                         </a>
                                                     </li>
-                                                @elseif(in_array($item->sla_status, [config('sla_status.code.PROCESSING'), config('sla_status.code.CONTINUE_PROCESSING')]))
+                                                @elseif(in_array($item->sla_status, [$slaStatusCode['PROCESSING'], $slaStatusCode['CONTINUE_PROCESSING']]))
                                                     <li>
-                                                        <a class="dropdown-item text-warning change-status-btn"
-                                                            href=""
-                                                            data-id="{{ $item->id }}"
-                                                            data-status="{{ config('sla_status.code.PENDING') }}">
-                                                            {{ config('sla_status.names.PENDING') }}
+                                                        <a class="dropdown-item text-warning change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['PENDING'] }}">
+                                                            {{ $slaStatusNames['PENDING'] }}
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item text-warning change-status-btn"
-                                                            href=""
-                                                            data-id="{{ $item->id }}"
-                                                            data-status="{{ config('sla_status.code.PENDING_CONTRACTOR') }}">
-                                                            {{ config('sla_status.names.PENDING_CONTRACTOR') }}
+                                                        <a class="dropdown-item text-warning change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['PENDING_CONTRACTOR'] }}">
+                                                            {{ $slaStatusNames['PENDING_CONTRACTOR'] }}
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item change-status-btn"
-                                                            href=""
-                                                            data-id="{{ $item->id }}"
-                                                            data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
+                                                        <a class="dropdown-item change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['WAITING_CONFIRM'] }}">
                                                             Hoàn thành Y/C
                                                         </a>
                                                     </li>
-                                                @elseif($item->sla_status == config('sla_status.code.PENDING_CONTRACTOR'))
+                                                @elseif($item->sla_status == $slaStatusCode['PENDING_CONTRACTOR'])
                                                     <li>
-                                                        <a class="dropdown-item change-status-btn"
-                                                            href=""
-                                                            data-id="{{ $item->id }}"
-                                                            data-status="{{ config('sla_status.code.WAITING_CONFIRM') }}">
+                                                        <a class="dropdown-item change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['WAITING_CONFIRM'] }}">
                                                             Hoàn thành Y/C
                                                         </a>
                                                     </li>
                                                 @endif
-                                            @endhasallroles
+                                            @endhasanyrole
                                             @hasanyrole('muasam|admin')
-                                                @if($item->sla_status == config('sla_status.code.PENDING'))
+                                                @if($item->sla_status == $slaStatusCode['PENDING'])
                                                 <li>
-                                                    <a class="dropdown-item change-status-btn"
-                                                        href=""
-                                                        data-id="{{ $item->id }}"
-                                                        data-status="{{ config('sla_status.code.CONTINUE_PROCESSING') }}">
+                                                    <a class="dropdown-item change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['CONTINUE_PROCESSING'] }}">
                                                         Tiếp tục xử lý
                                                     </a>
                                                 </li>
                                                 @endif
-                                            @endhasallroles
-                                            @hasanyrole('am|om|admin')    
-                                            @if(in_array($item->sla_status,[config('sla_status.code.WAITING_CONFIRM')]))
+                                            @endhasanyrole
+                                            @hasanyrole('am|om|admin')
+                                            @if(in_array($item->sla_status,[$slaStatusCode['WAITING_CONFIRM']]))
                                                 <li>
-                                                    <a class="dropdown-item change-status-btn"
-                                                        href=""
-                                                        data-id="{{ $item->id }}"
-                                                        data-status="{{ config('sla_status.code.CONFIRMED') }}">
+                                                    <a class="dropdown-item change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['CONFIRMED'] }}">
                                                         Duyệt
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item text-danger change-status-btn"
-                                                        href=""
-                                                        data-id="{{ $item->id }}"
-                                                        data-status="{{ config('sla_status.code.REJECTED') }}">
+                                                    <a class="dropdown-item text-danger change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['REJECTED'] }}">
                                                         Từ chối Y/C
                                                     </a>
                                                 </li>
-                                            @elseif($item->sla_status == config('sla_status.code.REJECTED'))
+                                            @elseif($item->sla_status == $slaStatusCode['REJECTED'])
                                                 <li>
-                                                    <a class="dropdown-item text-danger change-status-btn"
-                                                        href=""
-                                                        data-id="{{ $item->id }}"
-                                                        data-status="{{ config('sla_status.code.REOPEN') }}">
+                                                    <a class="dropdown-item text-danger change-status-btn" href="#" data-id="{{ $item->id }}" data-status="{{ $slaStatusCode['REOPEN'] }}">
                                                         Y/C xử lý lại
                                                     </a>
                                                 </li>
@@ -259,29 +208,25 @@
                                             @endhasanyrole
                                         @endcan
                                         @can('confirm maintenance')
-                                            @if(in_array($item->sla_status,[
-                                                        config('sla_status.code.COMPLETED'),
-                                                        config('sla_status.code.LATED')
+                                            @if(in_array($item->sla_status, [
+                                                        $slaStatusCode['COMPLETED'],
+                                                        $slaStatusCode['LATED']
                                                     ])
                                                 && empty($item->acceptance_result)
                                             )
                                             <li>
-                                                <a href="#"
-                                                class="dropdown-item acceptance-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#acceptanceModal"
-                                                data-id="{{ $item->id }}">
+                                                <a href="#" class="dropdown-item acceptance-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#acceptanceModal"
+                                                    data-id="{{ $item->id }}">
                                                     Nghiệm thu
                                                 </a>
                                             </li>
                                             @endif
                                         @endcan
                                         @can('remind maintenance')
-                                            @if(in_array($item->sla_status, [config('sla_status.code.PROCESSING'), config('sla_status.code.CONTINUE_PROCESSING')]))
+                                            @if(in_array($item->sla_status, [$slaStatusCode['PROCESSING'], $slaStatusCode['CONTINUE_PROCESSING']]))
                                             <li>
-                                                <a class="dropdown-item btn-remind"
-                                                    href=""
-                                                    data-id="{{ $item->id }}">
+                                                <a class="dropdown-item btn-remind" href="#" data-id="{{ $item->id }}">
                                                     Gửi nhắc việc
                                                 </a>
                                             </li>
@@ -289,17 +234,12 @@
                                         @endcan
                                         @role('admin')
                                             <li>
-                                                <a href="#"
-                                                class="dropdown-item admin-change-status-btn"
-                                                data-id="{{ $item->id }}"
-                                                data-current-status="{{ $item->sla_status }}">
+                                                <a href="#" class="dropdown-item admin-change-status-btn" data-id="{{ $item->id }}" data-current-status="{{ $item->sla_status }}">
                                                     Đổi trạng thái
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item view-log-btn"
-                                                href="#"
-                                                data-id="{{ $item->id }}">
+                                                <a class="dropdown-item view-log-btn" href="#" data-id="{{ $item->id }}">
                                                     Lịch sử trạng thái
                                                 </a>
                                             </li>
@@ -307,10 +247,9 @@
                                         {{-- Delete --}}
                                         @can('delete data')
                                         @hasrole('admin')
-                                            @if($item->sla_status == config('sla_status.code.PROCESSING'))
+                                            @if($item->sla_status == $slaStatusCode['PROCESSING'])
                                                 <li>
-                                                    <form action="{{ route('maintenance-requests.destroy', $item->id) }}"
-                                                        method="POST"
+                                                    <form action="{{ route('maintenance-requests.destroy', $item->id) }}" method="POST"
                                                         onsubmit="return confirm('Xóa bản ghi này?')">
                                                         @csrf
                                                         @method('DELETE')
@@ -318,7 +257,7 @@
                                                     </form>
                                                 </li>
                                             @endif
-                                        @endrole
+                                        @endhasrole
                                         @endcan
                                     </ul>
                                 </div>
@@ -331,125 +270,76 @@
         </div>
     </div>
     <div class="d-block d-md-none">
+        @isset($requests)
         @foreach($requests as $item)
             @php
-                $severityName = $severities[$item->severity]['name'] ?? $item->severity;
-                $slaStatusBadge = data_get(
-                    config('sla_status.badge'),
-                    $item->sla_status,
-                    'bg-secondary'
-                );
-                $slaStatusName = data_get(
-                    config('sla_status.names'),
-                    $item->sla_status,
-                    $item->sla_status
-                );
                 $sla = $realTimeMap[$item->standard_completion_time] ?? null;
-                $isOverdue = false;
-                if ($sla && !empty($item->request_date)) {
-                    $createdAt = \Carbon\Carbon::parse($item->request_date);
-                    $elapsedSeconds = $createdAt->diffInSeconds(now());
-                    $isOverdue = $elapsedSeconds > (int) ($sla['max_seconds'] ?? 0)
-                        && !in_array($item->sla_status, [config('sla_status.code.COMPLETED'), config('sla_status.code.LATED')]);
-                }
+                $severityName = $severities[$item->severity]['name'] ?? $item->severity;
+                $slaStatusBadge = data_get($slaStatusBadgeList, $item->sla_status, 'bg-secondary');
+                $slaStatusName = data_get($slaStatusNames, $item->sla_status, $item->sla_status);
+                $isOverdue = $sla && !empty($item->request_date)
+                    ? (\Carbon\Carbon::parse($item->request_date)->diffInSeconds(now()) > (int) ($sla['max_seconds'] ?? 0)
+                        && !in_array($item->sla_status, [$slaStatusCode['COMPLETED'], $slaStatusCode['LATED']]))
+                    : false;
+                $timeName = $item->standard_completion_time ? ($realTimeMap[$item->standard_completion_time]['name'] ?? $item->standard_completion_time) : '';
             @endphp
-
-            <div class="mobile-request-card mobile-row-link {{ $isOverdue ? 'mobile-danger' : '' }}"
-                data-url="{{ route('maintenance-requests.show',$item->id) }}">
+            <div class="mobile-request-card mobile-row-link {{ $isOverdue ? 'mobile-danger' : '' }}" data-url="{{ route('maintenance-requests.show', $item->id) }}">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div>
-                            {{ $item->branch_code }}
-                        </div>
-
-                        <div class="fw-bold">
-                            {{ $item->branch_name }}
-                        </div>
+                        <div>{{ $item->branch_code }}</div>
+                        <div class="fw-bold">{{ $item->branch_name }}</div>
                     </div>
                     <div class="status-group">
                         <span class="status_badge {{ $slaStatusBadge }}">
                             {{ $slaStatusName }}
                         </span>
                         <small class="text-muted d-block mt-1">
-                            @if($item->is_confirmed)
-                                ✅ Đã nghiệm thu
-                            @else
-                                ⏳ Chờ nghiệm thu
-                            @endif
+                            {!! $item->is_confirmed ? '&#x2705; Đã nghiệm thu' : '&#x23F3; Chờ nghiệm thu' !!}
                         </small>
                     </div>
                 </div>
                 <hr>
-                <div>
-                    <strong>Hạng mục:</strong> {{ $item->item_category }}
-                </div>
-
-                <div class="mt-2">
-                    <strong>Loại sự cố:</strong> {{ $severityName }}
-                </div>
-
-                <div class="mt-2">
-                    <strong>Mô tả:</strong> {{ $item->issue_description }}
-                </div>
-
+                <div><strong>Hạng mục:</strong> {{ $item->item_category }}</div>
+                <div class="mt-2"><strong>Loại sự cố:</strong> {{ $severityName }}</div>
+                <div class="mt-2"><strong>Mô tả:</strong> {{ $item->issue_description }}</div>
                 <div class="mt-2">
                     <strong>Ngày yêu cầu:</strong> {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
                     <strong>Yêu cầu hoàn thành:</strong> {{ $timeName }}<br>
-                    
-                    {!! $item->actual_completion_date ? '<strong>Ngày hoàn thành:</strong> '.\Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s').'<br>' : '' !!}
-                    
-                    {!! $item->actual_duration ? '<strong>Thời gian thực tế:</strong> '.format_duration($item->actual_duration) : '' !!}
+                    @if($item->actual_completion_date)
+                        <strong>Ngày hoàn thành:</strong> {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}<br>
+                    @endif
+                    @if($item->actual_duration)
+                        <strong>Thời gian thực tế:</strong> {{ format_duration($item->actual_duration) }}
+                    @endif
                 </div>
-
                 <div class="mt-3 d-grid">
-                    <a href="{{ route('maintenance-requests.show',$item->id) }}"
-                        class="btn btn-primary">
-                        Chi tiết
-                    </a>
+                    <a href="{{ route('maintenance-requests.show', $item->id) }}" class="btn btn-primary">Chi tiết</a>
                 </div>
             </div>
         @endforeach
+        @endisset
     </div>
     <div class="mt-3">
         {{ $requests->links() }}
     </div>
 </div>
 <style>
-    .tr-row-link {
-    cursor: pointer;
-}
+.tr-row-link { cursor: pointer; }
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.tr-row-link').forEach(function (row) {
         row.addEventListener('click', function (e) {
-
-            // ❗ chặn click vào button / link / dropdown
-            if (e.target.closest('a, button, .dropdown, .dropdown-menu')) {
-                return;
-            }
-
+            if (e.target.closest('a, button, .dropdown, .dropdown-menu')) return;
             const url = this.dataset.detailUrl;
-            if (url) {
-                window.location.href = url;
-            }
+            if (url) window.location.href = url;
         });
     });
-
-    document.querySelectorAll('.mobile-row-link')
-        .forEach(function(card){
-
-            card.addEventListener('click', function(e){
-
-                if(e.target.closest('a,button')){
-                    return;
-                }
-
-                window.location.href =
-                    this.dataset.url;
-            });
-
+    document.querySelectorAll('.mobile-row-link').forEach(function(card){
+        card.addEventListener('click', function(e){
+            if(e.target.closest('a,button')) return;
+            window.location.href = this.dataset.url;
         });
-
+    });
 });
 </script>

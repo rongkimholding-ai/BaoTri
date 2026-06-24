@@ -1,30 +1,30 @@
 <h2>Yêu cầu bảo trì</h2>
 
-<p>Mã cơ sở: {{ $maintenanceRequest->branch_code }}</p>
-
-<p>Cơ sở: {{ $maintenanceRequest->branch_name }}</p>
-
-<p>Hạng mục: {{ $maintenanceRequest->item_category }}</p>
-
-@php
-    $severities = collect(config('severities'));
-    $severityLabel = $severities->where('key', $maintenanceRequest->severity)->first()['name'] ?? $maintenanceRequest->severity;
-@endphp
-<p>Loại sự cố: {{ $severityLabel }}</p>
-
-<p>Sự cố: {{ $maintenanceRequest->issue_description }}</p>
-
-<p>Kỹ thuật viên: {{ $maintenanceRequest->technician_name }}</p>
-
-<p>Đề xuất khắc phục: {{ $maintenanceRequest->solution_description }}</p>
-
-@php
-    $realTimeMap = collect(config('real_time'))->keyBy('key');
-    $timeName = isset($maintenanceRequest->standard_completion_time) && $maintenanceRequest->standard_completion_time
-        ? ($realTimeMap[$maintenanceRequest->standard_completion_time]['name'] ?? $maintenanceRequest->standard_completion_time)
-        : '';
-@endphp
-<p>Yêu cầu hoàn thành: {{ $timeName }}</p>
+<ul style="padding-left:0;list-style:none">
+    <li><strong>Mã cơ sở:</strong> {{ $maintenanceRequest->branch_code }}</li>
+    <li><strong>Cơ sở:</strong> {{ $maintenanceRequest->branch_name }}</li>
+    <li><strong>Hạng mục:</strong> {{ $maintenanceRequest->item_category }}</li>
+    <li>
+        <strong>Loại sự cố:</strong>
+        {{
+            collect(config('severities'))
+                ->firstWhere('key', $maintenanceRequest->severity)['name']
+                ?? $maintenanceRequest->severity
+        }}
+    </li>
+    <li><strong>Sự cố:</strong> {{ $maintenanceRequest->issue_description }}</li>
+    <li><strong>Kỹ thuật viên:</strong> {{ $maintenanceRequest->technician_name }}</li>
+    <li><strong>Đề xuất khắc phục:</strong> {{ $maintenanceRequest->solution_description }}</li>
+    <li>
+        <strong>Yêu cầu hoàn thành:</strong>
+        {{
+            $maintenanceRequest->standard_completion_time
+                ? (collect(config('real_time'))->keyBy('key')[$maintenanceRequest->standard_completion_time]['name']
+                    ?? $maintenanceRequest->standard_completion_time)
+                : ''
+        }}
+    </li>
+</ul>
 
 <p>
     <a href="{{ route('maintenance-requests.show', $maintenanceRequest->id) }}">
