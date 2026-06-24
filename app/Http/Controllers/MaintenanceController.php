@@ -123,16 +123,16 @@ class MaintenanceController extends Controller
 
     public function exportFromTo(Request $request)
     {
-        $request->validate([
-            'from-date' => ['required', 'date'],
-            'to-date'   => ['required', 'date'],
-        ]);
+        // $request->validate([
+        //     'from-date' => ['required', 'date'],
+        //     'to-date'   => ['required', 'date'],
+        // ]);
         $fromDate = request('from-date', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $toDate = request('to-date', Carbon::now()->endOfMonth()->format('Y-m-d'));
 
         $startDate = Carbon::parse($fromDate)->startOfDay()->format('Y-m-d H:i:s');
         $endDate = Carbon::parse($toDate)->endOfDay()->format('Y-m-d H:i:s');
-        $techEmails = request('tech_emails', []);
+        // $techEmails = request('tech_emails', []);
 
         $fileName = 'THỐNG KÊ TỪ '.$fromDate.' ĐẾN '.$toDate;
 
@@ -140,7 +140,7 @@ class MaintenanceController extends Controller
             new MaintenanceByBranchExport(
                 $startDate,
                 $endDate,
-                $techEmails
+                // $techEmails
             ),
             $fileName.'.xlsx'
         );

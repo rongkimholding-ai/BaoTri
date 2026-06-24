@@ -1034,8 +1034,6 @@ $(function () {
             'action',
             $('#report_type').val()
         );
-
-        // console.log('submit export');
     
         bootstrap.Modal
         .getOrCreateInstance(
