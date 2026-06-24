@@ -1,40 +1,21 @@
-<div class="modal fade" id="editModal">
-
-<div class="modal-dialog modal-lg">
-
-<form id="editForm" method="POST">
-
-    @csrf
-    @method('PUT')
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h5>Cập nhật</h5>
-
-        </div>
-
-        <div class="modal-body">
-
-            @include('maintenance._form')
-
-        </div>
-
-        <div class="modal-footer">
-
-            <button class="btn btn-primary">
-
-                Cập nhật
-
-            </button>
-
-        </div>
-
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form id="editForm" method="POST" autocomplete="off">
+            @csrf
+            @method('PUT')
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Cập nhật</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div id="edit-form-errors" class="alert alert-danger d-none"></div>
+                <div class="modal-body">
+                    @include('maintenance._form')
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </div>
+        </form>
     </div>
-
-</form>
-
-</div>
-
 </div>

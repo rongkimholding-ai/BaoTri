@@ -1,43 +1,44 @@
 @php
-    $severities = collect(config('severities'))->keyBy('key');
-    $acceptanceList = collect(config('acceptance'))->pluck('name', 'key');
-    $realTimeList = config('real_time');
-    $realTimeMap = collect($realTimeList)->keyBy('key');
+    $config = config();
+    $severities = collect($config['severities'])->keyBy('key');
+    $acceptanceList = collect($config['acceptance'])->pluck('name', 'key');
+    $realTimeMap = collect($config['real_time'])->keyBy('key');
     $sla = $realTimeMap[$maintenanceRequest->standard_completion_time] ?? null;
 
     $severityName = $severities[$maintenanceRequest->severity]['name'] ?? $maintenanceRequest->severity;
-    $slaStatusBadge = data_get(config('sla_status.badge'), $maintenanceRequest->sla_status, 'badge badge-default');
-    $slaStatusName = data_get(config('sla_status.names'), $maintenanceRequest->sla_status, $maintenanceRequest->sla_status);
+    $slaStatusBadge = data_get($config['sla_status']['badge'] ?? [], $maintenanceRequest->sla_status, 'badge badge-default');
+    $slaStatusName = data_get($config['sla_status']['names'] ?? [], $maintenanceRequest->sla_status, $maintenanceRequest->sla_status);
     $timeName = $maintenanceRequest->standard_completion_time
         ? ($realTimeMap[$maintenanceRequest->standard_completion_time]['name'] ?? $maintenanceRequest->standard_completion_time)
         : '';
 @endphp
 
 <ul class="nav nav-tabs mb-2" id="maintenanceTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-tab-pane" type="button"
-            role="tab" aria-controls="info-tab-pane" aria-selected="true">
-            Thông tin chung
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="images-tab" data-bs-toggle="tab" data-bs-target="#images-tab-pane" type="button"
-            role="tab" aria-controls="images-tab-pane" aria-selected="false">
-            Hình ảnh
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane" type="button"
-            role="tab" aria-controls="history-tab-pane" aria-selected="false">
-            Lịch sử
-        </button>
-    </li>
+    @foreach([
+        ['id' => 'info', 'label' => 'Thông tin chung', 'active' => true],
+        ['id' => 'images', 'label' => 'Hình ảnh'],
+        ['id' => 'history', 'label' => 'Lịch sử'],
+    ] as $tab)
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ !empty($tab['active']) ? ' active' : '' }}"
+                    id="{{ $tab['id'] }}-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#{{ $tab['id'] }}-tab-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="{{ $tab['id'] }}-tab-pane"
+                    aria-selected="{{ !empty($tab['active']) ? 'true' : 'false' }}">
+                {{ $tab['label'] }}
+            </button>
+        </li>
+    @endforeach
 </ul>
 
 <div class="tab-content" id="maintenanceTabContent">
-    <!-- Thông tin chung -->
+    {{-- Thông tin chung --}}
     <div class="tab-pane fade show active" id="info-tab-pane" role="tabpanel" aria-labelledby="info-tab">
         <div class="d-flex flex-wrap gap-2">
+            {{-- Card Sự cố --}}
             <div class="card flex-fill" style="min-width:240px;max-width:360px">
                 <div class="card-header bg-light fw-semibold py-2 small">Sự cố</div>
                 <div class="card-body pb-1 px-2 small d-flex flex-column gap-1">
@@ -57,30 +58,53 @@
                     <div><span class="fw-bold">Đơn vị xử lý: </span>{{ $maintenanceRequest->outsourced_provider }}</div>
                 </div>
             </div>
+            {{-- Card Mô tả --}}
             <div class="card flex-fill" style="min-width:240px;max-width:360px">
                 <div class="card-header bg-light fw-semibold py-2 small">Mô tả</div>
                 <div class="card-body pb-1 px-2 small d-flex flex-column gap-1">
                     <div><span class="fw-bold">Hạng mục: </span>{{ $maintenanceRequest->item_category }}</div>
-                    <div><span class="fw-bold">Sự cố: </span>{!! nl2br(e($maintenanceRequest->issue_description)) !!}</div>
-                    <div><span class="fw-bold">Giải pháp: </span>{!! nl2br(e($maintenanceRequest->solution_description)) !!}</div>
-                    <div><span class="fw-bold">Lý do trễ: </span>{!! nl2br(e($maintenanceRequest->delay_reason)) !!}</div>
+                    @foreach([
+                        ['label' => 'Sự cố', 'field' => 'issue_description'],
+                        ['label' => 'Giải pháp', 'field' => 'solution_description'],
+                        ['label' => 'Lý do trễ', 'field' => 'delay_reason']
+                    ] as $desc)
+                        <div>
+                            <span class="fw-bold">{{ $desc['label'] }}: </span>
+                            {!! nl2br(e($maintenanceRequest->{$desc['field']})) !!}
+                        </div>
+                    @endforeach
                 </div>
             </div>
+            {{-- Card Thời gian & Tiến trình --}}
             <div class="card flex-fill" style="min-width:240px;max-width:360px">
                 <div class="card-header bg-light fw-semibold py-2 small">Thời gian & Tiến trình</div>
                 <div class="card-body pb-1 px-2 small d-flex flex-column gap-1">
-                    <div><span class="fw-bold">Ngày làm: </span>
+                    <div>
+                        <span class="fw-bold">Ngày làm: </span>
                         <span class="badge bg-secondary me-1">Hành chính</span>
-                        {!! 
-                            ($maintenanceRequest->include_saturday ? '<span class="badge bg-primary me-1">T7</span>' : '') .
-                            ($maintenanceRequest->include_sunday ? '<span class="badge bg-info me-1">CN</span>' : '') .
-                            ($maintenanceRequest->include_holiday ? '<span class="badge bg-warning me-1">Lễ</span>' : '')
-                        !!}
+                        @foreach([
+                            ['cond' => 'include_saturday', 'class' => 'bg-primary', 'text' => 'T7'],
+                            ['cond' => 'include_sunday', 'class' => 'bg-info', 'text' => 'CN'],
+                            ['cond' => 'include_holiday', 'class' => 'bg-warning', 'text' => 'Lễ']
+                        ] as $day)
+                            @if($maintenanceRequest->{$day['cond']})
+                                <span class="badge {{ $day['class'] }} me-1">{{ $day['text'] }}</span>
+                            @endif
+                        @endforeach
                     </div>
                     <div><span class="fw-bold">Hạn: </span>{{ $timeName }}</div>
                     <div><span class="fw-bold">YC: </span>{{ $maintenanceRequest->request_date ? \Carbon\Carbon::parse($maintenanceRequest->request_date)->format('d/m/Y H:i') : '' }}</div>
-                    {!! $maintenanceRequest->pending_at ? '<div><span class="fw-bold">Tạm dừng: </span>'.\Carbon\Carbon::parse($maintenanceRequest->pending_at)->format('d/m/Y H:i').'</div>' : '' !!}
-                    {!! $maintenanceRequest->processing_at ? '<div><span class="fw-bold">Tiếp tục: </span>'.\Carbon\Carbon::parse($maintenanceRequest->processing_at)->format('d/m/Y H:i').'</div>' : '' !!}
+                    @foreach([
+                        ['field' => 'pending_at', 'label' => 'Tạm dừng'],
+                        ['field' => 'processing_at', 'label' => 'Tiếp tục']
+                    ] as $time)
+                        @if($maintenanceRequest->{$time['field']})
+                            <div>
+                                <span class="fw-bold">{{ $time['label'] }}: </span>
+                                {{ \Carbon\Carbon::parse($maintenanceRequest->{$time['field']})->format('d/m/Y H:i') }}
+                            </div>
+                        @endif
+                    @endforeach
                     <div><span class="fw-bold">HT: </span>{{ $maintenanceRequest->actual_completion_date ? \Carbon\Carbon::parse($maintenanceRequest->actual_completion_date)->format('d/m/Y H:i') : '' }}</div>
                     <div><span class="fw-bold">TG thực tế: </span>{{ $maintenanceRequest->actual_duration ? format_duration($maintenanceRequest->actual_duration) : '' }}</div>
                     <div><span class="fw-bold">Tạo: </span>{{ \Carbon\Carbon::parse($maintenanceRequest->created_at)->format('d/m/Y H:i') }}</div>
@@ -94,18 +118,23 @@
                     </div>
                 </div>
             </div>
+            {{-- Card Kỹ thuật viên --}}
             <div class="card flex-fill" style="min-width:240px;max-width:360px">
                 <div class="card-header bg-light fw-semibold py-2 small">Kỹ thuật viên</div>
                 <div class="card-body pb-1 px-2 small d-flex flex-column gap-1">
-                    <div><span class="fw-bold">Tên: </span>{{ $maintenanceRequest->technician_name }}</div>
-                    <div><span class="fw-bold">SĐT: </span>{{ $maintenanceRequest->technician_mobile }}</div>
-                    <div><span class="fw-bold">Email: </span>{{ $maintenanceRequest->technician_email }}</div>
+                    @foreach([
+                        ['label' => 'Tên', 'field' => 'technician_name'],
+                        ['label' => 'SĐT', 'field' => 'technician_mobile'],
+                        ['label' => 'Email', 'field' => 'technician_email']
+                    ] as $tech)
+                        <div><span class="fw-bold">{{ $tech['label'] }}: </span>{{ $maintenanceRequest->{$tech['field']} }}</div>
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hình ảnh -->
+    {{-- Hình ảnh --}}
     <div class="tab-pane fade" id="images-tab-pane" role="tabpanel" aria-labelledby="images-tab">
         <div class="card border-0 shadow-sm">
             <div class="card-header fw-semibold py-2">
@@ -123,19 +152,15 @@
                                             class="card-img-top"
                                             style="height:180px; object-fit:cover;">
                                     </a>
-
                                     @role('admin')
                                         <button
                                             type="button"
                                             class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0 m-2 delete-image"
                                             data-id="{{ $image->id }}"
                                             title="Xóa ảnh"
-                                        >
-                                            X
-                                        </button>
+                                        >X</button>
                                     @endrole
                                 </div>
-
                                 <div class="card-footer bg-white py-2 text-center">
                                     <a
                                         href="{{ Storage::url($image->path) }}"
@@ -158,7 +183,7 @@
         </div>
     </div>
 
-    <!-- Lịch sử -->
+    {{-- Lịch sử --}}
     <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab">
         <div class="card border-0">
             <div class="card-header fw-semibold py-2 small">Lịch sử</div>
@@ -182,9 +207,9 @@
                                         : \Carbon\Carbon::parse($log->created_at)->format('d/m/Y H:i') 
                                     }}
                                 </td>
-                                <td>{{ $log->user['name'] }}</td>
-                                <td>{{ data_get(config('sla_status.names'), $log->old_status, $log->old_status ?? '') }}</td>
-                                <td>{{ data_get(config('sla_status.names'), $log->new_status, $log->new_status ?? '') }}</td>
+                                <td>{{ $log->user['name'] ?? '' }}</td>
+                                <td>{{ data_get($config['sla_status']['names'] ?? [], $log->old_status, $log->old_status ?? '') }}</td>
+                                <td>{{ data_get($config['sla_status']['names'] ?? [], $log->new_status, $log->new_status ?? '') }}</td>
                                 <td>{{ $log->note ?? '' }}</td>
                             </tr>
                         @empty
@@ -203,19 +228,16 @@
 .image-card {
     transition: all .2s ease;
 }
-
 .image-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 }
-
 .delete-image {
     width: 34px;
     height: 34px;
     padding: 0;
     opacity: .85;
 }
-
 .delete-image:hover {
     opacity: 1;
 }
