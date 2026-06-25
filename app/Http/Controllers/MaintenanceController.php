@@ -189,7 +189,7 @@ class MaintenanceController extends Controller
         $endDate = Carbon::parse($endDate)->endOfDay()->format('Y-m-d H:i:s');
         // $techEmails = request('tech_emails', []);
 
-        $fileName = 'THỐNG KÊ TỪ ' . Carbon::parse($startDate)->format('d/m/Y') . ' ĐẾN ' . Carbon::parse($endDate)->format('d/m/Y');
+        $fileName = 'THỐNG KÊ TỪ ' . Carbon::parse($startDate)->format('d_m_Y') . ' ĐẾN ' . Carbon::parse($endDate)->format('d_m_Y');
    
 
         return Excel::download(
