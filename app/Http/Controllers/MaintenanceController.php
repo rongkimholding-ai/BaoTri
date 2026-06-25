@@ -41,8 +41,8 @@ class MaintenanceController extends Controller
         $techEmails = request('tech_emails', []);
 
         $exportName =
-            'maintenance_requests_' .
-            now()->format('Ymd_His') .
+            'Báo cáo tổng hợp yêu cầu ' .
+            now()->format('d_m_Y') .
             '.xlsx';
 
         return Excel::download(
@@ -81,9 +81,9 @@ class MaintenanceController extends Controller
 
         $techEmails = request('tech_emails', []);
 
-        $exportName =
-            now()->format('Ymd_His')
-            . '_tech_report.xlsx';
+        $exportName = 'Báo cáo KTV '.
+            now()->format('d_m_Y')
+            . '.xlsx';
 
         return Excel::download(
             new TechnicianReportExport(
