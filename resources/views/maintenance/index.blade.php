@@ -4,6 +4,8 @@
     $statuses = config('sla_status.search_status');
     $fromDate = request('from_date', now()->startOfMonth()->format('Y-m-d'));
     $toDate = request('to_date', now()->endOfMonth()->format('Y-m-d'));
+    $fromDateCompleted = request('from_date_completed', now()->startOfMonth()->format('Y-m-d'));
+    $toDateCompleted = request('to_date_completed', now()->endOfMonth()->format('Y-m-d'));
 @endphp
 
 <x-app-layout :title="$title">
@@ -38,6 +40,20 @@
                                     'name' => 'to_date',
                                     'id' => 'toDate',
                                     'value' => $toDate,
+                                ],
+                                [
+                                    'label' => 'Ngày hoàn thành (Từ)',
+                                    'type' => 'date',
+                                    'name' => 'from_date_completed',
+                                    'id' => 'fromDateCompleted',
+                                    'value' => $fromDateCompleted,
+                                ],
+                                [
+                                    'label' => 'Ngày hoàn thành (Đến)',
+                                    'type' => 'date',
+                                    'name' => 'to_date_completed',
+                                    'id' => 'toDateCompleted',
+                                    'value' => $toDateCompleted,
                                 ],
                             ];
                         @endphp

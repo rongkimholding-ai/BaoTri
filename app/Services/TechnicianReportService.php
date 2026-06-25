@@ -12,11 +12,15 @@ class TechnicianReportService
     public function getReport(
         string $fromDate,
         string $toDate,
+        string $fromDateCompleted,
+        string $toDateCompleted,
         array $techEmails = []
     ): Collection {
 
         $fromDate = Carbon::parse($fromDate)->startOfDay();
         $toDate = Carbon::parse($toDate)->endOfDay();
+        $fromDateCompleted = Carbon::parse($fromDateCompleted)->startOfDay();
+        $toDateCompleted = Carbon::parse($toDateCompleted)->endOfDay();
 
         /*
         |--------------------------------------------------------------------------
@@ -44,6 +48,10 @@ class TechnicianReportService
             ->whereBetween(
                 'request_date',
                 [$fromDate, $toDate]
+            )
+            ->whereBetween(
+                'actual_completion_date',
+                [$fromDateCompleted, $toDateCompleted]
             )
             ->whereNotNull('technician_email')
             ->where(

@@ -19,13 +19,23 @@ class MaintenanceController extends Controller
     public function export()
     {
         $startDate = request(
-            'from-date',
+            'from_date',
             Carbon::now()->startOfMonth()->format('Y-m-d')
         );
 
         $endDate = request(
-            'to-date',
+            'to_date',
             Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from_date_completed',
+            Carbon::now()->startOfDay()->format('Y-m-d')
+        );
+
+        $endDateCompleted = request(
+            'to_date_completed',
+            Carbon::now()->endOfDay()->format('Y-m-d')
         );
 
         $techEmails = request('tech_emails', []);
@@ -39,6 +49,8 @@ class MaintenanceController extends Controller
             new MaintenanceRequestsExport(
                 $startDate,
                 $endDate,
+                $startDateCompleted,
+                $endDateCompleted,
                 $techEmails
             ),
             $exportName
@@ -48,12 +60,23 @@ class MaintenanceController extends Controller
     public function exportTechs()
     {
         $startDate = request(
-            'from-date',
+            'from_date',
             Carbon::now()->startOfMonth()->format('Y-m-d')
         );
+
         $endDate = request(
-            'to-date',
+            'to_date',
             Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from_date_completed',
+            Carbon::now()->startOfDay()->format('Y-m-d')
+        );
+
+        $endDateCompleted = request(
+            'to_date_completed',
+            Carbon::now()->endOfDay()->format('Y-m-d')
         );
 
         $techEmails = request('tech_emails', []);
@@ -66,6 +89,8 @@ class MaintenanceController extends Controller
             new TechnicianReportExport(
                 $startDate,
                 $endDate,
+                $startDateCompleted,
+                $endDateCompleted,
                 $techEmails
             ),
             $exportName
@@ -78,12 +103,22 @@ class MaintenanceController extends Controller
     {
         $startDate = request(
             'from-date',
-            now()->startOfMonth()->format('Y-m-d')
+            Carbon::now()->startOfMonth()->format('Y-m-d')
         );
-    
+
         $endDate = request(
             'to-date',
-            now()->endOfMonth()->format('Y-m-d')
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from-date-completed',
+            Carbon::now()->startOfDay()->format('Y-m-d')
+        );
+
+        $endDateCompleted = request(
+            'to-date-completed',
+            Carbon::now()->endOfDay()->format('Y-m-d')
         );
     
         $techEmails = request(
@@ -94,6 +129,8 @@ class MaintenanceController extends Controller
         $requests = $service->getReport(
             $startDate,
             $endDate,
+            $startDateCompleted,
+            $endDateCompleted,
             $techEmails
         );
     
@@ -127,19 +164,40 @@ class MaintenanceController extends Controller
         //     'from-date' => ['required', 'date'],
         //     'to-date'   => ['required', 'date'],
         // ]);
-        $fromDate = request('from-date', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $toDate = request('to-date', Carbon::now()->endOfMonth()->format('Y-m-d'));
+        
+        $startDate = request(
+            'from_date',
+            Carbon::now()->startOfMonth()->format('Y-m-d')
+        );
 
-        $startDate = Carbon::parse($fromDate)->startOfDay()->format('Y-m-d H:i:s');
-        $endDate = Carbon::parse($toDate)->endOfDay()->format('Y-m-d H:i:s');
+        $endDate = request(
+            'to_date',
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from_date_completed',
+            Carbon::now()->startOfDay()->format('Y-m-d')
+        );
+
+        $endDateCompleted = request(
+            'to_date_completed',
+            Carbon::now()->endOfDay()->format('Y-m-d')
+        );
+
+        $startDate = Carbon::parse($startDate)->startOfDay()->format('Y-m-d H:i:s');
+        $endDate = Carbon::parse($endDate)->endOfDay()->format('Y-m-d H:i:s');
         // $techEmails = request('tech_emails', []);
 
-        $fileName = 'THỐNG KÊ TỪ '.$fromDate.' ĐẾN '.$toDate;
+        $fileName = 'THỐNG KÊ TỪ ' . Carbon::parse($startDate)->format('d/m/Y') . ' ĐẾN ' . Carbon::parse($endDate)->format('d/m/Y');
+   
 
         return Excel::download(
             new MaintenanceByBranchExport(
                 $startDate,
                 $endDate,
+                $startDateCompleted,
+                $endDateCompleted,
                 // $techEmails
             ),
             $fileName.'.xlsx'

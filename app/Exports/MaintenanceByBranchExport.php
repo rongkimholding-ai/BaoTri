@@ -25,14 +25,18 @@ class MaintenanceByBranchExport implements
 {
     protected $fromDate;
     protected $toDate;
+    protected $fromDateCompleted;
+    protected $toDateCompleted;
     protected $techEmails;
 
     protected Collection $stores;
 
-    public function __construct($fromDate, $toDate,array $techEmails = [])
+    public function __construct($fromDate, $toDate,$fromDateCompleted, $toDateCompleted,array $techEmails = [])
     {
         $this->fromDate = Carbon::parse($fromDate)->startOfDay();
         $this->toDate = Carbon::parse($toDate)->endOfDay();
+        $this->fromDateCompleted = Carbon::parse($fromDateCompleted)->startOfDay();
+        $this->toDateCompleted = Carbon::parse($toDateCompleted)->endOfDay();
         $this->techEmails = $techEmails;
 
         // Lấy dữ liệu từ cả stores.json và stores_mn.json, sau đó merge lại theo 'code'
@@ -86,7 +90,13 @@ class MaintenanceByBranchExport implements
                     $this->fromDate,
                     $this->toDate
                 ]
-                );
+                )
+            ->whereBetween(
+                DB::raw('DATE(actual_completion_date)'),
+                [
+                    $this->fromDateCompleted,
+                    $this->toDateCompleted
+                ]);
 
             // if (!empty($this->techEmails)) {
             //     $query->whereIn(

@@ -8,8 +8,25 @@
                     $fromDate = request('from-date', now()->startOfMonth()->format('Y-m-d'));
                     $toDate = request('to-date', now()->endOfMonth()->format('Y-m-d'));
                 @endphp
-                <input type="date" id="from-date" class="form-control" style="width: 180px" value="{{ $fromDate }}">
-                <input type="date" id="to-date" class="form-control" style="width: 180px" value="{{ $toDate }}">
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="d-flex flex-column align-items-start" style="width: 180px;">
+                        <label for="from-date" class="form-label mb-1" style="font-size: 0.9em;">Từ ngày yêu cầu</label>
+                        <input type="date" id="from-date" class="form-control" value="{{ $fromDate }}">
+                    </div>
+                    <div class="d-flex flex-column align-items-start" style="width: 180px;">
+                        <label for="to-date" class="form-label mb-1" style="font-size: 0.9em;">Đến ngày yêu cầu</label>
+                        <input type="date" id="to-date" class="form-control" value="{{ $toDate }}">
+                    </div>
+                    <div class="d-flex flex-column align-items-start" style="width: 180px;">
+                        <label for="from-date-completed" class="form-label mb-1" style="font-size: 0.9em;">Từ ngày hoàn thành</label>
+                        <input type="date" id="from-date-completed" class="form-control" value="{{ request('from-date-completed', now()->startOfMonth()->format('Y-m-d')) }}">
+                    </div>
+                    <div class="d-flex flex-column align-items-start" style="width: 180px;">
+                        <label for="to-date-completed" class="form-label mb-1" style="font-size: 0.9em;">Đến ngày hoàn thành</label>
+                        <input type="date" id="to-date-completed" class="form-control" value="{{ request('to-date-completed', now()->endOfMonth()->format('Y-m-d')) }}">
+                    </div>
+                </div>
+           
                 <a href="{{ route('reports.technicians') }}" class="btn btn-outline-secondary">Bỏ lọc</a>
                 @can('export excel tech')
                     <button

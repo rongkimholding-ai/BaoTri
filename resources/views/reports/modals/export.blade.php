@@ -9,30 +9,30 @@
 
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
-                        <div class="col-md-6">
-                            <label for="report_type" class="form-label">Loại báo cáo</label>
-                            <select class="form-select select2-branch" id="report_type" name="report_type">
-                                <option value="{{ route('maintenance-requests.export') }}" data-type="summary">
-                                    Tổng hợp yêu cầu
-                                </option>
-                                <option value="{{ route('reports.technician-export') }}" data-type="tech">
-                                    Báo cáo kỹ thuật viên
-                                </option>
-                                <option value="{{ route('maintenance.export-fromto') }}" data-type="branch">
-                                    Báo cáo thông kê
-                                </option>
-                                <!-- <option value="{{ route('maintenance-requests.export-kpi') }}" data-type="tech">
-                                    KPI Kỹ thuật viên
-                                </option> -->
+                        <div class="col-md-12 d-flex align-items-center gap-3">
+                            <label for="report_type" class="form-label mb-0" style="white-space:nowrap;">Loại báo cáo</label>
+                            <select class="form-select select2-branch w-auto flex-grow-1" id="report_type" name="report_type" style="min-width:220px;">
+                                <option value="{{ route('maintenance-requests.export') }}" data-type="summary">Tổng hợp yêu cầu</option>
+                                <option value="{{ route('reports.technician-export') }}" data-type="tech">Báo cáo kỹ thuật viên</option>
+                                <option value="{{ route('maintenance.export-fromto') }}" data-type="branch">Báo cáo thông kê</option>
+                                <!-- <option value="{{ route('maintenance-requests.export-kpi') }}" data-type="tech">KPI Kỹ thuật viên</option> -->
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="from_date" class="form-label">Từ ngày</label>
+                            <label for="from_date" class="form-label">Ngày yêu cầu (Từ)</label>
                             <input type="date" id="from_date" name="from_date" class="form-control" value="{{ $fromDate }}">
                         </div>
                         <div class="col-md-3">
-                            <label for="to_date" class="form-label">Đến ngày</label>
+                            <label for="to_date" class="form-label">Ngày yêu cầu (Đến)</label>
                             <input type="date" id="to_date" name="to_date" class="form-control" value="{{ $toDate }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="from_date_completed" class="form-label">Ngày hoàn thành (Từ)</label>
+                            <input type="date" id="from_date_completed" name="from_date_completed" class="form-control" value="{{ $fromDate }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="to_date_completed" class="form-label">Ngày hoàn thành (Đến)</label>
+                            <input type="date" id="to_date_completed" name="to_date_completed" class="form-control" value="{{ $toDate }}">
                         </div>
                     </div>
 

@@ -101,6 +101,12 @@ class MaintenanceRequestController extends Controller
             'to_date' => function ($q, $v) {
                 if ($v) $q->where('request_date', '<=', Carbon::parse($v)->endOfDay());
             },
+            'from_date_completed' => function ($q, $v) {
+                if ($v) $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay());
+            },
+            'to_date_completed' => function ($q, $v) {
+                if ($v) $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay());
+            },
             'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
             'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
             'severity'    => fn($q, $v) => $q->where('severity', $v),

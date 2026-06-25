@@ -16,12 +16,16 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
 {
     protected $from_date;
     protected $to_date;
+    protected $from_date_completed;
+    protected $to_date_completed;
     protected $techEmails;
 
-    public function __construct($from_date, $to_date,array $techEmails = [])
+    public function __construct($from_date, $to_date,$from_date_completed, $to_date_completed,array $techEmails = [])
     {
         $this->from_date = Carbon::parse($from_date)->startOfDay();
         $this->to_date = Carbon::parse($to_date)->endOfDay();
+        $this->from_date_completed = Carbon::parse($from_date_completed)->startOfDay();
+        $this->to_date_completed = Carbon::parse($to_date_completed)->endOfDay();
         $this->techEmails = $techEmails;
     }
     public function collection()
@@ -48,6 +52,10 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
         ->whereBetween(
             'request_date',
             [$this->from_date, $this->to_date]
+        )
+        ->whereBetween(
+            'actual_completion_date',
+            [$this->from_date_completed, $this->to_date_completed]
         );
 
         if (!empty($this->techEmails)) {
@@ -57,7 +65,11 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             );
         }
 
-        return $query->get();
+        $data = $query->get();
+
+        // dd($data);
+
+        return $data;
     }
 
     public function map($row): array
