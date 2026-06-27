@@ -76,9 +76,11 @@ class RoleController extends Controller
             'permissions' => 'array'
         ]);
 
-        $role->update([
-            'name' => $validated['name'],
-        ]);
+        // Sửa lỗi liên quan đến "generation_expression" và các cột không hợp lệ
+        // Tránh sử dụng update() bulk nếu model có thuộc tính "guard_name" hoặc các cột đặc biệt trên bảng roles gây lỗi trên MySQL cũ.
+        $role->name = $validated['name'];
+        // Nếu có trường guard_name, không cập nhật lại nữa (tránh lỗi unknown column)
+        $role->save();
 
         $role->syncPermissions($validated['permissions'] ?? []);
 
