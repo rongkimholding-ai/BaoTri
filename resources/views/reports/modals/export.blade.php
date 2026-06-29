@@ -28,11 +28,11 @@
                         </div>
                         <div class="col-md-3">
                             <label for="from_date_completed" class="form-label">Ngày hoàn thành (Từ)</label>
-                            <input type="date" id="from_date_completed" name="from_date_completed" class="form-control" value="{{ $fromDate }}">
+                            <input type="date" id="from_date_completed" name="from_date_completed" class="form-control">
                         </div>
                         <div class="col-md-3">
                             <label for="to_date_completed" class="form-label">Ngày hoàn thành (Đến)</label>
-                            <input type="date" id="to_date_completed" name="to_date_completed" class="form-control" value="{{ $toDate }}">
+                            <input type="date" id="to_date_completed" name="to_date_completed" class="form-control">
                         </div>
                     </div>
 

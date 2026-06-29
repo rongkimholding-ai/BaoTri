@@ -12,22 +12,26 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+
 class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithStrictNullComparison, WithMapping
 {
     protected $from_date;
     protected $to_date;
-    protected $from_date_completed;
-    protected $to_date_completed;
+    protected $from_date_completed; // nullable
+    protected $to_date_completed;   // nullable
     protected $techEmails;
 
-    public function __construct($from_date, $to_date,$from_date_completed, $to_date_completed,array $techEmails = [])
+    public function __construct($from_date, $to_date, $from_date_completed, $to_date_completed, array $techEmails = [])
     {
         $this->from_date = Carbon::parse($from_date)->startOfDay();
         $this->to_date = Carbon::parse($to_date)->endOfDay();
-        $this->from_date_completed = Carbon::parse($from_date_completed)->startOfDay();
-        $this->to_date_completed = Carbon::parse($to_date_completed)->endOfDay();
+
+        // Có thể null nên chỉ parse khi có giá trị
+        $this->from_date_completed = !empty($from_date_completed) ? Carbon::parse($from_date_completed)->startOfDay() : null;
+        $this->to_date_completed = !empty($to_date_completed) ? Carbon::parse($to_date_completed)->endOfDay() : null;
         $this->techEmails = $techEmails;
     }
+
     public function collection()
     {
         $query = MaintenanceRequest::select([
@@ -52,11 +56,27 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
         ->whereBetween(
             'request_date',
             [$this->from_date, $this->to_date]
-        )
-        ->whereBetween(
-            'actual_completion_date',
-            [$this->from_date_completed, $this->to_date_completed]
         );
+
+        // Chỉ filter by actual_completion_date khi có truyền from/to
+        if (!is_null($this->from_date_completed) && !is_null($this->to_date_completed)) {
+            $query->whereBetween(
+                'actual_completion_date',
+                [$this->from_date_completed, $this->to_date_completed]
+            );
+        } elseif (!is_null($this->from_date_completed)) {
+            $query->where(
+                'actual_completion_date',
+                '>=',
+                $this->from_date_completed
+            );
+        } elseif (!is_null($this->to_date_completed)) {
+            $query->where(
+                'actual_completion_date',
+                '<=',
+                $this->to_date_completed
+            );
+        }
 
         if (!empty($this->techEmails)) {
             $query->whereIn(
@@ -66,8 +86,6 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
         }
 
         $data = $query->get();
-
-        // dd($data);
 
         return $data;
     }
@@ -86,7 +104,7 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             $row->request_date,
             $row->item_category,
             $row->issue_description,
-            $real_time[$row->standard_completion_time]?? $row->standard_completion_time,
+            $real_time[$row->standard_completion_time] ?? $row->standard_completion_time,
             $severities[$row->severity] ?? $row->severity,
             $row->technician_name,
             $row->solution_description,
@@ -146,7 +164,7 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
                 'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => 'FFD700'], // vàng tiêu chuẩn
             ],
-       
+
         ]);
 
         // ===== Border toàn bảng =====

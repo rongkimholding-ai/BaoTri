@@ -30,12 +30,10 @@ class MaintenanceController extends Controller
 
         $startDateCompleted = request(
             'from_date_completed',
-            Carbon::now()->startOfDay()->format('Y-m-d')
         );
 
         $endDateCompleted = request(
             'to_date_completed',
-            Carbon::now()->endOfDay()->format('Y-m-d')
         );
 
         $techEmails = request('tech_emails', []);
@@ -71,12 +69,10 @@ class MaintenanceController extends Controller
 
         $startDateCompleted = request(
             'from_date_completed',
-            Carbon::now()->startOfDay()->format('Y-m-d')
         );
 
         $endDateCompleted = request(
             'to_date_completed',
-            Carbon::now()->endOfDay()->format('Y-m-d')
         );
 
         $techEmails = request('tech_emails', []);
@@ -113,12 +109,10 @@ class MaintenanceController extends Controller
 
         $startDateCompleted = request(
             'from-date-completed',
-            Carbon::now()->startOfDay()->format('Y-m-d')
         );
 
         $endDateCompleted = request(
             'to-date-completed',
-            Carbon::now()->endOfDay()->format('Y-m-d')
         );
     
         $techEmails = request(
@@ -177,12 +171,10 @@ class MaintenanceController extends Controller
 
         $startDateCompleted = request(
             'from_date_completed',
-            Carbon::now()->startOfDay()->format('Y-m-d')
         );
 
         $endDateCompleted = request(
             'to_date_completed',
-            Carbon::now()->endOfDay()->format('Y-m-d')
         );
 
         $startDate = Carbon::parse($startDate)->startOfDay()->format('Y-m-d H:i:s');

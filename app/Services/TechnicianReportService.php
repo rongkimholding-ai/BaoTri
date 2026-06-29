@@ -12,15 +12,24 @@ class TechnicianReportService
     public function getReport(
         string $fromDate,
         string $toDate,
-        string $fromDateCompleted,
-        string $toDateCompleted,
+        ?string $fromDateCompleted,
+        ?string $toDateCompleted,
         array $techEmails = []
     ): Collection {
 
         $fromDate = Carbon::parse($fromDate)->startOfDay();
         $toDate = Carbon::parse($toDate)->endOfDay();
-        $fromDateCompleted = Carbon::parse($fromDateCompleted)->startOfDay();
-        $toDateCompleted = Carbon::parse($toDateCompleted)->endOfDay();
+
+        // Xử lý trường hợp fromDateCompleted và toDateCompleted có thể null
+        $hasFromCompleted = !empty($fromDateCompleted);
+        $hasToCompleted = !empty($toDateCompleted);
+
+        if ($hasFromCompleted) {
+            $fromDateCompleted = Carbon::parse($fromDateCompleted)->startOfDay();
+        }
+        if ($hasToCompleted) {
+            $toDateCompleted = Carbon::parse($toDateCompleted)->endOfDay();
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -44,15 +53,33 @@ class TechnicianReportService
         |--------------------------------------------------------------------------
         */
 
-        $requests = MaintenanceRequest::query()
+        $requestsQuery = MaintenanceRequest::query()
             ->whereBetween(
                 'request_date',
                 [$fromDate, $toDate]
-            )
-            ->whereBetween(
+            );
+
+        // Chỉ filter by actual_completion_date khi có truyền from/to
+        if ($hasFromCompleted && $hasToCompleted) {
+            $requestsQuery->whereBetween(
                 'actual_completion_date',
                 [$fromDateCompleted, $toDateCompleted]
-            )
+            );
+        } elseif ($hasFromCompleted) {
+            $requestsQuery->where(
+                'actual_completion_date',
+                '>=',
+                $fromDateCompleted
+            );
+        } elseif ($hasToCompleted) {
+            $requestsQuery->where(
+                'actual_completion_date',
+                '<=',
+                $toDateCompleted
+            );
+        }
+
+        $requests = $requestsQuery
             ->whereNotNull('technician_email')
             ->where(
                 'technician_email',

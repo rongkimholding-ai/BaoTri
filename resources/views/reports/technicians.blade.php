@@ -19,11 +19,11 @@
                     </div>
                     <div class="d-flex flex-column align-items-start" style="width: 180px;">
                         <label for="from-date-completed" class="form-label mb-1" style="font-size: 0.9em;">Ngày hoàn thành (Từ)</label>
-                        <input type="date" id="from-date-completed" class="form-control" value="{{ request('from-date-completed', now()->startOfMonth()->format('Y-m-d')) }}">
+                        <input type="date" id="from-date-completed" class="form-control" value="{{ request('from-date-completed') }}">
                     </div>
                     <div class="d-flex flex-column align-items-start" style="width: 180px;">
                         <label for="to-date-completed" class="form-label mb-1" style="font-size: 0.9em;">Ngày hoàn thành (Đến)</label>
-                        <input type="date" id="to-date-completed" class="form-control" value="{{ request('to-date-completed', now()->endOfMonth()->format('Y-m-d')) }}">
+                        <input type="date" id="to-date-completed" class="form-control" value="{{ request('to-date-completed') }}">
                     </div>
                 </div>
            

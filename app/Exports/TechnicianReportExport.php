@@ -25,22 +25,24 @@ class TechnicianReportExport implements
 {
     protected Carbon $fromDate;
     protected Carbon $toDate;
-    protected Carbon $fromDateCompleted;
-    protected Carbon $toDateCompleted;
+    protected ?Carbon $fromDateCompleted = null;
+    protected ?Carbon $toDateCompleted = null;
     protected array $techEmails;
     protected $service;
 
     public function __construct(
         string $fromDate,
         string $toDate,
-        string $from_date_completed, 
-        string $to_date_completed,
+        ?string $from_date_completed = null, 
+        ?string $to_date_completed = null,
         array $techEmails = []
     ) {
         $this->fromDate = Carbon::parse($fromDate)->startOfDay();
         $this->toDate = Carbon::parse($toDate)->endOfDay();
-        $this->fromDateCompleted = Carbon::parse($from_date_completed)->startOfDay();
-        $this->toDateCompleted = Carbon::parse($to_date_completed)->endOfDay();
+
+        // Only parse from_date_completed and to_date_completed if they are not null or empty
+        $this->fromDateCompleted = !empty($from_date_completed) ? Carbon::parse($from_date_completed)->startOfDay() : null;
+        $this->toDateCompleted = !empty($to_date_completed) ? Carbon::parse($to_date_completed)->endOfDay() : null;
 
         $this->techEmails = collect($techEmails)
             ->filter()
@@ -48,7 +50,7 @@ class TechnicianReportExport implements
             ->values()
             ->toArray();
 
-            $this->service = app(TechnicianReportService::class);
+        $this->service = app(TechnicianReportService::class);
     }
 
     public function collection()
