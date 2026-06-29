@@ -46,14 +46,14 @@
                                     'type' => 'date',
                                     'name' => 'from_date_completed',
                                     'id' => 'fromDateCompleted',
-                                    'value' => $fromDateCompleted,
+                                    'value' => '',
                                 ],
                                 [
                                     'label' => 'Ngày hoàn thành (Đến)',
                                     'type' => 'date',
                                     'name' => 'to_date_completed',
                                     'id' => 'toDateCompleted',
-                                    'value' => $toDateCompleted,
+                                    'value' => '',
                                 ],
                             ];
                         @endphp

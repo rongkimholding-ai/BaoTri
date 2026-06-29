@@ -44,7 +44,8 @@ class MaintenanceRequest extends Model
     public function logs()
     {
         return $this->hasMany(MaintenanceRequestLog::class)
-            ->latest();
+        ->orderByDesc('created_at')
+        ->orderByDesc('id');
     }
 
     public function images()

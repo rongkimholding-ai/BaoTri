@@ -440,6 +440,9 @@ $(function () {
         $modal.find('select').each(function () {
             $(this).val(null).trigger('change.select2');
         });
+        $('#create-form-errors')
+        .addClass('d-none')
+        .html('');
     });
 
     $(document).on('submit', '#createForm', function (e) {

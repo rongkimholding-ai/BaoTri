@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MaintenanceReminderMail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class MaintenanceRequestController extends Controller
 {
@@ -266,9 +267,7 @@ class MaintenanceRequestController extends Controller
     {
         // Lấy đầy đủ logs với thông tin user
         $maintenanceRequest->load(['images']);
-        $logs = $maintenanceRequest->logs()
-            ->with('user')
-            ->get();
+        $logs = $this->logs($maintenanceRequest);
 
     
         return view(
@@ -546,78 +545,43 @@ class MaintenanceRequestController extends Controller
 
         });
 
-
-
-        if (
-            $status === config('sla_status.code.WAITING_CONFIRM')
-            && $request->hasFile('images')
-        ) {
-            // $this->imageService->upload(
-            //     $maintenanceRequest->id,
-            //     $request->file('images'),
-            //     $request->input('tech_mail')
-            //         ?: auth()->user()->email
-            // );
-            $tempFiles = [];
-
-            foreach ($request->file('images') as $file) {
-
-                $tempName =
-                    \Illuminate\Support\Str::uuid()
-                    . '.'
-                    . $file->getClientOriginalExtension();
-            
-                $file->storeAs(
-                    'temp-maintenance',
-                    $tempName
-                );
-            
-                $tempFiles[] = $tempName;
-            }
-            
-            UploadMaintenanceImagesJob::dispatch(
-                $maintenanceRequest->id,
-                $tempFiles,
-                $request->input('technician_mail')
-                    ?: auth()->user()->email
-            )->afterCommit();
-        }
-
         $maintenanceRequest->refresh();
 
-        if ($status === config('sla_status.code.WAITING_CONFIRM')) {
-            // Gửi mail thông báo khi hoàn thành công việc
-            try {
-                Mail::to($maintenanceRequest->branch_email)
-                    ->queue(new MaintenanceCompletedMail($maintenanceRequest));
-            } catch (\Throwable $e) {
-                \Log::error('Failed to send maintenance completed email', [
-                    'id' => $maintenanceRequest->id,
-                    'branch_email' => $maintenanceRequest->branch_email,
-                    'error' => $e->getMessage(),
-                ]);
-                throw $e;
-            }
-        }
-        if ($status === config('sla_status.code.PENDING')) {
-            // Gửi mail thông báo khi mua sắm xong
-            try {
-                Mail::to($maintenanceRequest->technician_email)
-                    ->queue(new MaintenanceBuyerMail($maintenanceRequest));
-            } catch (\Throwable $e) {
-                \Log::error('Failed to send maintenance completed email', [
-                    'id' => $maintenanceRequest->id,
-                    'branch_email' => $maintenanceRequest->technician_email,
-                    'error' => $e->getMessage(),
-                ]);
-                throw $e;
-            }
-        }
+        $this->afterStatusChanged(
+            $maintenanceRequest,
+            $status,
+            $request
+        );
 
         return response()->json([
             'success'    => true,
             'sla_status' => $maintenanceRequest->sla_status,
         ]);
+    }
+
+    private function afterStatusChanged(
+        MaintenanceRequest $maintenanceRequest,
+        string $requestedStatus,
+        ChangeMaintenanceStatusRequest $request
+    ): void {
+        
+        // Xử lý theo trạng thái thực tế sau update
+        if ($requestedStatus === config('sla_status.code.WAITING_CONFIRM')) {
+            $this->autoConfirm($maintenanceRequest);
+        }
+    
+        // Upload ảnh
+        $this->handleUploadImages(
+            $maintenanceRequest,
+            $requestedStatus,
+            $request
+        );
+    
+        // Gửi mail
+        $this->handleSendMail(
+            $maintenanceRequest,
+            $requestedStatus
+        );
     }
 
     public function acceptance(Request $request)
@@ -711,7 +675,7 @@ class MaintenanceRequestController extends Controller
 
             foreach ($request->file('images') as $file) {
 
-                $name = \Str::uuid() . '.' . $file->getClientOriginalExtension();
+                $name = Str::uuid() . '.' . $file->getClientOriginalExtension();
 
                 $file->storeAs('temp-maintenance', $name);
 
@@ -790,6 +754,8 @@ class MaintenanceRequestController extends Controller
         return response()->json(
             $maintenanceRequest->logs()
                 ->with('user')
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
         );
     }
@@ -877,5 +843,98 @@ class MaintenanceRequestController extends Controller
         return $actualSeconds <= $maxSeconds
             ? config('sla_status.code.COMPLETED')
             : config('sla_status.code.LATED');
+    }
+
+    private function autoConfirm(MaintenanceRequest $maintenanceRequest): void
+    {
+        $maintenanceRequest->refresh();
+
+        $newStatus = $this->determineSlaStatus($maintenanceRequest);
+
+        DB::transaction(function () use ($maintenanceRequest, $newStatus) {
+
+            $maintenanceRequest->update([
+                'sla_status' => $newStatus,
+            ]);
+
+            MaintenanceRequestLog::create([
+                'maintenance_request_id' => $maintenanceRequest->id,
+                'user_id' => 1,
+                'old_status' => config('sla_status.code.WAITING_CONFIRM'),
+                'new_status' => $newStatus,
+                'note' => 'Auto duyệt yêu cầu',
+            ]);
+        });
+
+        $maintenanceRequest->refresh();
+    }
+
+    private function handleUploadImages(
+        MaintenanceRequest $maintenanceRequest,
+        string $requestedStatus,
+        ChangeMaintenanceStatusRequest $request
+    ): void {
+    
+        if (
+            $requestedStatus !== config('sla_status.code.WAITING_CONFIRM')
+            || !$request->hasFile('images')
+        ) {
+            return;
+        }
+    
+        $tempFiles = [];
+    
+        foreach ($request->file('images') as $file) {
+    
+            $tempName = Str::uuid().'.'.$file->getClientOriginalExtension();
+    
+            $file->storeAs(
+                'temp-maintenance',
+                $tempName
+            );
+    
+            $tempFiles[] = $tempName;
+        }
+    
+        UploadMaintenanceImagesJob::dispatch(
+            $maintenanceRequest->id,
+            $tempFiles,
+            $request->input('technician_mail')
+                ?: auth()->user()->email
+        )->afterCommit();
+    }
+
+    private function handleSendMail(
+        MaintenanceRequest $maintenanceRequest,
+        string $requestedStatus
+    ): void {
+    
+        try {
+    
+            switch ($requestedStatus) {
+    
+                case config('sla_status.code.WAITING_CONFIRM'):
+    
+                    Mail::to($maintenanceRequest->branch_email)
+                        ->queue(new MaintenanceCompletedMail($maintenanceRequest));
+    
+                    break;
+    
+                case config('sla_status.code.PENDING'):
+    
+                    Mail::to($maintenanceRequest->technician_email)
+                        ->queue(new MaintenanceBuyerMail($maintenanceRequest));
+    
+                    break;
+            }
+    
+        } catch (\Throwable $e) {
+    
+            \Log::error('Send mail failed', [
+                'maintenance_request_id' => $maintenanceRequest->id,
+                'status' => $requestedStatus,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }
