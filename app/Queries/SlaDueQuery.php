@@ -9,7 +9,10 @@ class SlaDueQuery
     public function get()
     {
         return MaintenanceRequest::query()
-            ->where('sla_status', config('sla_status.code.COMPLETED'))
+            ->whereIn('sla_status', [
+                config('sla_status.code.COMPLETED'),
+                config('sla_status.code.LATED'),
+            ])
             ->where(function ($q) {
                 $q->where('is_confirmed', 0)
                   ->orWhereNull('is_confirmed');
