@@ -12,6 +12,12 @@
                         Danh sách Bảo trì
                     </a>
 
+                    {{-- Danh sách CV hạ tầng --}}
+                    <!-- <a href="{{ route('maintenance-system.index') }}"
+                        class="nav-item {{ request()->routeIs('maintenance-system.*') ? 'active' : '' }}">
+                        Danh sách CV hạ tầng
+                    </a> -->
+
                     @can('view report')
 
                     {{-- Báo cáo --}}

@@ -3,6 +3,7 @@
 use App\Http\Controllers\HolidayCalendarController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\MaintenanceRequestController;
+use App\Http\Controllers\MaintenanceSystemController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -16,7 +17,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return redirect()->route('maintenance-requests.index');
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -45,8 +46,31 @@ Route::middleware('auth')->group(function () {
         [MaintenanceRequestController::class, 'destroyImage']
     )->name('maintenance-request-images.destroy');
     Route::get('/maintenance-requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])->name('maintenance-requests.show');
+
+    Route::prefix('maintenance-system')
+    ->name('maintenance-system.')
+    ->group(function () {
+
+        Route::get('/', [MaintenanceSystemController::class, 'index'])->name('index');
+
+        Route::get('/create', [MaintenanceSystemController::class, 'create'])->name('create');
+
+        Route::post('/', [MaintenanceSystemController::class, 'store'])->name('store');
+
+        Route::get('/{maintenanceSystem}', [MaintenanceSystemController::class, 'show'])->name('show');
+
+        Route::get('/{maintenanceSystem}/edit', [MaintenanceSystemController::class, 'edit'])->name('edit');
+
+        Route::put('/{maintenanceSystem}', [MaintenanceSystemController::class, 'update'])->name('update');
+
+        Route::delete('/{maintenanceSystem}', [MaintenanceSystemController::class, 'destroy'])->name('destroy');
+
+    });
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
+    Route::resource('maintenance-system', MaintenanceSystemController::class);
 });
+
+
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post(

@@ -25,6 +25,9 @@ return [
         'acceptance_confirmed_by' => 'Người xác nhận',
         'created_at' => 'Ngày tạo',
         'updated_at' => 'Ngày cập nhật',
+        'issue_code' => 'Mã lỗi',
+        'issue_name' => 'Tên sự cố / Dịch vụ',
+        'status' => 'Trạng thái',
     ],
 
     'tbl_fields' => [

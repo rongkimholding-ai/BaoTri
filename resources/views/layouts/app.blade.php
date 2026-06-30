@@ -35,7 +35,7 @@
             <div class="flex justify-between items-center h-16">
 
                 <div class="flex items-center gap-3">
-                    <x-nav-link :href="route('maintenance-requests.index')" class="flex items-center gap-3">
+                    <x-nav-link :href="route('dashboard')" class="flex items-center gap-3">
                         <div class="logo-img"><img src="{{ asset('images/Logo.png') }}"></div>
                         <!-- <span class="font-semibold text-gray-900 text-lg">
                             {{ config('app.name', 'Laravel') }}
