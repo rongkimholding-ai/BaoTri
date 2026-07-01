@@ -19,7 +19,7 @@ class MaintenanceSystem extends Model
 
         'technician_name',
         'technician_email',
-        'technician_phone',
+        'technician_mobile',
 
         'request_date',
         'actual_completion_date',
@@ -42,4 +42,33 @@ class MaintenanceSystem extends Model
 
         'completed_at' => 'datetime',
     ];
+
+    public function logs()
+    {
+        return $this->hasMany(MaintenanceSystemLog::class)
+            ->latest();
+    }
+
+    public function writeLog(
+        string $action,
+        ?string $oldStatus = null,
+        ?string $newStatus = null,
+        ?string $note = null
+    ): void {
+    
+        $this->logs()->create([
+    
+            'action' => $action,
+    
+            'old_status' => $oldStatus,
+    
+            'new_status' => $newStatus,
+    
+            'note' => $note,
+    
+            'performed_by' => auth()->user()->email,
+    
+        ]);
+    
+    }
 }

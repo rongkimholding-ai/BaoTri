@@ -27,7 +27,7 @@ class MaintenanceSystemSeeder extends Seeder
 
             'technician_name' => 'Nguyễn Văn A',
             'technician_email' => 'support.hn@tocotocotea.com',
-            'technician_phone' => '0901234567',
+            'technician_mobile' => '0901234567',
 
             'request_date' => now(),
 

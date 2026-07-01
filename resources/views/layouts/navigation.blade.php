@@ -9,17 +9,18 @@
                     {{-- Danh sách bảo trì --}}
                     <a href="{{ route('maintenance-requests.index') }}"
                         class="nav-item {{ request()->routeIs('maintenance-requests.*') ? 'active' : '' }}">
-                        Danh sách Bảo trì
+                        Bảo trì cơ sở
                     </a>
 
                     {{-- Danh sách CV hạ tầng --}}
-                    <!-- <a href="{{ route('maintenance-system.index') }}"
+                    @can('view-system-task')
+                    <a href="{{ route('maintenance-system.index') }}"
                         class="nav-item {{ request()->routeIs('maintenance-system.*') ? 'active' : '' }}">
-                        Danh sách CV hạ tầng
-                    </a> -->
+                        Bảo trì hạ tầng
+                    </a>
+                    @endcan
 
                     @can('view report')
-
                     {{-- Báo cáo --}}
                     <a href="{{ route('reports.technicians') }}"
                         class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">

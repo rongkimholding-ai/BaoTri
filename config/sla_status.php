@@ -52,5 +52,36 @@ return [
         'COMPLETED' => "Đúng hạn",
         'LATED' => "Trễ hạn",
         'REOPEN' => "Cần thực hiện lại"
-    ]
+    ],
+    'code_ht' => [
+        'NEW' => "NEW",
+        'PROCESSING' => "PROCESSING",
+        'WAITING_CONFIRM' => "WAITING_CONFIRM",
+        'REJECTED' => "REJECTED",
+        'CONFIRMED' => "CONFIRMED",
+        'COMPLETED' => "COMPLETED",
+        'LATED' => "LATED",
+        'REOPEN' => "REOPEN"
+    ],
+    'names_ht' => [
+        'NEW' => "Mới tạo",
+        'PROCESSING' => "Đang thực hiện",
+        'WAITING_CONFIRM' => "Chờ duyệt",
+        'REJECTED' => "Từ chối",
+        'CONFIRMED' => "Đã duyệt",
+        'COMPLETED' => "Đúng hạn",
+        'LATED' => "Trễ hạn",
+        'REOPEN' => "Cần thực hiện lại"
+    ],
+    
+    'names_ht_func' => [
+        'PROCESSING' => "Tiếp nhận",
+        'WAITING_CONFIRM' => "Hoàn thành",
+        'REJECTED' => "Từ chối",
+        'CONFIRMED' => "Duyệt",
+        'COMPLETED' => "Đúng hạn",
+        'LATED' => "Trễ hạn",
+        'REOPEN' => "Tiếp tục xử lý"
+    ],
+
 ];

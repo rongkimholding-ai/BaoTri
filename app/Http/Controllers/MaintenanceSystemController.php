@@ -74,6 +74,12 @@ class MaintenanceSystemController extends Controller
 
         $maintenanceSystem = MaintenanceSystem::create($data);
 
+        $maintenanceSystem->writeLog(
+            action: 'CREATE',
+            newStatus: $maintenanceSystem->status,
+            note: 'Khởi tạo yêu cầu'
+        );
+
         return redirect()
             ->route('maintenance-system.index')
             ->with('success', 'Tạo yêu cầu thành công.');
@@ -81,6 +87,11 @@ class MaintenanceSystemController extends Controller
 
     public function show(MaintenanceSystem $maintenanceSystem)
     {
+        $maintenanceSystem->load([
+            'logs' => function ($query) {
+                $query->latest();
+            }
+        ]);
         return view(
             'system.modals.detail',
             compact('maintenanceSystem')
@@ -91,7 +102,11 @@ class MaintenanceSystemController extends Controller
     {
         return view(
             'system.modals.edit',
-            compact('maintenanceSystem')
+            [
+                'maintenanceSystem' => $maintenanceSystem,
+                'stores' => $this->getData(),
+                'techs'  => $this->getTechnicianData(),
+            ]
         );
     }
 
@@ -99,12 +114,14 @@ class MaintenanceSystemController extends Controller
         UpdateMaintenanceSystemRequest $request,
         MaintenanceSystem $maintenanceSystem
     ) {
+        $oldStatus = $maintenanceSystem->status;
         $data = $request->validated();
     
         $data['updated_by'] = auth()->user()->email;
+        $data['updated_at'] = now();
     
         if (
-            $data['status'] === 'COMPLETED'
+            $maintenanceSystem->status === 'COMPLETED'
             && is_null($maintenanceSystem->completed_at)
         ) {
     
@@ -113,11 +130,107 @@ class MaintenanceSystemController extends Controller
             $data['completed_by'] = auth()->user()->email;
         }
     
+        // dd($data);
         $maintenanceSystem->update($data);
+
+        $maintenanceSystem->writeLog(
+
+            action: 'UPDATE',
+        
+            oldStatus: $oldStatus,
+        
+            newStatus: $maintenanceSystem->status,
+        
+            note: 'Cập nhật thông tin'
+        
+        );
     
         return redirect()
             ->route('maintenance-system.index')
             ->with('success', 'Cập nhật thành công.');
+    }
+
+    public function changeStatusForm(
+        MaintenanceSystem $maintenanceSystem,
+        string $status
+    )
+    {
+        $workflow = config('maintenance_system.workflow');
+    
+        abort_unless(
+            in_array(
+                $status,
+                $workflow[$maintenanceSystem->status] ?? []
+            ),
+            404
+        );
+    
+        return view(
+            'system.modals.change-status',
+            compact(
+                'maintenanceSystem',
+                'status'
+            )
+        );
+    }
+
+    public function changeStatus(
+        Request $request,
+        MaintenanceSystem $maintenanceSystem
+    )
+    {
+        $workflow = config('maintenance_system.workflow');
+
+        $oldStatus = $maintenanceSystem->status;
+        
+        $validated = $request->validate([
+            'status' => ['required'],
+            'delay_reason' => ['nullable', 'string'],
+            'note' => ['nullable', 'string']
+        ]);
+
+        if (! in_array(
+            $validated['status'],
+            $workflow[$maintenanceSystem->status] ?? []
+        )) {
+            abort(403);
+        }
+    
+        $data = [
+            'status' => $validated['status'],
+            'delay_reason' => $validated['note'] ?? null,
+            'updated_by' => auth()->user()->email,
+        ];
+    
+        if (
+            $validated['status'] === 'COMPLETED'
+            && !$maintenanceSystem->completed_at
+        ) {
+    
+            $data['completed_at'] = now();
+    
+            $data['completed_by'] = auth()->user()->email;
+    
+        }
+        // dd($data);
+    
+        $maintenanceSystem->update($data);
+
+        $maintenanceSystem->writeLog(
+
+            action: 'CHANGE_STATUS',
+        
+            oldStatus: $oldStatus,
+        
+            newStatus: $maintenanceSystem->status,
+        
+            note: $request->note
+        
+        );
+    
+        return redirect()
+            ->route('maintenance-system.index')
+            ->with('success', 'Đổi trạng thái thành công.');
     }
 
     public function destroy(MaintenanceSystem $maintenanceSystem)

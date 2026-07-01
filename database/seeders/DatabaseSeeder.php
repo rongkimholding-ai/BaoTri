@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\MaintenanceSeeder;
+use Database\Seeders\TechnicianSystemUserSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\StoreUserSeeder;
 
@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             TechnicianTargetSeeder::class,
             RolePermissionSeeder::class,
             DefaultUsersSeeder::class,
+            TechnicianSystemUserSeeder::class,
             StoreUserSeeder::class,
             HolidayCalendarSeeder::class,
             // KTNBRoleSeeder::class,

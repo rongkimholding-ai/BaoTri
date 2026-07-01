@@ -48,24 +48,39 @@ Route::middleware('auth')->group(function () {
     Route::get('/maintenance-requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])->name('maintenance-requests.show');
 
     Route::prefix('maintenance-system')
-    ->name('maintenance-system.')
-    ->group(function () {
+        ->name('maintenance-system.')
+        ->group(function () {
 
-        Route::get('/', [MaintenanceSystemController::class, 'index'])->name('index');
+            Route::get('/', [MaintenanceSystemController::class, 'index'])->name('index');
 
-        Route::get('/create', [MaintenanceSystemController::class, 'create'])->name('create');
+            Route::get('/create', [MaintenanceSystemController::class, 'create'])->name('create');
 
-        Route::post('/', [MaintenanceSystemController::class, 'store'])->name('store');
+            Route::post('/', [MaintenanceSystemController::class, 'store'])->name('store');
 
-        Route::get('/{maintenanceSystem}', [MaintenanceSystemController::class, 'show'])->name('show');
+            Route::get('/{maintenanceSystem}', [MaintenanceSystemController::class, 'show'])->name('show');
 
-        Route::get('/{maintenanceSystem}/edit', [MaintenanceSystemController::class, 'edit'])->name('edit');
+            Route::get('/{maintenanceSystem}/edit', [MaintenanceSystemController::class, 'edit'])->name('edit');
 
-        Route::put('/{maintenanceSystem}', [MaintenanceSystemController::class, 'update'])->name('update');
+            Route::put('/{maintenanceSystem}', [MaintenanceSystemController::class, 'update'])->name('update');
 
-        Route::delete('/{maintenanceSystem}', [MaintenanceSystemController::class, 'destroy'])->name('destroy');
+            Route::delete('/{maintenanceSystem}', [MaintenanceSystemController::class, 'destroy'])->name('destroy');
 
-    });
+            Route::get(
+                '/{maintenanceSystem}/change-status/{status}',
+                [MaintenanceSystemController::class, 'changeStatusForm']
+            )->name('change-status');
+
+            Route::post(
+                '/{maintenanceSystem}/change-status',
+                [MaintenanceSystemController::class, 'changeStatus']
+            )->name('change-status');
+
+            Route::put(
+                '/{maintenanceSystem}/change-status',
+                [MaintenanceSystemController::class, 'changeStatus']
+            )->name('change-status.update');
+
+        });
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
     Route::resource('maintenance-system', MaintenanceSystemController::class);
 });

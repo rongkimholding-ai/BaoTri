@@ -67,7 +67,7 @@ return new class extends Migration
                 ->index()
                 ->comment('Email kỹ thuật viên');
 
-            $table->string('technician_phone', 30)
+            $table->string('technician_mobile', 30)
                 ->nullable()
                 ->comment('Số điện thoại kỹ thuật viên');
 

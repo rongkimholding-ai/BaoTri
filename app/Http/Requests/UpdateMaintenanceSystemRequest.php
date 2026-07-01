@@ -23,16 +23,22 @@ class UpdateMaintenanceSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'issue_code' => ['required', 'string', 'max:100'],
+            'issue_name' => ['required', 'string', 'max:255'],
+            'issue_description' => ['nullable', 'string'],
+            'solution_description' => ['nullable', 'string'],
 
-            'issue_code'=>'required',
+            'branch_code' => ['nullable', 'string', 'max:50'],
+            'branch_name' => ['required', 'string', 'max:255'],
+            'branch_email' => ['nullable', 'email', 'max:255'],
 
-            'issue_name'=>'required',
+            'technician_name' => ['nullable', 'string', 'max:255'],
+            'technician_email' => ['nullable', 'email', 'max:255'],
+            'technician_mobile' => ['nullable', 'string', 'max:30'],
 
-            'branch_code'=>'required',
-
-            'completion_time_code'=>'required',
-
-            // 'status'=>'required',
+            'actual_completion_date' => ['required', 'string'],
+            'status' => ['nullable', 'string'],
+            'delay_reason' => ['nullable', 'string'],
         ];
     }
 }

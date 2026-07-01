@@ -1,7 +1,7 @@
 @php
     $title = 'Danh sách bảo trì hạ tầng';
-    $statuses = config('sla_status.names');
-    $statusOptions = config('sla_status.code');
+    $statuses = config('sla_status.names_ht');
+    $statusOptions = config('sla_status.code_ht');
     $fromDate = request('from_date', now()->startOfMonth()->format('Y-m-d'));
     $toDate = request('to_date', now()->endOfMonth()->format('Y-m-d'));
 @endphp
@@ -13,11 +13,8 @@
             <h3 class="mb-0 fs-5 fs-md-3">{{ $title }}</h3>
             <div class="d-flex flex-column flex-md-row gap-2">
                 @can('create data')
-                    <button 
-                        class="btn btn-outline-primary flex-fill mt-2 mt-md-0" 
-                        onclick="openMaintenanceModal('create')"
-                        type="button"
-                    >
+                    <button class="btn btn-outline-primary flex-fill mt-2 mt-md-0" onclick="openMaintenanceModal('create')"
+                        type="button">
                         <i class="bi bi-plus-circle"></i> Thêm mới
                     </button>
                 @endcan
@@ -30,34 +27,17 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-md-3">
                             <label for="keyword" class="form-label mb-1">Từ khoá</label>
-                            <input
-                                type="text"
-                                name="keyword"
-                                id="keyword"
-                                class="form-control"
-                                value="{{ request('keyword') }}"
-                                placeholder="Mã lỗi / Sự cố / Chi nhánh / KTV"
-                            >
+                            <input type="text" name="keyword" id="keyword" class="form-control"
+                                value="{{ request('keyword') }}" placeholder="Mã lỗi / Sự cố / Chi nhánh / KTV">
                         </div>
                         <div class="col-md-2">
                             <label for="from_date" class="form-label mb-1">Ngày yêu cầu (Từ)</label>
-                            <input
-                                type="date"
-                                name="from_date"
-                                id="from_date"
-                                class="form-control"
-                                value="{{ $fromDate }}"
-                            >
+                            <input type="date" name="from_date" id="from_date" class="form-control"
+                                value="{{ $fromDate }}">
                         </div>
                         <div class="col-md-2">
                             <label for="to_date" class="form-label mb-1">Ngày yêu cầu (Đến)</label>
-                            <input
-                                type="date"
-                                name="to_date"
-                                id="to_date"
-                                class="form-control"
-                                value="{{ $toDate }}"
-                            >
+                            <input type="date" name="to_date" id="to_date" class="form-control" value="{{ $toDate }}">
                         </div>
                         <div class="col-md-2">
                             <label for="status" class="form-label mb-1">Trạng thái</label>
@@ -72,7 +52,8 @@
                         </div>
                         <div class="col-md-3 d-flex gap-2 pt-md-3">
                             <button type="submit" class="btn btn-primary flex-fill mt-2 mt-md-0">Tìm kiếm</button>
-                            <a href="{{ route('maintenance-system.index') }}" class="btn btn-outline-secondary flex-fill mt-2 mt-md-0">Bỏ lọc</a>
+                            <a href="{{ route('maintenance-system.index') }}"
+                                class="btn btn-outline-secondary flex-fill mt-2 mt-md-0">Bỏ lọc</a>
                         </div>
                     </div>
                 </form>
@@ -147,30 +128,80 @@
                                 </td>
                                 <td>
                                     <span class="badge bg-primary">
-                                        {{ $item->status }}
+                                        {{ $statuses[$item->status] ?? $item->status }}
+
                                     </span>
                                 </td>
                                 <td>
                                     {{ optional($item->completed_at)->format('d/m/Y H:i') ?? '-' }}
                                 </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button 
-                                            onclick="openMaintenanceModal('detail',{{ $item->id }})"
-                                            class="btn btn-link text-success p-0"
-                                            type="button"
-                                        >
-                                            <i class="bi bi-eye"></i> Chi tiết
-                                        </button>
-                                        <button 
-                                            onclick="openMaintenanceModal('edit',{{ $item->id }})"
-                                            class="btn btn-link text-primary p-0"
-                                            type="button"
-                                        >
-                                            <i class="bi bi-pencil"></i> Sửa
-                                        </button>
+                                <td class="action-column action-cell">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle action-btn" type="button"
+                                            data-bs-toggle="dropdown">Thao tác</button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="javascript:void(0)"
+                                                    onclick="openMaintenanceModal('detail',{{ $item->id }})"
+                                                    class="dropdown-item text-success">
+                                                    <i class="bi bi-eye"></i> Chi tiết
+                                                </a>
+                                            </li>
+                                            @hasanyrole('technician_system|admin')
+                                            @if($item->status == 'NEW')
+                                            <li>
+                                                <a href="javascript:void(0)"
+                                                    onclick="openMaintenanceModal('edit',{{ $item->id }})"
+                                                    class="dropdown-item text-primary">
+                                                    <i class="bi bi-pencil"></i> Sửa
+                                                </a>
+                                            </li>
+                                            @endif
+                                            <!-- <li>
+                                                <a href="javascript:void(0)" class="dropdown-item text-warning"
+                                                    onclick="openMaintenanceModal('status',{{ $item->id }})">
+                                                    <i class="bi bi-arrow-repeat"></i> Trạng thái
+                                                </a>
+                                            </li> -->
+                                            @can('change-system-status')
+                                            @php
+                                                // Lấy workflow từ config
+                                                $workflow = config('maintenance_system.workflow');
+                                                $statusNamesHt = config('sla_status.names_ht_func');
+                                                $currentStatus = $item->status;
+                                                $nextStatuses = $workflow[$currentStatus] ?? [];
+                                            @endphp
+
+                                            @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
+                                                @foreach ($nextStatuses as $nextStatus)
+                                                    <li>
+                                                        <a href="javascript:void(0)"
+                                                            onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
+                                                            class="dropdown-item">
+                                                            {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            @endif
+                                            @endcan
+                                            @endhasanyrole
+
+                                            @role('admin')
+                                            <li>
+                                                <form action="{{ route('maintenance-system.destroy', $item->id) }}"
+                                                    method="POST" onsubmit="return confirm('Xóa bản ghi này?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-trash"></i> Xóa
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            @endrole
+                                        </ul>
                                     </div>
                                 </td>
+
                             </tr>
                         @empty
                             <tr>
@@ -189,7 +220,8 @@
     </div>
 
     {{-- Modal --}}
-    <div id="maintenanceModal" class="modal fade" tabindex="-1" aria-labelledby="maintenanceModalTitle" aria-hidden="true">
+    <div id="maintenanceModal" class="modal fade" tabindex="-1" aria-labelledby="maintenanceModalTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -201,60 +233,78 @@
         </div>
     </div>
 
-        <script>
-            /**
-             * Hiển thị modal bảo trì hệ thống (pattern follow permissions).
-             * @param {'create'|'edit'|'detail'} action
-             * @param {number|null} id
-             */
-            function openMaintenanceModal(action, id = null) {
-                let url = '';
-                let title = '';
-                if (action === 'create') {
-                    url = "{{ route('maintenance-system.create') }}";
-                    title = 'Tạo yêu cầu';
-                } else if (action === 'edit') {
-                    url = `/maintenance-system/${id}/edit`;
-                    title = 'Cập nhật';
-                } else if (action === 'detail') {
-                    url = `/maintenance-system/${id}`;
-                    title = 'Chi tiết';
-                }
-                fetch(url)
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById('maintenanceModalTitle').innerText = title;
-                        document.getElementById('maintenanceModalContent').innerHTML = html;
-                        let modalEl = document.getElementById('maintenanceModal');
-                        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                        modal.show();
-                    });
+    <script>
+        /**
+         * Hiển thị modal bảo trì hệ thống (pattern follow permissions).
+         * @param {'create'|'edit'|'detail'} action
+         * @param {number|null} id
+         */
+        function openMaintenanceModal(action, id = null, status = null) {
+
+            let url = '';
+            let title = '';
+
+            if (action === 'create') {
+
+                url = "{{ route('maintenance-system.create') }}";
+                title = 'Tạo yêu cầu';
+
+            } else if (action === 'edit') {
+
+                url = `/maintenance-system/${id}/edit`;
+                title = 'Cập nhật';
+
+            } else if (action === 'detail') {
+
+                url = `/maintenance-system/${id}`;
+                title = 'Chi tiết';
+
+            } else if (action === 'status') {
+
+                url = `/maintenance-system/${id}/change-status/${status}`;
+                title = 'Đổi trạng thái';
+
             }
 
-            // Đóng modal khi bấm ra ngoài (backdrop)
-            document.getElementById('maintenanceModal').addEventListener('click', function (e) {
-                if (e.target === this) {
-                    let modal = bootstrap.Modal.getOrCreateInstance(this);
-                    modal.hide();
-                }
-            });
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
 
-            // Đóng modal với ESC
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    let modalEl = document.getElementById('maintenanceModal');
-                    let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                    modal.hide();
-                }
-            });
+                    document.getElementById('maintenanceModalTitle').innerText = title;
+                    document.getElementById('maintenanceModalContent').innerHTML = html;
 
-            // Autofocus input khi modal mở
-            const modalContent = document.getElementById('maintenanceModalContent');
-            const observer = new MutationObserver(() => {
-                let input = modalContent.querySelector('input[autofocus]');
-                if (input) input.focus();
-            });
-            observer.observe(modalContent, { childList: true, subtree: true });
-        </script>
+                    bootstrap.Modal
+                        .getOrCreateInstance(document.getElementById('maintenanceModal'))
+                        .show();
+
+                });
+
+        }
+
+        // Đóng modal khi bấm ra ngoài (backdrop)
+        document.getElementById('maintenanceModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                let modal = bootstrap.Modal.getOrCreateInstance(this);
+                modal.hide();
+            }
+        });
+
+        // Đóng modal với ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                let modalEl = document.getElementById('maintenanceModal');
+                let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.hide();
+            }
+        });
+
+        // Autofocus input khi modal mở
+        const modalContent = document.getElementById('maintenanceModalContent');
+        const observer = new MutationObserver(() => {
+            let input = modalContent.querySelector('input[autofocus]');
+            if (input) input.focus();
+        });
+        observer.observe(modalContent, { childList: true, subtree: true });
+    </script>
 
 </x-app-layout>

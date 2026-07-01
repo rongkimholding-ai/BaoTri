@@ -1,6 +1,7 @@
 @php
 // Chuẩn hóa biến $standardCompletionTimes từ config/real_time để dùng ở form
 $standardCompletionTimes = config('real_time');
+// dd($maintenanceSystem->actual_completion_date);
 @endphp
 <div class="row">
     {{-- Thông tin sự cố --}}
@@ -16,7 +17,7 @@ $standardCompletionTimes = config('real_time');
         <label>{{ config('maintenance.fields.standard_completion_time') ?? 'SLA' }}</label>
         <select class="form-control" name="actual_completion_date">
             @foreach ($standardCompletionTimes as $key => $value)
-                <option value="{{ $value['key'] }}" @selected(old('completion_time_code', $maintenanceSystem->completion_time_code ?? '') == $key)>
+                <option value="{{ $value['key'] }}" @selected(old('actual_completion_date', $maintenanceSystem->actual_completion_date ?? '') == $value['key'])>
                     {{ $value['name'] ?? $key }}
                 </option>
             @endforeach
