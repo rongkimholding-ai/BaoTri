@@ -1,5 +1,6 @@
 @props([
-    'title' => 'Công việc bảo trì'
+    'title' => 'Công việc bảo trì',
+    'isDashboard' => false,
 ])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -43,11 +44,12 @@
                     </x-nav-link>
                
                 </div>
-
+                
+                @if (!$isDashboard)
                 <div class="flex items-center gap-4">
                     @include('layouts.navigation')
                 </div>
-
+                @endif
             </div>
         </div>
     </header>

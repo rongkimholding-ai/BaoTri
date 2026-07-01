@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :isDashboard="true">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-center text-gray-800 leading-tight">
             CHÀO MỪNG ĐẾN VỚI TRANG QUẢN LÝ CÔNG VIỆC HỖ TRỢ CỦA BẢO TRÌ VÀ HẠ TẦNG.
