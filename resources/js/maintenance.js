@@ -429,10 +429,16 @@ $(function () {
             width: '100%'
         });
         
-        // $('.select2-branch').select2({
-        //     width: '100%',
-        //     dropdownParent: $('#maintenanceModal')
-        // });
+        let $modalSystem = $('#maintenanceModal');
+        $modalSystem.find('.select2-branch-system').select2({
+            width: '100%',
+            dropdownParent: $modalSystem
+        });
+        $modalSystem.find('.select2-system-tech').select2({
+            width: '100%',
+            dropdownParent: $modalSystem
+        });
+
     }
 
     $('#createModal').on('shown.bs.modal', function () {
@@ -1217,102 +1223,283 @@ $(function () {
         }
     );
 
-    // function toggleOtherStoreInput() {
-    //     const selectedValue = $('#branch_name_select').val();
+    // Tự động cập nhật thông tin kỹ thuật viên khi chọn mới
+    $('#maintenanceModal').on('change', '.form-technician-name', function () {
+        let option = $(this).find(':selected');
+        let modal = $('#maintenanceModal');
+        modal.find('.technician-mobile').val(option.data('mobile') || '');
+        modal.find('.technician-email').val(option.data('email') || '');
+    });
+
+    // Hiển thị input nhập "cửa hàng khác" khi chọn tương ứng
+    function toggleSystemOtherBranchInput() {
+        const selectedValue = $('#branch_name_select').val();
+        if (selectedValue === 'other_store') {
+            $('#other_store_input_wrap').removeClass('d-none');
+        } else {
+            $('#other_store_input_wrap').addClass('d-none');
+            $('#other_branch_name').val('');
+            $('#other_branch_code').val('');
+            $('#other_branch_email').val('');
+        }
+    }
+
+    // Khởi tạo / bind sự kiện khi mở modal (edit/create system)
+    $('#maintenanceModal').on('shown.bs.modal', function () {
+        $('#branch_name_select').trigger('change');
+        $('.form-technician-name').trigger('change');
+        initSelect2Modal();
+    });
+
+    // Hỗ trợ khôi phục input "cửa hàng khác" khi reload trang
+    if ($('#branch_name_select').length) {
+        toggleSystemOtherBranchInput();
+    }
+
+    // Khi chọn Chi nhánh hệ thống
+    $(document).on('change', '#branch_name_select', function () {
+        let option = $(this).find(':selected');
+        toggleSystemOtherBranchInput();
+
+        let hiddenBranchCodeInput = $('input.form-branch-code');
+        let hiddenBranchEmailInput = $('input.form-branch-email');
+        if (option.val() === 'other_store') {
+            hiddenBranchCodeInput.val('');
+            hiddenBranchEmailInput.val('');
+        } else {
+            hiddenBranchCodeInput.val(option.data('branch_code') || '');
+            hiddenBranchEmailInput.val(option.data('branch_email') || '');
+        }
+    });
+
+    // Tự động cập nhật fields khi chọn sự cố / dịch vụ
+    $(document).on('change', '.select2-issue-name', function () {
+        let selected = $(this).find(':selected');
+        let code = selected.data('code') || '';
+        let sla_time = selected.data('sla') || '';
+        let issue_description = selected.data('issue_description') || '';
+        let modal = $('#maintenanceModal');
+        modal.find('.issue-code-system').val(code);
+        modal.find('.processing-time-system').val(sla_time);
+        modal.find('.issue-description-system').val(issue_description);
+    });
+
+    // Khi submit modal, đồng bộ lại các trường branch nếu chọn "cửa hàng khác"
+    $(document).on('submit', '#maintenanceModal form', function(e) {
+        var $form = $(this);
+        var $branchSelect = $form.find('#branch_name_select');
+        // Nếu chọn "Cửa hàng khác"
+        if ($branchSelect.length && $branchSelect.val() === 'other_store') {
+            // Lấy dữ liệu nhập của user ở input đặc biệt
+            var branchNameOther = $form.find('[name="other_branch_name"]').val() || '';
+            var branchCodeOther = $form.find('[name="other_branch_code"]').val() || '';
+            var branchEmailOther = $form.find('[name="other_branch_email"]').val() || '';
+            // Gán về cho field ẩn đúng chuẩn backend (branch_code, branch_email)
+            $form.find('input.form-branch-code').val(branchCodeOther);
+            $form.find('input.form-branch-email').val(branchEmailOther);
+            // Đối với branch_name, sẽ tạo input hidden với giá trị tùy ý, xóa option select
+            $form.find('select[name="branch_name"]').val('').prop('selected', false);
+            if ($form.find('input[name="branch_name"][type="hidden"]').length === 0) {
+                $form.append('<input type="hidden" name="branch_name" value="">');
+            }
+            $form.find('input[name="branch_name"][type="hidden"]').val(branchNameOther);
+        } else {
+            // Không chọn "cửa hàng khác" thì xóa input hidden nếu có
+            $form.find('input[name="branch_name"][type="hidden"]').remove();
+        }
+    });
+
+    // Tìm kiếm kỹ thuật viên ở danh sách thô (nếu có)
+    $(document).on('input', '#system-tech-search', function () {
+        const keyword = $(this).val().trim().toLowerCase();
+        $('.system-tech-item').each(function () {
+            const matched = $(this)
+                .text()
+                .toLowerCase()
+                .includes(keyword);
+            $(this).toggleClass('d-none', !matched);
+        });
+    });
+
+    $('#maintenanceModal').on('hide.bs.modal', function () {
+        const $modal = $(this);
+        const $form = $modal.find('form');
+        if ($form.length) {
+            $form[0].reset();
+        }
+        $modal.find('select').each(function () {
+            $(this).val(null).trigger('change.select2');
+        });
+        const $errorBox = $('#system-form-errors');
+        if ($errorBox.length) {
+            $errorBox.addClass('d-none').html('');
+        }
+   
+    });
+
+    $(document).on(
+        'click',
+        '.acceptance-system-btn',
+        function () {
     
-    //     if (selectedValue === 'other_store') {
-    //         $('#other_store_input_wrap').removeClass('d-none');
-    //         $('#createModal').find('.form-technician-name').prop('disabled', false);
-    //     } else {
-    //         $('#other_store_input_wrap').addClass('d-none');
-    //         $('#other_branch_name').val('');
-    //         $('#other_branch_code').val('');
-    //         $('#other_branch_email').val('');
-    //         $('#createModal').find('.form-technician-name').prop('disabled', true);
-    //     }
-    // }
-
-    // $(document).on('change', '#branch_name_select', function () {
-    //     toggleOtherStoreInput();
-    // });
-
-    // Trường hợp edit hoặc reload form
-    // toggleOtherStoreInput();
-
-    // $(document).on('input', '#tech-search', function () {
-    //     const keyword = $(this).val().trim().toLowerCase();
-    //     $('.tech-item').each(function () {
-    //         const matched = $(this)
-    //             .text()
-    //             .toLowerCase()
-    //             .includes(keyword);
-    //         $(this).toggleClass('d-none', !matched);
-    //     });
-    // });
-
-    // $('#maintenanceModal').on('shown.bs.modal', function () {
-    //     bindBranchChange();
-    //     bindTechnicianChange();
-
-    //     // Trigger khi Edit
-    //     $('#branch_name_select').trigger('change');
-    //     $('#technician_name_select').trigger('change');
-    // });
-
-    /**
-     * Chọn chi nhánh
-     */
-    // function bindBranchChange() {
-
-    //     $('#branch_name_select').on('change', function () {
+            $('#acceptance_system_id')
+                .val($(this).data('id'));
     
-    //         const option = $(this).find(':selected');
-    //         const isOther = option.data('custom') == 1;
+            $('#acceptance_result').val('');
     
-    //         if (isOther) {
+            $('#acceptance_note').val('');
     
-    //             $('#other_store_input_wrap').removeClass('d-none');
-    
-    //             $('input[name=branch_code]').val('');
-    //             $('input[name=branch_email]').val('');
-    
-    //             return;
-    //         }
-    
-    //         $('#other_store_input_wrap').addClass('d-none');
-    
-    //         $('#other_branch_name').val('');
-    //         $('#other_branch_code').val('');
-    //         $('#other_branch_email').val('');
-    
-    //         $('input[name=branch_code]').val(option.data('branch_code') || '');
-    //         $('input[name=branch_email]').val(option.data('branch_email') || '');
+            $('#acceptance-error')
+                .addClass('d-none')
+                .html('');
+        }
+    );
 
-    //         console.log(option[0]);
-    //         console.log(option.attr('data-branch_email'));
-    //         console.log('email',option.data('branch_email'));
-    //         console.log('name',option.data('branch_name'));
+    $('#acceptanceSystemModal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
+
+    $('#submitAcceptanceSystem').on(
+        'click',
+        function () {
     
-    //     });
+            let formData = new FormData();
     
-    // }
+            formData.append(
+                '_token',
+                $('meta[name="csrf-token"]').attr('content')
+            );
+    
+            formData.append(
+                'id',
+                $('#acceptance_system_id').val()
+            );
+    
+            formData.append(
+                'result',
+                $('#acceptance_result').val()
+            );
+    
+            formData.append(
+                'note',
+                $('#acceptance_note').val()
+            );
+    
+            $.ajax({
+    
+                url: '/maintenance-system/acceptance',
+    
+                type: 'POST',
+    
+                data: formData,
+    
+                processData: false,
+    
+                contentType: false,
+    
+                success: function (response) {
+    
+                    if (response.success) {
+                        location.reload();
+                    }
+                },
+    
+                error: function (xhr) {
+    
+                    let msg =
+                        xhr.responseJSON?.message
+                        ?? 'Có lỗi xảy ra';
+    
+                    $('#acceptance-error')
+                        .removeClass('d-none')
+                        .html(msg);
+                }
+            });
+        }
+    );
 
-    /**
-     * Chọn kỹ thuật viên
-     */
-    // function bindTechnicianChange() {
+    // Xử lý modal đổi trạng thái cho maintenance system (dùng bởi admin)
+    $(document).on('click', '.admin-change-status-system-btn', function (e) {
+        e.preventDefault();
 
-    //     $('#technician_name_select').on('change', function () {
+        const $btn = $(this);
+        const id = $btn.data('id');
+        const currentStatus = $btn.data('current-status');
 
-    //         const option = $(this).find(':selected');
+        // Hiện modal đổi trạng thái
+        const modal = $('#changeStatusSystemModal');
 
-    //         $('input[name=technician_email]')
-    //             .val(option.data('email') ?? '');
+        // set id hiện tại vào modal
+        modal.find('#statusRequestId').val(id);
 
-    //         $('input[name=technician_mobile]')
-    //             .val(option.data('mobile') ?? '');
+        // set select trạng thái
+        let options = '';
+        const statusNames = window.slaStatusNames || {};
+        Object.entries(statusNames).forEach(([key, value]) => {
+            options += `<option value="${key}" ${key === currentStatus ? 'selected' : ''}>${value}</option>`;
+        });
+        modal.find('#statusSelect').html(options);
 
-    //     });
+        // Hiển thị select trạng thái, ẩn label trạng thái tĩnh
+        modal.find('#statusLabel').closest('.mb-3').addClass('d-none');
+        modal.find('#statusSelectWrapper').removeClass('d-none');
 
-    // }
+        // Xóa note cũ
+        modal.find('#statusNote').val('');
+
+        // Ẩn delay reason nếu có
+        modal.find('#delayReasonGroup').addClass('d-none');
+        modal.find('textarea[name="delay_reason"]').val('');
+
+        // Hiện modal
+        new bootstrap.Modal(document.getElementById('changeStatusSystemModal')).show();
+    });
+
+    // Xử lý khi admin xác nhận đổi trạng thái
+    $('#confirmChangeStatusSystem').on('click', function () {
+        const modal = $('#changeStatusSystemModal');
+        const id = modal.find('#statusRequestId').val();
+        const status = modal.find('#statusSelect').val();
+        const note = modal.find('#statusNote').val();
+        const delayReason = modal.find('textarea[name="delay_reason"]').val() || '';
+
+        // Nếu chuyển sang trạng thái LATED thì yêu cầu nhập lý do trễ
+        if (status === 'LATED' && !delayReason.trim()) {
+            alert('Vui lòng nhập lý do trễ!');
+            modal.find('#delayReasonGroup').removeClass('d-none');
+            modal.find('textarea[name="delay_reason"]').focus();
+            return;
+        }
+
+        // Gửi request
+        $.ajax({
+            url: '/maintenance-system/change-status/' + id + '/admin',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                status: status,
+                note: note,
+                delay_reason: status === 'LATED' ? delayReason : ''
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function (xhr) {
+                let msg = xhr.responseJSON?.message ?? 'Có lỗi xảy ra';
+                alert(msg);
+            }
+        });
+    });
+
+    // Tự động hiện/tắt ô nhập lý do trễ khi đổi trạng thái
+    $(document).on('change', '#statusSelect', function () {
+        const status = $(this).val();
+        const modal = $('#changeStatusSystemModal');
+        if (status === 'LATED') {
+            modal.find('#delayReasonGroup').removeClass('d-none');
+        } else {
+            modal.find('#delayReasonGroup').addClass('d-none');
+            modal.find('textarea[name="delay_reason"]').val('');
+        }
+    });
 });

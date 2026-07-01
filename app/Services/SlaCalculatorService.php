@@ -3,26 +3,31 @@
 namespace App\Services;
 
 use App\Helpers\BusinessTimeHelper;
-use App\Models\MaintenanceRequest;
 use Carbon\Carbon;
 
 class SlaCalculatorService
 {
+    /**
+     * Calculate business time duration between request start and completion.
+     *
+     * @param mixed $model Should have request_date, include_saturday, include_sunday, include_holiday. Optionally severity.
+     * @param Carbon $completedAt
+     * @return string
+     */
     public function calculate(
-        MaintenanceRequest $request,
+        $model,
         Carbon $completedAt
     ): string {
         $seconds = BusinessTimeHelper::diffInBusinessSeconds(
-            $request->request_date,
+            $model->request_date,
             $completedAt,
-            $request->include_saturday,
-            $request->include_sunday,
-            $request->include_holiday,
-            $request->severity,
+            $model->include_saturday,
+            $model->include_sunday,
+            $model->include_holiday,
+            // If model has "severity" property and it's not null, pass it
+            (property_exists($model, 'severity') && !is_null($model->severity)) ? $model->severity : null
         );
 
-        return BusinessTimeHelper::formatDuration(
-            $seconds
-        );
+        return BusinessTimeHelper::formatDuration($seconds);
     }
 }

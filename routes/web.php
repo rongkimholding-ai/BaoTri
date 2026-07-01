@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
 
             Route::post('/', [MaintenanceSystemController::class, 'store'])->name('store');
 
+            Route::post('/acceptance', [MaintenanceSystemController::class, 'acceptance'])->name('acceptance');
+
             Route::get('/{maintenanceSystem}', [MaintenanceSystemController::class, 'show'])->name('show');
 
             Route::get('/{maintenanceSystem}/edit', [MaintenanceSystemController::class, 'edit'])->name('edit');
@@ -65,6 +67,11 @@ Route::middleware('auth')->group(function () {
 
             Route::delete('/{maintenanceSystem}', [MaintenanceSystemController::class, 'destroy'])->name('destroy');
 
+            Route::post(
+                '/change-status/{maintenanceSystem}/admin',
+                [MaintenanceSystemController::class, 'changeStatusAdmin']
+            )->name('change-status-admin');
+            
             Route::get(
                 '/{maintenanceSystem}/change-status/{status}',
                 [MaintenanceSystemController::class, 'changeStatusForm']
@@ -79,6 +86,7 @@ Route::middleware('auth')->group(function () {
                 '/{maintenanceSystem}/change-status',
                 [MaintenanceSystemController::class, 'changeStatus']
             )->name('change-status.update');
+
 
         });
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);

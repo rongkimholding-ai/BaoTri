@@ -1,0 +1,528 @@
+[
+  {
+    "key": "D_CH_V_POS",
+    "name": "Dịch Vụ POS",
+    "issues": [
+      {
+        "key": "POS_KH_NG_L_N_NGU_N",
+        "name": "POS không lên nguồn",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_T_KH_I_NG_L_I",
+        "name": "POS tự khởi động lại",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_TREO_M_N_H_NH",
+        "name": "POS treo màn hình",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_CH_Y_CH_M",
+        "name": "POS chạy chậm",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_M_T_K_T_N_I_M_NG",
+        "name": "POS mất kết nối mạng",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_L_I_M_N_H_NH_C_M_NG",
+        "name": "POS lỗi màn hình cảm ứng",
+        "processing_time": "8_10_HOURS",
+        "processing_time_word": "Từ 8 Tiếng - 10 Tiếng",
+        "max_second": 36000
+      },
+      {
+        "key": "POS_L_I_M_N_H_NH_KH_CH_H_NG",
+        "name": "POS lỗi màn hình khách hàng",
+        "processing_time": "8_10_HOURS",
+        "processing_time_word": "Từ 8 Tiếng - 10 Tiếng",
+        "max_second": 36000
+      },
+      {
+        "key": "POS_L_I_SSD",
+        "name": "POS lỗi SSD",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_L_I_RAM",
+        "name": "POS lỗi RAM",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "POS_L_I_MAINBOARD",
+        "name": "POS lỗi mainboard",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "C_I_T_POS_M_I",
+        "name": "Cài đặt POS mới",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "DI_D_I_POS",
+        "name": "Di dời POS",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "THAY_SSD_RAM_NGU_N",
+        "name": "Thay SSD / RAM / Nguồn",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "V_SINH_KI_M_K_POS",
+        "name": "Vệ sinh & Kiểm kê POS",
+        "processing_time": "OTHER",
+        "processing_time_word": "Theo lịch"
+      },
+      {
+        "key": "THU_H_I_B_N_GIAO_THANH_L",
+        "name": "Thu hồi / Bàn giao / Thanh lý",
+        "processing_time": "OTHER",
+        "processing_time_word": "Theo lịch bàn giao của của cơ sở"
+      }
+    ]
+  },
+  {
+    "key": "KET_TIEN_MAT",
+    "name": "Két đựng tiền mặt",
+    "issues": [
+      {
+        "key": "KHONG_MO_DUOC_KET",
+        "name": "Không mở được két",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "KET_BI_KET_CO",
+        "name": "Két bị kẹt cơ",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "LOI_DAY_KET_NOI",
+        "name": "Lỗi dây kết nối két",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "LOI_LO_XO_BAT_NHA",
+        "name": "Lỗi lò xo bật nhả két",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_M_Y_IN",
+    "name": "Dịch Vụ Máy In",
+    "issues": [
+      {
+        "key": "KH_NG_IN_C_BILL",
+        "name": "Không in được bill",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "IN_BILL_TR_NG",
+        "name": "In bill trắng",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "IN_BILL_M",
+        "name": "In bill mờ",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "K_T_GI_Y_KH_NG_C_T_GI_Y",
+        "name": "Kẹt giấy / Không cắt giấy",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "KH_NG_NH_N_USB_M_T_K_T_N_I_LAN",
+        "name": "Không nhận USB / Mất kết nối LAN",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "C_I_T_DI_D_I_M_Y_IN_M_I",
+        "name": "Cài đặt / Di dời / Máy in mới",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_M_Y_IN_TEM",
+    "name": "Dịch Vụ Máy In Tem",
+    "issues": [
+      {
+        "key": "PRT_01_TEM_B_L_CH_D_NG_SAI_KH_GI_Y",
+        "name": "PRT-01 Tem bị lệch dòng / Sai khổ giấy",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "PRT_02_IN_TEM_TR_NG_TEM_M_CH",
+        "name": "PRT-02 In tem trắng / Tem mờ chữ",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "PRT_03_L_I_M_L_NH_ZPL_T_ERP",
+        "name": "PRT-03 Lỗi mã lệnh ZPL từ ERP",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "PRT_SR1_C_U_H_NH_L_P_T_M_Y_M_I",
+        "name": "PRT-SR1 Cấu hình & Lắp đặt máy mới",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_CCTV",
+    "name": "Dịch Vụ CCTV",
+    "issues": [
+      {
+        "key": "CAMERA_M_T_H_NH_M_M_T_M_U",
+        "name": "Camera mất hình / Mờ / Mất màu",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "CAMERA_OFFLINE_HO_N_TO_N",
+        "name": "Camera offline hoàn toàn",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "CAMERA_KH_NG_GHI_H_NH",
+        "name": "Camera không ghi hình",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "U_GHI_NVR_DVR_OFFLINE",
+        "name": "Đầu ghi NVR/DVR offline",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "HDD_L_I_HDD_Y",
+        "name": "HDD lỗi / HDD đầy",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "KI_M_TRA_L_U_TR_G_C_QUAY",
+        "name": "Kiểm tra lưu trữ & Góc quay",
+        "processing_time": "OTHER",
+        "processing_time_word": "Hàng tháng"
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_WIFI",
+    "name": "Dịch Vụ Wifi",
+    "issues": [
+      {
+        "key": "M_T_S_NG_WIFI_N_I_B_STAFF_INTERNAL",
+        "name": "Mất sóng Wifi nội bộ (Staff_Internal)",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "WIFI_CH_P_CH_N_S_NG_Y_U",
+        "name": "Wifi chập chờn / Sóng yếu",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "L_I_TRANG_CH_O_GUEST_WIFI",
+        "name": "Lỗi trang chào (Guest_Wifi)",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "KH_O_S_T_T_I_U_V_NG_PH_S_NG",
+        "name": "Khảo sát & Tối ưu vùng phủ sóng",
+        "processing_time": "OTHER",
+        "processing_time_word": "Theo lịch"
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_CORE",
+    "name": "Dịch Vụ Core",
+    "issues": [
+      {
+        "key": "ROUTER_FIREWALL_S_P_NGU_N_OFFLINE",
+        "name": "Router/Firewall sập nguồn/Offline",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "L_I_K_NH_TRUY_N_VPN_V_HO",
+        "name": "Lỗi kênh truyền VPN về HO",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "L_I_FAILOVER_M_NG_D_PH_NG",
+        "name": "Lỗi Failover mạng dự phòng",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "PORT_SWITCH_B_KH_A_B_O_M_T",
+        "name": "Port Switch bị khóa bảo mật",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      },
+      {
+        "key": "D_N_NH_N_C_NG_C_P_NH_T_CMDB",
+        "name": "Dán nhãn cổng & Cập nhật CMDB",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_V_N_PH_NG",
+    "name": "Dịch Vụ Văn Phòng",
+    "issues": [
+      {
+        "key": "M_Y_T_NH_L_I_PH_N_C_NG_BSOD",
+        "name": "Máy tính lỗi phần cứng / BSOD",
+        "processing_time": "1_HOUR",
+        "processing_time_word": "1 giờ",
+        "max_second": 3600
+      },
+      {
+        "key": "L_I_H_SINH_TH_I_MICROSOFT_365",
+        "name": "Lỗi hệ sinh thái Microsoft 365",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "C_NH_B_O_B_O_M_T_KH_A_ADMIN",
+        "name": "Cảnh báo bảo mật / Khóa Admin",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "THU_H_I_X_A_D_LI_U_C_C_B",
+        "name": "Thu hồi / Xóa dữ liệu cục bộ",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      }
+    ]
+  },
+  {
+    "key": "D_CH_V_CH_M_C_NG",
+    "name": "Dịch Vụ Chấm Công",
+    "issues": [
+      {
+        "key": "M_T_K_T_N_I_NG_B_D_LI_U_TH",
+        "name": "Mất kết nối đồng bộ dữ liệu thô",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "L_I_KH_NG_NH_N_DI_N_V_N_TAY",
+        "name": "Lỗi không nhận diện vân tay",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "THI_T_B_TREO_M_N_H_NH",
+        "name": "Thiết bị treo / Đơ màn hình",
+        "processing_time": "4_HOURS",
+        "processing_time_word": "Dưới 4 Tiếng",
+        "max_second": 14400
+      },
+      {
+        "key": "L_P_T_DI_D_I_M_Y_CH_M_C_NG",
+        "name": "Lắp đặt / Di dời máy chấm công",
+        "processing_time": "8_HOURS",
+        "processing_time_word": "Dưới 8 Tiếng",
+        "max_second": 28800
+      }
+    ]
+  },
+  {
+    "key": "TRIEN_KHAI_BAO_TRI_DINH_KY_CHUOI",
+    "name": "TRIỂN KHAI VÀ BẢO TRÌ ĐỊNH KỲ CHUỖI",
+    "issues": [
+      {
+        "key": "KHAI_TRUONG_CUA_HANG_MOI_B1",
+        "name": "Khảo sát hạ tầng",
+        "processing_time": "BEFORE_20_DAYS",
+        "processing_time_word": "Trước Open 20 ngày",
+        "detail": "Đo đạc khoảng cách đi dây mạng, xác định vị trí đặt tủ Rack, vị trí lắp đặt các Access Point để tối ưu sóng Wifi, vị trí lắp đặt camera giám sát két tiền, kho và khu vực bàn khách. Thỏa thuận tiến độ kéo cáp với các nhà mạng ISP.",
+        "deadline": "Trước Open 20 ngày"
+      },
+      {
+        "key": "KHAI_TRUONG_CUA_HANG_MOI_B2",
+        "name": "Giám sát thi công mạng LAN & Thiết bị mạng Core",
+        "processing_time": "BEFORE_4_DAYS",
+        "processing_time_word": "Trước Open 4 ngày",
+        "detail": "Đi ống luồn dây cáp mạng CAT6 từ tủ Rack đến các điểm nút mạng quầy thu ngân, nhà bếp. Lắp đặt và cấu hình Router, Tường lửa Firewall bảo mật, Switch PoE, các thiết bị Access Point phát sóng Wifi nội bộ/khách hàng. Thiết lập kênh truyền VPN an toàn về HO. (Tối ưu: Thực hiện dán nhãn cổng CMDB và cấu hình tách biệt 2 VLAN Staff_Internal & Guest_Wifi ngay tại bước này)",
+        "deadline": "Trước Open 4 ngày"
+      },
+      {
+        "key": "KHAI_TRUONG_CUA_HANG_MOI_B3",
+        "name": "Thi công hệ thống Camera & NVR",
+        "processing_time": "BEFORE_4_DAYS",
+        "processing_time_word": "Trước Open 4 ngày",
+        "detail": "Lắp đặt vật lý các mắt camera, kết nối về đầu ghi hình NVR đặt trong tủ Rack có khóa bảo vệ. Cấu hình phân giải hiển thị, thiết lập tính năng phát hiện chuyển động ngoài giờ làm việc và cấu hình xem từ xa cho Ban quản lý qua thiết bị di động.",
+        "deadline": "Trước Open 4 ngày"
+      },
+      {
+        "key": "KHAI_TRUONG_CUA_HANG_MOI_B4",
+        "name": "Lắp đặt thiết bị bán hàng tại quầy",
+        "processing_time": "BEFORE_2_DAYS",
+        "processing_time_word": "Trước Open 2 ngày",
+        "detail": "Lắp đặt Máy POS, kết nối các thiết bị ngoại vi: Màn hình phụ, Đầu đọc mã vạch Barcode Scanner, Máy in hóa đơn Bill tại quầy, Két đựng tiền mặt và Bộ lưu điện UPS. Kiểm tra tích hợp phần cứng thông qua trình điều khiển Driver OPOS chuyên dụng.",
+        "deadline": "Trước Open 2 ngày"
+      },
+      {
+        "key": "KHAI_TRUONG_CUA_HANG_MOI_B5",
+        "name": "Kiểm tra hệ thống tích hợp & Test bán hàng thử",
+        "processing_time": "BEFORE_2_DAYS",
+        "processing_time_word": "Trước Open 2 ngày",
+        "detail": "Kiểm tra thông mạch ISP, chạy thử kịch bản ngắt mạng mạng chính xem hệ thống có tự động Failover sang mạng dự phòng không. Thực hiện quy trình Test bán hàng giả định (Dummy Sales Test): Tạo order, thanh toán thẻ/ví điện tử, in bill, chạy Data Director để kiểm tra dữ liệu đồng bộ lên ERP trung tâm.",
+        "deadline": "Trước Open 2 ngày"
+      },
+      {
+        "key": "KHAI_TRUONG_CUA_HANG_MOI_B6",
+        "name": "Nghiệm thu toàn diện cửa hàng",
+        "processing_time": "BEFORE_1_DAYS",
+        "processing_time_word": "Trước Open 1 ngày",
+        "detail": "Ký biên bản nghiệm thu hạ tầng CNTT với OM, AM và Quản lý cửa hàng.",
+        "deadline": "Trước Open 1 ngày"
+      },
+      {
+        "key": "THAO_DO_DONG_CUA_HANG_B1",
+        "name": "Ngắt kết nối đồng bộ dữ liệu ERP",
+        "processing_time": "AFTER_CLOSE_DECISION",
+        "processing_time_word": "Sau quyết định đóng cửa",
+        "detail": "Ngắt kết nối đồng bộ dữ liệu của cửa hàng trên ERP trung tâm để khóa không cho phát sinh giao dịch mới lỗi thời.",
+        "deadline": "Sau quyết định đóng cửa"
+      },
+      {
+        "key": "THAO_DO_DONG_CUA_HANG_B2",
+        "name": "Hạ nguồn hệ thống thiết bị",
+        "processing_time": "AFTER_CLOSE_DECISION",
+        "processing_time_word": "Sau quyết định đóng cửa",
+        "detail": "Hạ nguồn an toàn toàn bộ hệ thống thiết bị theo đúng thứ tự: Máy POS -> Máy in -> Đầu ghi Camera -> Core Switch -> Tường lửa Router.",
+        "deadline": "Sau quyết định đóng cửa"
+      },
+      {
+        "key": "THAO_DO_DONG_CUA_HANG_B3",
+        "name": "Tháo dỡ, đóng gói và vận chuyển thiết bị",
+        "processing_time": "AFTER_CLOSE_DECISION",
+        "processing_time_word": "Sau quyết định đóng cửa",
+        "detail": "Tháo dỡ cẩn thận, đóng gói chống va đập, ghi nhãn mã tài sản rõ ràng và vận chuyển toàn bộ trang thiết bị về kho tổng của phòng CNTT.",
+        "deadline": "Sau quyết định đóng cửa"
+      },
+      {
+        "key": "THAO_DO_DONG_CUA_HANG_B4",
+        "name": "Bàn giao tài sản đóng cửa hàng",
+        "processing_time": "AFTER_CLOSE_DECISION",
+        "processing_time_word": "Sau quyết định đóng cửa",
+        "detail": "Ký biên bản bàn giao thu hồi tài sản đóng cửa hàng với đại diện phòng Hành chính/Vận hành chuỗi.",
+        "deadline": "Sau quyết định đóng cửa"
+      },
+      {
+        "key": "BAO_TRI_DINH_KY_CNTT_B1",
+        "name": "Bảo trì hệ thống POS & Ngoại vi",
+        "processing_time": "EVERY_3_MONTHS",
+        "processing_time_word": "3 tháng/lần/cửa hàng",
+        "detail": "Tháo vỏ máy POS, thổi bụi bẩn, lau sạch dầu mỡ bám dính trên các khe tản nhiệt của bo mạch chính. Kiểm tra dung lượng lưu trữ còn trống của ổ cứng SSD (đảm bảo trống > 20%), dọn dẹp các file log tạm thời (Temporary files), kiểm tra độ nhạy cảm ứng của màn hình. Vệ sinh bụi giấy bám trong đầu in nhiệt của máy in hóa đơn bằng tăm bông tẩm cồn 90 độ. Thực hiện vệ sinh Gap Sensor của máy in tem nhãn và chạy lệnh Calibration lại.",
+        "deadline": "Tối thiểu 03 tháng/lần"
+      },
+      {
+        "key": "BAO_TRI_DINH_KY_CNTT_B2",
+        "name": "Bảo trì hệ thống Mạng & An ninh",
+        "processing_time": "EVERY_3_MONTHS",
+        "processing_time_word": "3 tháng/lần/cửa hàng",
+        "detail": "Kiểm tra nhiệt độ hoạt động của các thiết bị trong tủ Rack. Kiểm tra trạng thái các đèn LED tín hiệu trên Switch, Router (Cam/Xanh). Kiểm tra dung lượng hoạt động và sức khỏe (Health status) của các ổ cứng lưu trữ camera NVR, lau sạch mặt kính của các mắt camera để đảm bảo hình ảnh ban đêm không bị mờ do lóa hồng ngoại. Kiểm tra bộ nhớ đệm và log dữ liệu thô offline của thiết bị máy chấm công.",
+        "deadline": "Tối thiểu 03 tháng/lần"
+      },
+      {
+        "key": "BAO_TRI_DINH_KY_CNTT_B3",
+        "name": "Kiểm tra hệ thống nguồn điện dự phòng UPS",
+        "processing_time": "EVERY_3_MONTHS",
+        "processing_time_word": "3 tháng/lần/cửa hàng",
+        "detail": "Thực hiện quy trình test xả tải UPS bằng cách ngắt nguồn điện lưới đầu vào của tủ Rack trong vòng 5 phút, quan sát xem UPS có chuyển mạch sang chạy ắc quy ổn định không, đo thời gian suy giảm dung lượng pin để kịp thời phát hiện và thay thế các bình ắc quy bị chai, phồng trước khi xảy ra sự cố mất điện thực tế.",
+        "deadline": "Tối thiểu 03 tháng/lần"
+      }
+ 
+ 
+    ]
+  }
+]

@@ -17,6 +17,10 @@ return [
 
         'REOPEN' => 'Mở lại',
 
+        'ACCEPTANCE' => 'Nghiệm thu',
+
+        'CHANGE_STATUS_ADMIN' => 'ADMIN đổi trạng thái'
+
     ],
 
 ];

@@ -4,6 +4,9 @@
     $statusOptions = config('sla_status.code_ht');
     $fromDate = request('from_date', now()->startOfMonth()->format('Y-m-d'));
     $toDate = request('to_date', now()->endOfMonth()->format('Y-m-d'));
+    $acceptanceList = collect(config('acceptance'))->pluck('name', 'key');
+    $StatusBadgeList = config('sla_status.badge');
+    $slaStatusCode = config('sla_status.code_ht');
 @endphp
 
 <x-app-layout :title="$title">
@@ -27,7 +30,7 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-md-3">
                             <label for="keyword" class="form-label mb-1">Từ khoá</label>
-                            <input type="text" name="keyword" id="keyword" class="form-control"
+                            <input type="text" name="keyword" id="system-tech-search" class="form-control"
                                 value="{{ request('keyword') }}" placeholder="Mã lỗi / Sự cố / Chi nhánh / KTV">
                         </div>
                         <div class="col-md-2">
@@ -84,32 +87,32 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="text-center" style="width: 48px;">STT</th>
-                            <th scope="col">Mã lỗi</th>
                             <th scope="col">Sự cố</th>
                             <th scope="col">Chi nhánh</th>
                             <th scope="col">KTV</th>
-                            <th scope="col">Ngày yêu cầu</th>
                             <th scope="col">SLA</th>
-                            <th scope="col">Trạng thái</th>
-                            <th scope="col">Hoàn thành</th>
+                            <th scope="col">Thời gian</th>
+                            <th scope="col" class="text-center">Trạng thái</th>
                             <th scope="col" class="text-center">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($items as $item)
+                        @php
+                        $slaStatusBadge = data_get($StatusBadgeList, $item->status, 'badge badge-default');
+                        $slaStatusName = data_get($statuses, $item->status, $item->status);
+                        @endphp
                             <tr>
                                 <td class="text-center">
                                     {{ $items->firstItem() + $loop->index }}
                                 </td>
-                                <td>
-                                    {{ $item->issue_code }}
-                                </td>
-                                <td>
+                                <td style=" min-width: 300px;max-width: 350px;">
+                                    Mã: {{ $item->issue_code }} <br>
                                     <div class="fw-semibold">
                                         {{ $item->issue_name }}
                                     </div>
                                     <div class="text-muted small">
-                                        {{ Str::limit($item->issue_description, 60) }}
+                                        {{ $item->issue_description }}
                                     </div>
                                 </td>
                                 <td>
@@ -121,19 +124,40 @@
                                     <div class="text-muted small">{{ $item->technician_email }}</div>
                                 </td>
                                 <td>
-                                    {{ $item->request_at?->format('d/m/Y H:i') }}
+                                    @php
+                                        $sla_configs = config('real_time');
+                                        $sla_display = '-';
+                                        if (!empty($item->standard_completion_time)) {
+                                            $configItem = collect($sla_configs)->firstWhere('key', $item->standard_completion_time);
+                                            if ($configItem) {
+                                                $sla_display = $configItem['name'];
+                                            } else {
+                                                $sla_display = str_replace('_', ' ', $item->standard_completion_time);
+                                            }
+                                        }
+                                    @endphp
+                                    {{ $sla_display }}
                                 </td>
-                                <td>
-                                    {{ str_replace('_', ' ', $item->completion_time_code) }}
+                                <td style=" min-width: 300px;max-width: 350px;">
+                                Ngày yêu cầu: {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
+                                Yêu cầu hoàn thành: {{ $item->standard_completion_time }}
+                                @if($item->actual_completion_date)
+                                    <br>Ngày hoàn thành: {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}
+                                @endif
+                                @if($item->actual_duration)
+                                    <br>Thời gian thực tế: {{ ($item->actual_duration) }}
+                                @endif
+                                <hr>
+                                Tạo: {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}<br>
+                                Cập nhật: {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
                                 </td>
-                                <td>
-                                    <span class="badge bg-primary">
-                                        {{ $statuses[$item->status] ?? $item->status }}
-
-                                    </span>
-                                </td>
-                                <td>
-                                    {{ optional($item->completed_at)->format('d/m/Y H:i') ?? '-' }}
+                                <td class="text-center">
+                                <span class="status_badge {{ $slaStatusBadge }}">
+                                    {{ $slaStatusName }}
+                                </span><br>
+                                <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
+                                </span>
                                 </td>
                                 <td class="action-column action-cell">
                                     <div class="dropdown">
@@ -157,12 +181,14 @@
                                                 </a>
                                             </li>
                                             @endif
-                                            <!-- <li>
-                                                <a href="javascript:void(0)" class="dropdown-item text-warning"
-                                                    onclick="openMaintenanceModal('status',{{ $item->id }})">
-                                                    <i class="bi bi-arrow-repeat"></i> Trạng thái
+                                            <li>
+                                                <a href="#" class="dropdown-item admin-change-status-system-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
+                                                    data-id="{{ $item->id }}"
+                                                    data-current-status="{{ $item->status }}">
+                                                    Đổi trạng thái
                                                 </a>
-                                            </li> -->
+                                            </li>
                                             @can('change-system-status')
                                             @php
                                                 // Lấy workflow từ config
@@ -174,19 +200,34 @@
 
                                             @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
                                                 @foreach ($nextStatuses as $nextStatus)
-                                                    <li>
-                                                        <a href="javascript:void(0)"
-                                                            onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
-                                                            class="dropdown-item">
-                                                            {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
-                                                        </a>
-                                                    </li>
+                                                    @if(
+                                                        ($currentStatus === 'CONFIRMED' && auth()->user()->hasRole('admin')) ||
+                                                        ($currentStatus !== 'CONFIRMED')
+                                                    )
+                                                        <li>
+                                                            <a href="javascript:void(0)"
+                                                                onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
+                                                                class="dropdown-item">
+                                                                {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                 @endforeach
                                             @endif
+                                       
                                             @endcan
                                             @endhasanyrole
 
                                             @role('admin')
+                                            @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
+                                            <li>
+                                                <a href="#" class="dropdown-item acceptance-system-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
+                                                    data-id="{{ $item->id }}">
+                                                    Nghiệm thu
+                                                </a>
+                                            </li>
+                                            @endif
                                             <li>
                                                 <form action="{{ route('maintenance-system.destroy', $item->id) }}"
                                                     method="POST" onsubmit="return confirm('Xóa bản ghi này?')">
@@ -228,10 +269,13 @@
                     <h5 id="maintenanceModalTitle" class="modal-title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                 </div>
+                <div id="system-form-errors" class="alert alert-danger d-none"></div>
                 <div id="maintenanceModalContent" class="modal-body"></div>
             </div>
         </div>
     </div>
+    @include('system.modals.acceptance')
+    @include('system.modals.change-status-admin')
 
     <script>
         /**
