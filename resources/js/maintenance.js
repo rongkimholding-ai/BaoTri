@@ -429,10 +429,10 @@ $(function () {
             width: '100%'
         });
         
-        $('.select2-branch').select2({
-            width: '100%',
-            dropdownParent: $('#maintenanceModal')
-        });
+        // $('.select2-branch').select2({
+        //     width: '100%',
+        //     dropdownParent: $('#maintenanceModal')
+        // });
     }
 
     $('#createModal').on('shown.bs.modal', function () {
@@ -1217,102 +1217,102 @@ $(function () {
         }
     );
 
-    function toggleOtherStoreInput() {
-        const selectedValue = $('#branch_name_select').val();
+    // function toggleOtherStoreInput() {
+    //     const selectedValue = $('#branch_name_select').val();
     
-        if (selectedValue === 'other_store') {
-            $('#other_store_input_wrap').removeClass('d-none');
-            $('#createModal').find('.form-technician-name').prop('disabled', false);
-        } else {
-            $('#other_store_input_wrap').addClass('d-none');
-            $('#other_branch_name').val('');
-            $('#other_branch_code').val('');
-            $('#other_branch_email').val('');
-            $('#createModal').find('.form-technician-name').prop('disabled', true);
-        }
-    }
+    //     if (selectedValue === 'other_store') {
+    //         $('#other_store_input_wrap').removeClass('d-none');
+    //         $('#createModal').find('.form-technician-name').prop('disabled', false);
+    //     } else {
+    //         $('#other_store_input_wrap').addClass('d-none');
+    //         $('#other_branch_name').val('');
+    //         $('#other_branch_code').val('');
+    //         $('#other_branch_email').val('');
+    //         $('#createModal').find('.form-technician-name').prop('disabled', true);
+    //     }
+    // }
 
-    $(document).on('change', '#branch_name_select', function () {
-        toggleOtherStoreInput();
-    });
+    // $(document).on('change', '#branch_name_select', function () {
+    //     toggleOtherStoreInput();
+    // });
 
     // Trường hợp edit hoặc reload form
-    toggleOtherStoreInput();
+    // toggleOtherStoreInput();
 
-    $(document).on('input', '#tech-search', function () {
-        const keyword = $(this).val().trim().toLowerCase();
-        $('.tech-item').each(function () {
-            const matched = $(this)
-                .text()
-                .toLowerCase()
-                .includes(keyword);
-            $(this).toggleClass('d-none', !matched);
-        });
-    });
+    // $(document).on('input', '#tech-search', function () {
+    //     const keyword = $(this).val().trim().toLowerCase();
+    //     $('.tech-item').each(function () {
+    //         const matched = $(this)
+    //             .text()
+    //             .toLowerCase()
+    //             .includes(keyword);
+    //         $(this).toggleClass('d-none', !matched);
+    //     });
+    // });
 
-    $('#maintenanceModal').on('shown.bs.modal', function () {
-        bindBranchChange();
-        bindTechnicianChange();
+    // $('#maintenanceModal').on('shown.bs.modal', function () {
+    //     bindBranchChange();
+    //     bindTechnicianChange();
 
-        // Trigger khi Edit
-        $('#branch_name_select').trigger('change');
-        $('#technician_name_select').trigger('change');
-    });
+    //     // Trigger khi Edit
+    //     $('#branch_name_select').trigger('change');
+    //     $('#technician_name_select').trigger('change');
+    // });
 
     /**
      * Chọn chi nhánh
      */
-    function bindBranchChange() {
+    // function bindBranchChange() {
 
-        $('#branch_name_select').on('change', function () {
+    //     $('#branch_name_select').on('change', function () {
     
-            const option = $(this).find(':selected');
-            const isOther = option.data('custom') == 1;
+    //         const option = $(this).find(':selected');
+    //         const isOther = option.data('custom') == 1;
     
-            if (isOther) {
+    //         if (isOther) {
     
-                $('#other_store_input_wrap').removeClass('d-none');
+    //             $('#other_store_input_wrap').removeClass('d-none');
     
-                $('input[name=branch_code]').val('');
-                $('input[name=branch_email]').val('');
+    //             $('input[name=branch_code]').val('');
+    //             $('input[name=branch_email]').val('');
     
-                return;
-            }
+    //             return;
+    //         }
     
-            $('#other_store_input_wrap').addClass('d-none');
+    //         $('#other_store_input_wrap').addClass('d-none');
     
-            $('#other_branch_name').val('');
-            $('#other_branch_code').val('');
-            $('#other_branch_email').val('');
+    //         $('#other_branch_name').val('');
+    //         $('#other_branch_code').val('');
+    //         $('#other_branch_email').val('');
     
-            $('input[name=branch_code]').val(option.data('branch_code') || '');
-            $('input[name=branch_email]').val(option.data('branch_email') || '');
+    //         $('input[name=branch_code]').val(option.data('branch_code') || '');
+    //         $('input[name=branch_email]').val(option.data('branch_email') || '');
 
-            console.log(option[0]);
-            console.log(option.attr('data-branch_email'));
-            console.log('email',option.data('branch_email'));
-            console.log('name',option.data('branch_name'));
+    //         console.log(option[0]);
+    //         console.log(option.attr('data-branch_email'));
+    //         console.log('email',option.data('branch_email'));
+    //         console.log('name',option.data('branch_name'));
     
-        });
+    //     });
     
-    }
+    // }
 
     /**
      * Chọn kỹ thuật viên
      */
-    function bindTechnicianChange() {
+    // function bindTechnicianChange() {
 
-        $('#technician_name_select').on('change', function () {
+    //     $('#technician_name_select').on('change', function () {
 
-            const option = $(this).find(':selected');
+    //         const option = $(this).find(':selected');
 
-            $('input[name=technician_email]')
-                .val(option.data('email') ?? '');
+    //         $('input[name=technician_email]')
+    //             .val(option.data('email') ?? '');
 
-            $('input[name=technician_mobile]')
-                .val(option.data('mobile') ?? '');
+    //         $('input[name=technician_mobile]')
+    //             .val(option.data('mobile') ?? '');
 
-        });
+    //     });
 
-    }
+    // }
 });
