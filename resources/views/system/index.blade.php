@@ -28,21 +28,52 @@
             <div class="card-body search-card">
                 <form method="GET" action="{{ route('maintenance-system.index') }}">
                     <div class="row g-2 align-items-end">
+                        
+                        @php
+                            $filters = [
+                                [
+                                    'label' => 'Ngày yêu cầu (Từ)',
+                                    'type' => 'date',
+                                    'name' => 'from_date',
+                                    'id' => 'fromDate',
+                                    'value' => $fromDate,
+                                ],
+                                [
+                                    'label' => 'Ngày yêu cầu (Đến)',
+                                    'type' => 'date',
+                                    'name' => 'to_date',
+                                    'id' => 'toDate',
+                                    'value' => $toDate,
+                                ],
+                                [
+                                    'label' => 'Ngày hoàn thành (Từ)',
+                                    'type' => 'date',
+                                    'name' => 'from_date_completed',
+                                    'id' => 'fromDateCompleted',
+                                    'value' => request('from_date_completed'),
+                                ],
+                                [
+                                    'label' => 'Ngày hoàn thành (Đến)',
+                                    'type' => 'date',
+                                    'name' => 'to_date_completed',
+                                    'id' => 'toDateCompleted',
+                                    'value' => request('to_date_completed'),
+                                ],
+                            ];
+                        @endphp
+                        @foreach ($filters as $filter)
+                            <div class="col-md-3">
+                                <label for="{{ $filter['id'] }}" class="form-label mb-1">{{ $filter['label'] }}</label>
+                                <input type="{{ $filter['type'] }}" id="{{ $filter['id'] }}" name="{{ $filter['name'] }}" class="form-control"
+                                    value="{{ $filter['value'] }}">
+                            </div>
+                        @endforeach
                         <div class="col-md-3">
                             <label for="keyword" class="form-label mb-1">Từ khoá</label>
                             <input type="text" name="keyword" id="system-tech-search" class="form-control"
                                 value="{{ request('keyword') }}" placeholder="Mã lỗi / Sự cố / Chi nhánh / KTV">
                         </div>
-                        <div class="col-md-2">
-                            <label for="from_date" class="form-label mb-1">Ngày yêu cầu (Từ)</label>
-                            <input type="date" name="from_date" id="from_date" class="form-control"
-                                value="{{ $fromDate }}">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="to_date" class="form-label mb-1">Ngày yêu cầu (Đến)</label>
-                            <input type="date" name="to_date" id="to_date" class="form-control" value="{{ $toDate }}">
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="status" class="form-label mb-1">Trạng thái</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">-- Trạng thái --</option>
@@ -50,6 +81,24 @@
                                     <option value="{{ $key }}" @selected(request('status') == $key)>
                                         {{ $statuses[$key] ?? $key }}
                                     </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="branch_name" class="form-label mb-1">Tên cơ sở</label>
+                            <select class="form-control select2-branch" name="branch_name" id="branch_name" data-field="branch_name">
+                                <option value="">-- Chọn cơ sở --</option>
+                                @foreach(['mien_bac' => 'Miền Bắc','cici_mien_bac' => 'Cici Miền Bắc', 'mien_nam' => 'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $region => $label)
+                                    @if(!empty($stores[$region]))
+                                        <optgroup label="{{ $label }}">
+                                            @foreach($stores[$region] as $store)
+                                                <option value="{{ $store['name'] }}" data-code="{{ $store['code'] }}"
+                                                    @selected(request('branch_name') == $store['name'])>
+                                                    {{ $store['name'] }}
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

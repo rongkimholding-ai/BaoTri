@@ -1,6 +1,6 @@
 <div id="maintenanceModal" class="modal fade" tabindex="-1" aria-labelledby="maintenanceModalTitle"
         aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 id="maintenanceModalTitle" class="modal-title"></h5>

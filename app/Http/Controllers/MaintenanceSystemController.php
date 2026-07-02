@@ -9,6 +9,7 @@ use App\Mail\MaintenanceSystemCompletedMail;
 use App\Mail\MaintenanceSystemReminderMail;
 use App\Models\MaintenanceSystem;
 use App\Services\SlaCalculatorService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -17,10 +18,91 @@ class MaintenanceSystemController extends Controller
 {
     public function index(Request $request)
     {
-        $items = MaintenanceSystem::query()
-            ->when($request->filled('id'), function ($query) use ($request) {
-                $query->where('id', $request->id);
-            })
+        $user = auth()->user();
+        $role = $user->getRoleNames()->first();
+        $email = strtolower($user->email);
+        $baseQuery = MaintenanceSystem::query();
+
+        // ----------------------------------------
+        // Data access control - chỉ cho phép xem theo quyền và email tài khoản
+        // ----------------------------------------
+        switch ($role) {
+            case 'technician_system':
+                $baseQuery->where('technician_email', $email);
+                break;
+            case 'user':
+                $baseQuery->where('branch_email', $email);
+                break;
+            case 'manager':
+            case 'am':
+            case 'om':
+            case 'viewer':
+                if (!in_array($email, config('special_user.full_view'))) {
+                    $jsonPaths = [
+                        resource_path('json/stores.json'),
+                        resource_path('json/stores_mn.json'),
+                        resource_path('json/stores_cici_mb.json'),
+                        resource_path('json/stores_cici_mn.json'),
+                    ];
+                    $stores = [];
+                    foreach ($jsonPaths as $path) {
+                        if (is_file($path)) {
+                            $arr = json_decode(file_get_contents($path), true);
+                            if (is_array($arr)) {
+                                $stores = array_merge($stores, $arr);
+                            }
+                        }
+                    }
+                    $branchEmails = collect($stores)
+                        ->filter(function ($store) use ($email) {
+                            return (
+                                (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
+                                (isset($store['am_email']) && strtolower($store['am_email']) == $email)
+                            ) && !empty($store['email']);
+                        })
+                        ->pluck('email')
+                        ->unique()
+                        ->values()
+                        ->all();
+
+                    $baseQuery->when(!empty($branchEmails),
+                        fn($q) => $q->whereIn('branch_email', $branchEmails),
+                        fn($q) => $q->whereRaw('1=0')
+                    );
+                }
+                // else: allow all
+                break;
+            // admin and others: no restriction
+        }
+
+        // ----------------------------------------
+        // Filter processing
+        // ----------------------------------------
+        $filters = [
+            'from_date' => function ($q, $v) {
+                if ($v) $q->where('request_date', '>=', Carbon::parse($v)->startOfDay());
+            },
+            'to_date' => function ($q, $v) {
+                if ($v) $q->where('request_date', '<=', Carbon::parse($v)->endOfDay());
+            },
+            'from_date_completed' => function ($q, $v) {
+                if ($v) $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay());
+            },
+            'to_date_completed' => function ($q, $v) {
+                if ($v) $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay());
+            },
+            'status'      => fn($q, $v) => $q->where('status', $v),
+            'id'          => fn($q, $v) => $q->where('id', $v),
+            'branch_name' => fn($q, $v) => $q->where('branch_name', $v),
+        ];
+        foreach ($filters as $field => $filter) {
+            if ($request->filled($field)) {
+                $filter($baseQuery, $request->$field);
+            }
+        }
+
+        // Áp dụng tìm kiếm từ khóa, trạng thái, cơ sở vào cùng baseQuery
+        $baseQuery
             ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = trim($request->keyword);
                 $query->where(function ($q) use ($keyword) {
@@ -35,17 +117,18 @@ class MaintenanceSystemController extends Controller
             ->when($request->filled('status'), function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
-            ->when($request->filled('from_date'), function ($query) use ($request) {
-                $query->whereDate('request_date', '>=', $request->from_date);
-            })
-            ->when($request->filled('to_date'), function ($query) use ($request) {
-                $query->whereDate('request_date', '<=', $request->to_date);
-            })
+            ->when($request->filled('branch_name'), function ($query) use ($request) {
+                $query->where('branch_name', $request->branch_name);
+            });
+
+        $items = $baseQuery
             ->orderByDesc('request_date')
             ->paginate(20)
             ->withQueryString();
 
-        return view('system.index', compact('items'));
+        $stores = $this->getData();
+
+        return view('system.index', compact('items', 'stores'));
     }
 
     public function create()

@@ -108,15 +108,17 @@
     </div>
 
     {{-- MODAL --}}
-    <div id="userModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-200">
-        <div id="userModalBox" class="bg-white w-full max-w-3xl rounded-lg shadow-lg p-6 transform scale-95 opacity-0 transition-all duration-200">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="modalTitle" class="text-lg font-semibold"></h2>
-                <button onclick="closeUserModal()" class="text-gray-500 hover:text-red-500 text-xl">✕</button>
-            </div>
-            <div id="modalContent"></div>
+<div id="userModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div id="userModalBox"
+         class="bg-white w-full sm:max-w-xl max-w-full sm:mx-4 mx-2 rounded-lg shadow-lg p-4 sm:p-6 transform scale-95 opacity-0 transition-all duration-200 overflow-y-auto"
+         style="max-height: calc(100vh - 40px);">
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="modalTitle" class="text-lg font-semibold"></h2>
+            <button onclick="closeUserModal()" class="text-gray-500 hover:text-red-500 text-xl">✕</button>
         </div>
+        <div id="modalContent"></div>
     </div>
+</div>
 
     <script>
         const userModal = document.getElementById('userModal');
