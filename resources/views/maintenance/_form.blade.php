@@ -3,7 +3,7 @@
         use Illuminate\Support\Facades\Auth;
         $user = Auth::user();
         $userStore = null;
-        $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['mien_nam'] ?? []);
+        $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['mien_nam'] ?? [])->merge($stores['cici_mien_nam'] ?? []);
         if ($user) {
             $userStore = $allStores->first(fn($store) => isset($store['email']) && $store['email'] === $user->email);
         }
