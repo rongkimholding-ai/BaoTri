@@ -78,6 +78,16 @@ TABLE
     height: 1px;
 }
 
+.table-scroll-top-system {
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 16px;
+    margin-bottom: 5px;
+}
+.table-scroll-top-system div {
+    height: 1px;
+}
+
 .table-responsive {
     overflow-x: auto;
     overflow-y: visible;

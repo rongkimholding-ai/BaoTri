@@ -26,7 +26,7 @@
     $slaStatusCode = config('sla_status.code');
 @endphp
 
-<div class="py-4">
+<div class="card">
     <div class="table-scroll-top"><div></div></div>
     <div class="d-none d-md-block">
         <div class="table-responsive">

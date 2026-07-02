@@ -21,11 +21,9 @@ class MaintenanceSystemController extends Controller
         $user = auth()->user();
         $role = $user->getRoleNames()->first();
         $email = strtolower($user->email);
-        $baseQuery = MaintenanceSystem::query();
 
-        // ----------------------------------------
-        // Data access control - chỉ cho phép xem theo quyền và email tài khoản
-        // ----------------------------------------
+        // Base query for data access control (copy logic from MaintenanceRequestController)
+        $baseQuery = MaintenanceSystem::query();
         switch ($role) {
             case 'technician_system':
                 $baseQuery->where('technician_email', $email);
@@ -72,12 +70,10 @@ class MaintenanceSystemController extends Controller
                 }
                 // else: allow all
                 break;
-            // admin and others: no restriction
+            // admin, etc: unrestricted
         }
 
-        // ----------------------------------------
-        // Filter processing
-        // ----------------------------------------
+        // Filters
         $filters = [
             'from_date' => function ($q, $v) {
                 if ($v) $q->where('request_date', '>=', Carbon::parse($v)->startOfDay());
@@ -91,9 +87,9 @@ class MaintenanceSystemController extends Controller
             'to_date_completed' => function ($q, $v) {
                 if ($v) $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay());
             },
-            'status'      => fn($q, $v) => $q->where('status', $v),
+            'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
+            'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
             'id'          => fn($q, $v) => $q->where('id', $v),
-            'branch_name' => fn($q, $v) => $q->where('branch_name', $v),
         ];
         foreach ($filters as $field => $filter) {
             if ($request->filled($field)) {
@@ -101,8 +97,21 @@ class MaintenanceSystemController extends Controller
             }
         }
 
-        // Áp dụng tìm kiếm từ khóa, trạng thái, cơ sở vào cùng baseQuery
-        $baseQuery
+        // Helper to get status codes for tab logic
+        $completedStatus = 'COMPLETED'; // or config if needed
+        $newStatus = 'NEW';
+
+        $tab = $request->get('tab', 'all');
+        $validTabs = ['all', 'processing', 'completed'];
+        if (!in_array($tab, $validTabs)) {
+            $tab = 'all';
+        }
+
+        // Only clone once per major query, like ref
+        $baseQueryClone = fn() => clone $baseQuery;
+
+        // allRequests tab (tất cả)
+        $allRequests = $baseQueryClone()
             ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = trim($request->keyword);
                 $query->where(function ($q) use ($keyword) {
@@ -114,21 +123,73 @@ class MaintenanceSystemController extends Controller
                         ->orWhere('technician_email', 'like', "%{$keyword}%");
                 });
             })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('status', $request->status);
-            })
-            ->when($request->filled('branch_name'), function ($query) use ($request) {
-                $query->where('branch_name', $request->branch_name);
-            });
-
-        $items = $baseQuery
             ->orderByDesc('request_date')
-            ->paginate(20)
+            ->paginate(20, ['*'], 'all_page')
             ->withQueryString();
 
-        $stores = $this->getData();
+        // processingRequests tab (đang xử lý)
+        $processingRequests = tap($baseQueryClone(), function ($q) use ($completedStatus, $newStatus) {
+                $q->whereNotIn('status', [$completedStatus, $newStatus]);
+            })
+            ->when($request->filled('keyword'), function ($query) use ($request) {
+                $keyword = trim($request->keyword);
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('issue_code', 'like', "%{$keyword}%")
+                        ->orWhere('issue_name', 'like', "%{$keyword}%")
+                        ->orWhere('branch_code', 'like', "%{$keyword}%")
+                        ->orWhere('branch_name', 'like', "%{$keyword}%")
+                        ->orWhere('technician_name', 'like', "%{$keyword}%")
+                        ->orWhere('technician_email', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderByDesc('request_date')
+            ->paginate(20, ['*'], 'processing_page')
+            ->withQueryString();
 
-        return view('system.index', compact('items', 'stores'));
+        // completedRequests tab (đã hoàn thành)
+        $completedRequests = tap($baseQueryClone(), function ($q) {
+                $q->where('status', 'COMPLETED');
+            })
+            ->when($request->filled('keyword'), function ($query) use ($request) {
+                $keyword = trim($request->keyword);
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('issue_code', 'like', "%{$keyword}%")
+                        ->orWhere('issue_name', 'like', "%{$keyword}%")
+                        ->orWhere('branch_code', 'like', "%{$keyword}%")
+                        ->orWhere('branch_name', 'like', "%{$keyword}%")
+                        ->orWhere('technician_name', 'like', "%{$keyword}%")
+                        ->orWhere('technician_email', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderByDesc('request_date')
+            ->paginate(20, ['*'], 'completed_page')
+            ->withQueryString();
+
+        // Counts for tabs
+        $totalCount = $baseQueryClone()->count();
+
+        $processingCount = $baseQueryClone()
+            ->whereNotIn('status', [$completedStatus, $newStatus])
+            ->count();
+
+        $completedCount = $baseQueryClone()
+            ->where('status', 'COMPLETED')
+            ->count();
+
+        $stores = $this->getData();
+        $techs  = method_exists($this, 'getTechnicianData') ? $this->getTechnicianData() : [];
+
+        return view('system.index', compact(
+            'allRequests',
+            'processingRequests',
+            'completedRequests',
+            'stores',
+            'techs',
+            'totalCount',
+            'processingCount',
+            'completedCount',
+            'tab'
+        ));
     }
 
     public function create()

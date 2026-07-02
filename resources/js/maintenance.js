@@ -1051,6 +1051,72 @@ $(function () {
         $('.table-scroll-top').scrollLeft($(this).scrollLeft());
     });
 
+    const systemTabs = document.getElementById('systemTabs');
+    if (requestTabs) {
+        const STORAGE_KEY = 'active_tab_' + window.location.pathname;
+
+        // Khôi phục tab
+        const savedTab = sessionStorage.getItem(STORAGE_KEY);
+
+        if (savedTab) {
+
+            const tabButton = requestTabs.querySelector(
+                `[data-bs-target="${savedTab}"]`
+            );
+
+            if (
+                tabButton &&
+                typeof bootstrap !== 'undefined'
+            ) {
+                bootstrap.Tab
+                    .getOrCreateInstance(tabButton)
+                    .show();
+            }
+        }
+
+        // Lưu tab
+        requestTabs
+            .querySelectorAll('[data-bs-toggle="tab"]')
+            .forEach(tab => {
+
+                tab.addEventListener(
+                    'shown.bs.tab',
+                    function (e) {
+
+                        sessionStorage.setItem(
+                            STORAGE_KEY,
+                            e.target.getAttribute(
+                                'data-bs-target'
+                            )
+                        );
+                        syncScrollWidthSystem();
+                    }
+                );
+            });
+    }
+
+    function syncScrollWidthSystem() {
+        let table = $('.tab-pane.active .table-responsive table')[0];
+        if (!table) {
+            return;
+        }
+        $('.table-scroll-top-system div').width(
+            table.scrollWidth
+        );
+    }
+
+    syncScrollWidthSystem();
+
+    $(window).on('resize', syncScrollWidth);
+
+    $('.table-scroll-top-system').on('scroll', function () {
+        $('.table-responsive').scrollLeft($(this).scrollLeft());
+    });
+
+    $('.table-responsive').on('scroll', function () {
+        $('.table-scroll-top-system').scrollLeft($(this).scrollLeft());
+    });
+
     $('#exportsModal').on('hidden.bs.modal', function () {
         $(this).find('form')[0].reset();
     });
