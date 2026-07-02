@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionController extends Controller
 {
@@ -24,10 +26,14 @@ class PermissionController extends Controller
             'name' => 'required|unique:permissions,name'
         ]);
 
-        Permission::create([
+        DB::table('permissions')->insert([
             'name' => $validated['name'],
-            'guard_name' => 'web'
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
+        
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()
             ->route('permissions.index')
@@ -45,16 +51,25 @@ class PermissionController extends Controller
             'name' => 'required'
         ]);
 
-        $permission->update([
-            'name' => $validated['name']
-        ]);
+        DB::table('permissions')
+            ->where('id', $permission->id)
+            ->update([
+                'name' => $validated['name'],
+                'updated_at' => now(),
+            ]);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->route('permissions.index');
     }
 
     public function destroy(Permission $permission)
     {
-        $permission->delete();
+        DB::table('permissions')
+            ->where('id', $permission->id)
+            ->delete();
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
         return back();
     }
 }
