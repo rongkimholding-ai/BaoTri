@@ -5,6 +5,7 @@
     $slaName = $maintenanceSystem->standard_completion_time
         ? str_replace('_', ' ', $maintenanceSystem->standard_completion_time)
         : '-';
+    // dd($maintenanceSystem);
 @endphp
 
 <div>
@@ -139,20 +140,13 @@
                                         <tbody>
                                             <tr>
                                                 <th width="180">Ngày yêu cầu</th>
-                                                <td>{{ optional($maintenanceSystem->request_date)->format('d/m/Y H:i') }}
+                                                <td>
+                                                    {{ $maintenanceSystem->request_date 
+                                                        ? \Carbon\Carbon::parse($maintenanceSystem->request_date)->format('d/m/Y H:i:s') 
+                                                        : '-' }}
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <th>Tạo lúc</th>
-                                                <td>{{ optional($maintenanceSystem->created_at)->format('d/m/Y H:i:s') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Cập nhật lúc</th>
-                                                <td>{{ optional($maintenanceSystem->updated_at)->format('d/m/Y H:i:s') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
+                                            <!-- <tr>
                                                 <th>Bắt đầu xử lý</th>
                                                 <td>{{ optional($maintenanceSystem->processing_at)->format('d/m/Y H:i:s') ?: '-' }}
                                                 </td>
@@ -161,15 +155,37 @@
                                                 <th>Chuyển chờ thực hiện</th>
                                                 <td>{{ optional($maintenanceSystem->pending_at)->format('d/m/Y H:i:s') ?: '-' }}
                                                 </td>
-                                            </tr>
+                                            </tr> -->
                                             <tr>
                                                 <th>Hoàn thành</th>
-                                                <td>{{ optional($maintenanceSystem->completed_at)->format('d/m/Y H:i:s') ?: '-' }}
+                                                <td>
+                                                    {{ $maintenanceSystem->actual_completion_date
+                                                        ? \Carbon\Carbon::parse($maintenanceSystem->actual_completion_date)->format('d/m/Y H:i:s')
+                                                        : '-' }}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>Thời gian nghiệm thu</th>
-                                                <td>{{ optional($maintenanceSystem->confirmed_at)->format('d/m/Y H:i:s') ?: '-' }}
+                                                <td>
+                                                    {{ $maintenanceSystem->confirmed_at
+                                                        ? \Carbon\Carbon::parse($maintenanceSystem->confirmed_at)->format('d/m/Y H:i:s')
+                                                        : '-' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tạo</th>
+                                                <td>
+                                                    {{ $maintenanceSystem->created_at 
+                                                        ? \Carbon\Carbon::parse($maintenanceSystem->created_at)->format('d/m/Y H:i:s') 
+                                                        : '-' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Cập nhật</th>
+                                                <td>
+                                                    {{ $maintenanceSystem->updated_at 
+                                                        ? \Carbon\Carbon::parse($maintenanceSystem->updated_at)->format('d/m/Y H:i:s') 
+                                                        : '-' }}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -179,7 +195,7 @@
                                     <table class="table table-bordered table-sm mb-0">
                                         <tbody>
                                             <tr>
-                                                <th width="180">Người tạo</th>
+                                                <th width="230">Người tạo</th>
                                                 <td>{{ $maintenanceSystem->created_by ?: '-' }}</td>
                                             </tr>
                                             <tr>

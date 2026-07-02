@@ -31,7 +31,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button> -->
                 <button type="button" id="confirmChangeStatusSystem" class="btn btn-primary">Xác nhận</button>
             </div>
         </div>

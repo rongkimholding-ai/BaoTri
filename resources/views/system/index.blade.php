@@ -64,26 +64,28 @@
         </div>
     </x-slot>
 
-    <div class="card">
-        <div class="card-body p-0">
-            @if(session('success'))
-                <div class="alert alert-success mb-0 p-3 border-0 rounded-0">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="card-body p-0">
+        @if(session('success'))
+            <div class="alert alert-success mb-0 p-3 border-0 rounded-0">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            @if ($errors->any())
-                <div class="alert alert-danger mb-0 p-3 border-0 rounded-0">
-                    <ul class="mb-0 ps-4">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
+        @if ($errors->any())
+            <div class="alert alert-danger mb-0 p-3 border-0 rounded-0">
+                <ul class="mb-0 ps-4">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div class="card">
+            <div class="table-scroll-top-system">
+                <div></div>
+            </div>
             <div class="table-responsive">
-                <table class="table align-middle table-striped mb-0">
+                <table id="tblSystem" class="table table-bordered table-striped">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="text-center" style="width: 48px;">STT</th>
@@ -98,10 +100,10 @@
                     </thead>
                     <tbody>
                         @forelse($items as $item)
-                        @php
-                        $slaStatusBadge = data_get($StatusBadgeList, $item->status, 'badge badge-default');
-                        $slaStatusName = data_get($statuses, $item->status, $item->status);
-                        @endphp
+                            @php
+                                $slaStatusBadge = data_get($StatusBadgeList, $item->status, 'badge badge-default');
+                                $slaStatusName = data_get($statuses, $item->status, $item->status);
+                            @endphp
                             <tr>
                                 <td class="text-center">
                                     {{ $items->firstItem() + $loop->index }}
@@ -115,15 +117,15 @@
                                         {{ $item->issue_description }}
                                     </div>
                                 </td>
-                                <td>
+                                <td style=" min-width: 200px;max-width: 250px;">
                                     {{ $item->branch_name }}
                                     <div class="text-muted small">{{ $item->branch_code }}</div>
                                 </td>
-                                <td>
+                                <td style=" min-width: 200px;max-width: 250px;">
                                     {{ $item->technician_name }}
                                     <div class="text-muted small">{{ $item->technician_email }}</div>
                                 </td>
-                                <td>
+                                <td style=" min-width: 100px;max-width: 150px;">
                                     @php
                                         $sla_configs = config('real_time');
                                         $sla_display = '-';
@@ -139,25 +141,27 @@
                                     {{ $sla_display }}
                                 </td>
                                 <td style=" min-width: 300px;max-width: 350px;">
-                                Ngày yêu cầu: {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
-                                Yêu cầu hoàn thành: {{ $item->standard_completion_time }}
-                                @if($item->actual_completion_date)
-                                    <br>Ngày hoàn thành: {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}
-                                @endif
-                                @if($item->actual_duration)
-                                    <br>Thời gian thực tế: {{ ($item->actual_duration) }}
-                                @endif
-                                <hr>
-                                Tạo: {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}<br>
-                                Cập nhật: {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
+                                    Ngày yêu cầu:
+                                    {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
+                                    Yêu cầu hoàn thành: {{ $item->standard_completion_time }}
+                                    @if($item->actual_completion_date)
+                                        <br>Ngày hoàn thành:
+                                        {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}
+                                    @endif
+                                    @if($item->actual_duration)
+                                        <br>Thời gian thực tế: {{ ($item->actual_duration) }}
+                                    @endif
+                                    <hr>
+                                    Tạo: {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}<br>
+                                    Cập nhật: {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
                                 </td>
                                 <td class="text-center">
-                                <span class="status_badge {{ $slaStatusBadge }}">
-                                    {{ $slaStatusName }}
-                                </span><br>
-                                <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
-                                </span>
+                                    <span class="status_badge {{ $slaStatusBadge }}">
+                                        {{ $slaStatusName }}
+                                    </span><br>
+                                    <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
+                                    </span>
                                 </td>
                                 <td class="action-column action-cell">
                                     <div class="dropdown">
@@ -172,61 +176,61 @@
                                                 </a>
                                             </li>
                                             @hasanyrole('technician_system|admin')
-                                            @if($item->status == 'NEW')
-                                            <li>
-                                                <a href="javascript:void(0)"
-                                                    onclick="openMaintenanceModal('edit',{{ $item->id }})"
-                                                    class="dropdown-item text-primary">
-                                                    <i class="bi bi-pencil"></i> Sửa
-                                                </a>
-                                            </li>
-                                            @endif
-                                            <li>
-                                                <a href="#" class="dropdown-item admin-change-status-system-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
-                                                    data-id="{{ $item->id }}"
-                                                    data-current-status="{{ $item->status }}">
-                                                    Đổi trạng thái
-                                                </a>
-                                            </li>
                                             @can('change-system-status')
-                                            @php
-                                                // Lấy workflow từ config
-                                                $workflow = config('maintenance_system.workflow');
-                                                $statusNamesHt = config('sla_status.names_ht_func');
-                                                $currentStatus = $item->status;
-                                                $nextStatuses = $workflow[$currentStatus] ?? [];
-                                            @endphp
+                                                @php
+                                                    // Lấy workflow từ config
+                                                    $workflow = config('maintenance_system.workflow');
+                                                    $statusNamesHt = config('sla_status.names_ht_func');
+                                                    $currentStatus = $item->status;
+                                                    $nextStatuses = $workflow[$currentStatus] ?? [];
+                                                @endphp
 
-                                            @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
-                                                @foreach ($nextStatuses as $nextStatus)
-                                                    @if(
-                                                        ($currentStatus === 'CONFIRMED' && auth()->user()->hasRole('admin')) ||
-                                                        ($currentStatus !== 'CONFIRMED')
-                                                    )
-                                                        <li>
-                                                            <a href="javascript:void(0)"
-                                                                onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
-                                                                class="dropdown-item">
-                                                                {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
-                                                            </a>
-                                                        </li>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                       
+                                                @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
+                                                    @foreach ($nextStatuses as $nextStatus)
+                                                        @if(
+                                                                ($currentStatus === 'CONFIRMED' && auth()->user()->hasRole('admin')) ||
+                                                                ($currentStatus !== 'CONFIRMED')
+                                                            )
+                                                            <li>
+                                                                <a href="javascript:void(0)"
+                                                                    onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
+                                                                    class="dropdown-item">
+                                                                    {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+
                                             @endcan
                                             @endhasanyrole
 
                                             @role('admin')
-                                            @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
                                             <li>
-                                                <a href="#" class="dropdown-item acceptance-system-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
-                                                    data-id="{{ $item->id }}">
-                                                    Nghiệm thu
+                                                <a href="javascript:void(0)"
+                                                    class="dropdown-item admin-change-status-system-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
+                                                    data-id="{{ $item->id }}" data-current-status="{{ $item->status }}">
+                                                    Đổi trạng thái
                                                 </a>
                                             </li>
+                                            @if($item->status == 'NEW')
+                                                <li>
+                                                    <a href="javascript:void(0)"
+                                                        onclick="openMaintenanceModal('edit',{{ $item->id }})"
+                                                        class="dropdown-item text-primary">
+                                                        <i class="bi bi-pencil"></i> Sửa
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
+                                                <li>
+                                                    <a href="javascript:void(0)" class="dropdown-item acceptance-system-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
+                                                        data-id="{{ $item->id }}">
+                                                        Nghiệm thu
+                                                    </a>
+                                                </li>
                                             @endif
                                             <li>
                                                 <form action="{{ route('maintenance-system.destroy', $item->id) }}"
@@ -280,75 +284,111 @@
     <script>
         /**
          * Hiển thị modal bảo trì hệ thống (pattern follow permissions).
-         * @param {'create'|'edit'|'detail'} action
+         * @param {'create'|'edit'|'detail'|'status'} action
          * @param {number|null} id
+         * @param {string|null} status
          */
         function openMaintenanceModal(action, id = null, status = null) {
-
-            let url = '';
-            let title = '';
-
-            if (action === 'create') {
-
-                url = "{{ route('maintenance-system.create') }}";
-                title = 'Tạo yêu cầu';
-
-            } else if (action === 'edit') {
-
-                url = `/maintenance-system/${id}/edit`;
-                title = 'Cập nhật';
-
-            } else if (action === 'detail') {
-
-                url = `/maintenance-system/${id}`;
-                title = 'Chi tiết';
-
-            } else if (action === 'status') {
-
-                url = `/maintenance-system/${id}/change-status/${status}`;
-                title = 'Đổi trạng thái';
-
-            }
-
-            fetch(url)
-                .then(res => res.text())
-                .then(html => {
-
-                    document.getElementById('maintenanceModalTitle').innerText = title;
-                    document.getElementById('maintenanceModalContent').innerHTML = html;
-
-                    bootstrap.Modal
-                        .getOrCreateInstance(document.getElementById('maintenanceModal'))
-                        .show();
-
+            if (typeof window.openMaintenanceModalBase === "function") {
+                // Nếu JS gốc đã khai báo, gọi hàm chuẩn dùng chung ở maintenance.js
+                window.openMaintenanceModalBase({
+                    urlCreate: "{{ route('maintenance-system.create') }}",
+                    urlEdit: id ? `/maintenance-system/${id}/edit` : null,
+                    urlDetail: id ? `/maintenance-system/${id}` : null,
+                    urlChangeStatus: (id && status) ? `/maintenance-system/${id}/change-status/${status}` : null,
+                    action, id, status,
+                    modalId: 'maintenanceModal',
+                    modalTitleId: 'maintenanceModalTitle',
+                    modalContentId: 'maintenanceModalContent'
                 });
+            } else {
+                // Tạm fallback: logic tự động fetch và hiển thị modal trong trường hợp JS base chưa được include
+                let url = '';
+                let title = '';
 
+                if (action === 'create') {
+                    url = "{{ route('maintenance-system.create') }}";
+                    title = 'Tạo yêu cầu';
+                } else if (action === 'edit') {
+                    url = id ? `/maintenance-system/${id}/edit` : '';
+                    title = 'Cập nhật';
+                } else if (action === 'detail') {
+                    url = id ? `/maintenance-system/${id}` : '';
+                    title = 'Chi tiết';
+                } else if (action === 'status') {
+                    url = (id && status) ? `/maintenance-system/${id}/change-status/${status}` : '';
+                    title = 'Đổi trạng thái';
+                }
+
+                if (!url) return;
+
+                fetch(url)
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('maintenanceModalTitle').innerText = title;
+                        document.getElementById('maintenanceModalContent').innerHTML = html;
+                        bootstrap.Modal
+                            .getOrCreateInstance(document.getElementById('maintenanceModal'))
+                            .show();
+                    });
+            }
         }
 
-        // Đóng modal khi bấm ra ngoài (backdrop)
-        document.getElementById('maintenanceModal').addEventListener('click', function (e) {
-            if (e.target === this) {
-                let modal = bootstrap.Modal.getOrCreateInstance(this);
-                modal.hide();
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const topScroll = document.querySelector('.table-scroll-top-system');
+            const topScrollInner = topScroll ? topScroll.querySelector('div') : null;
+            const tableResponsive = document.querySelector('.table-responsive');
+            const table = document.querySelector('#tblSystem');
+
+            if (!topScroll || !topScrollInner || !tableResponsive || !table) {
+                return;
             }
+
+            function syncScrollWidth() {
+                topScrollInner.style.width = table.scrollWidth + 'px';
+            }
+
+            // Đồng bộ chiều rộng khi load
+            syncScrollWidth();
+
+            // Đồng bộ khi resize
+            window.addEventListener('resize', syncScrollWidth);
+
+            // Đồng bộ khi bảng thay đổi kích thước (nếu trình duyệt hỗ trợ)
+            if (window.ResizeObserver) {
+                const observer = new ResizeObserver(syncScrollWidth);
+                observer.observe(table);
+            }
+
+            // Scroll trên -> dưới
+            topScroll.addEventListener('scroll', function () {
+                if (tableResponsive.scrollLeft !== topScroll.scrollLeft) {
+                    tableResponsive.scrollLeft = topScroll.scrollLeft;
+                }
+            });
+
+            // Scroll dưới -> trên
+            tableResponsive.addEventListener('scroll', function () {
+                if (topScroll.scrollLeft !== tableResponsive.scrollLeft) {
+                    topScroll.scrollLeft = tableResponsive.scrollLeft;
+                }
+            });
+
         });
 
-        // Đóng modal với ESC
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                let modalEl = document.getElementById('maintenanceModal');
-                let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                modal.hide();
-            }
-        });
-
-        // Autofocus input khi modal mở
-        const modalContent = document.getElementById('maintenanceModalContent');
-        const observer = new MutationObserver(() => {
-            let input = modalContent.querySelector('input[autofocus]');
-            if (input) input.focus();
-        });
-        observer.observe(modalContent, { childList: true, subtree: true });
     </script>
+    <style>
+        .table-scroll-top-system {
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: 16px;
+            margin-bottom: 5px;
+        }
+
+        .table-scroll-top-system div {
+            height: 1px;
+        }
+    </style>
 
 </x-app-layout>
