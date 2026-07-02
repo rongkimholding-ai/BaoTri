@@ -5,7 +5,7 @@ namespace App\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Envelope;
 
-class MaintenanceAcceptanceMail extends Mailable
+class MaintenanceSystemReminderMail extends Mailable
 {
     public $maintenanceRequest;
 
@@ -17,21 +17,23 @@ class MaintenanceAcceptanceMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Yêu cầu bảo trì đã được nghiệm thu')
-            ->view('emails.maintenance-acceptance');
+            ->subject('Nhắc việc Yêu cầu bảo trì hạ tầng')
+            ->view('emails.maintenance-system-reminder');
     }
 
     public function envelope(): Envelope
     {
+        $cc = $this->getStoreCC();
+
         return new Envelope(
-            subject: 'Yêu cầu bảo trì đã được nghiệm thu',
-            cc: $this->getCC()
+            subject: 'Nhắc việc Yêu cầu bảo trì hạ tầng',
+            cc: $cc
         );
     }
 
-    private function getCC(): array
+    private function getStoreCC(): array
     {
-        $cc = config('mail.notification_cc', []);
+        $cc = [];
         $storeCode = $this->maintenanceRequest->branch_code ?? null;
 
         if (!$storeCode) {
@@ -68,6 +70,6 @@ class MaintenanceAcceptanceMail extends Mailable
             }
         }
 
-        return array_values(array_unique($cc));
+        return $cc;
     }
 }

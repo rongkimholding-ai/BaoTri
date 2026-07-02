@@ -64,7 +64,7 @@ class DefaultUsersSeeder extends Seeder
         ];
 
         foreach ($systemUsers as $data) {
-            $user = User::updateOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],
@@ -115,7 +115,7 @@ class DefaultUsersSeeder extends Seeder
         ];
 
         foreach ($extraUsers as $data) {
-            $user = User::updateOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],
@@ -140,7 +140,7 @@ class DefaultUsersSeeder extends Seeder
                 continue;
             }
 
-            $user = User::updateOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $tech['email']],
                 [
                     'name' => $tech['name'],
@@ -178,7 +178,7 @@ class DefaultUsersSeeder extends Seeder
         ];
 
         foreach ($ktnbUsers as $data) {
-            $user = User::updateOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],
@@ -187,6 +187,67 @@ class DefaultUsersSeeder extends Seeder
             );
 
             $user->syncRoles(['manager']);
+        }
+
+        /**
+         * =========================
+         * 5. INTERNAL Miền Nam
+         * =========================
+         */
+
+        $mnUsers = [
+            [
+                'email' => 'lamtran.it.hcm@tocotocotea.com',
+                'name' => 'Trần Ngọc Lâm',
+            ],
+            [
+                'email' => 'thuynguyen.hr.hcm@tocotocotea.com',
+                'name' => 'Nguyễn Thị Thanh Thủy',
+            ],
+            [
+                'email' => 'lannguyen.hr.hcm@tocotocotea.com',
+                'name' => 'Nguyễn Ngọc Lan',
+            ],
+            [
+                'email' => 'hadiec.daotao.hcm@tocotocotea.com',
+                'name' => 'Diệc Thị Ngân Hà',
+            ],
+            [
+                'email' => 'trinhvo.hr.hcm@tocotocotea.com',
+                'name' => 'Võ Việt Trinh',
+            ],
+            [
+                'email' => 'ngango.daotao.hcm@tocotocotea.com',
+                'name' => 'Ngô Thị Nga',
+            ],
+            [
+                'email' => 'kieunguyen.ksnb.hcm@tocotocotea.com',
+                'name' => 'Nguyễn Oanh Kiều',
+            ],
+            [
+                'email' => 'phuongmach.kho.hcm@tocotocotea.com',
+                'name' => 'Mạch Duy Phương',
+            ],
+        ];
+   
+
+        foreach ($mnUsers as $data) {
+            $user = User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'password' => Hash::make('12345678'),
+                ]
+            );
+
+            if (in_array($data['email'], [
+                'phuongmach.kho.hcm@tocotocotea.com',
+                'lamtran.it.hcm@tocotocotea.com'
+            ])) {
+                $user->syncRoles(['om']);
+            } else {
+                $user->syncRoles(['viewer']);
+            }
         }
     }
 }

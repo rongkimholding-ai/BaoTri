@@ -3,7 +3,7 @@
         use Illuminate\Support\Facades\Auth;
         $user = Auth::user();
         $userStore = null;
-        $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['mien_nam'] ?? [])->merge($stores['cici_mien_nam'] ?? []);
+        $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['cici_mien_bac'] ?? [])->merge($stores['mien_nam'] ?? [])->merge($stores['cici_mien_nam'] ?? []);
         if ($user) {
             $userStore = $allStores->first(fn($store) => isset($store['email']) && $store['email'] === $user->email);
         }
@@ -29,7 +29,7 @@
             @endif
         >
             <option value="">-- Chọn cơ sở --</option>
-            @foreach(['mien_bac'=>'Miền Bắc','mien_nam'=>'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $mien=>$label)
+            @foreach(['mien_bac'=>'Miền Bắc','cici_mien_bac' => 'Cici Miền Bắc','mien_nam'=>'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $mien=>$label)
                 @if(!empty($stores[$mien]))
                     <optgroup label="{{ $label }}">
                         @foreach($stores[$mien] as $store)

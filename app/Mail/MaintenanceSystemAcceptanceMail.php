@@ -5,7 +5,7 @@ namespace App\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Envelope;
 
-class MaintenanceAcceptanceMail extends Mailable
+class MaintenanceSystemAcceptanceMail extends Mailable
 {
     public $maintenanceRequest;
 
@@ -17,14 +17,14 @@ class MaintenanceAcceptanceMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Yêu cầu bảo trì đã được nghiệm thu')
-            ->view('emails.maintenance-acceptance');
+            ->subject('Yêu cầu bảo trì hạ tầng đã được nghiệm thu')
+            ->view('emails.maintenance-system-acceptance');
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Yêu cầu bảo trì đã được nghiệm thu',
+            subject: 'Yêu cầu bảo trì hạ tầng đã được nghiệm thu',
             cc: $this->getCC()
         );
     }

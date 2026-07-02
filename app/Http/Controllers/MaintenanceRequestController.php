@@ -56,7 +56,8 @@ class MaintenanceRequestController extends Controller
                     $jsonPaths = [
                         resource_path('json/stores.json'),
                         resource_path('json/stores_mn.json'),
-                        resource_path('json/stores_cici_mn.json')
+                        resource_path('json/stores_cici_mb.json'),
+                        resource_path('json/stores_cici_mn.json'),
                     ];
                     $stores = [];
                     foreach ($jsonPaths as $path) {
@@ -766,15 +767,18 @@ class MaintenanceRequestController extends Controller
     {
         $jsonPathNorth = resource_path('json/stores.json');
         $jsonPathSouth = resource_path('json/stores_mn.json');
+        $jsonPathCiciNorth = resource_path('json/stores_cici_mb.json');
         $jsonPathCiciSouth = resource_path('json/stores_cici_mn.json');
         $storesNorth = json_decode(file_get_contents($jsonPathNorth), true);
         $storesSouth = json_decode(file_get_contents($jsonPathSouth), true);
+        $storesCiciNorth = json_decode(file_get_contents($jsonPathCiciNorth), true);
         $storesCiciSouth = json_decode(file_get_contents($jsonPathCiciSouth), true);
 
         // Tạo cấu trúc rõ 2 miền
         $data = [
             'mien_bac' => $storesNorth,
             'mien_nam' => $storesSouth,
+            'cici_mien_bac' => $storesCiciNorth,
             'cici_mien_nam' => $storesCiciSouth,
         ];
 

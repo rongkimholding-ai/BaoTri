@@ -700,5 +700,31 @@
     "technician_phone": "0378863638",
     "region": "",
     "muasam_email": "trangha.muahang.hcm@tocotocotea.com"
+  },
+  {
+    "code": "",
+    "name": "Kho Tổng HCM",
+    "am_name": "",
+    "am_email": "",
+    "om_name": "Mạch Duy Phương",
+    "om_email": "phuongmach.kho.hcm@tocotocotea.com",
+    "email": "khohcm@tocotocotea.com",
+    "technician_name": "Nguyễn Duy Thắng",
+    "technician_phone": "0988124788",
+    "region": "",
+    "muasam_email": "trangha.muahang.hcm@tocotocotea.com"
+  },
+  {
+    "code": "",
+    "name": "VP CN HCM",
+    "am_name": "",
+    "am_email": "",
+    "om_name": "Trần Ngọc Lâm",
+    "om_email": "lamtran.it.hcm@tocotocotea.com",
+    "email": "vpvnhcm@tocotocotea.com",
+    "technician_name": "Phạm Văn Thắng",
+    "technician_phone": "0378863638",
+    "region": "",
+    "muasam_email": "trangha.muahang.hcm@tocotocotea.com"
   }
 ]

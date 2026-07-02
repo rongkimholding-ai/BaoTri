@@ -58,10 +58,17 @@ class MaintenanceByBranchExport implements
                 true
             )
         );
+        $storesMbCiciJson = collect(
+            json_decode(
+                file_get_contents(resource_path('json/stores_cici_mb.json')),
+                true
+            )
+        );
         // Gộp 2 collection, ưu tiên dữ liệu từ stores_mn.json khi trùng 'code'
         $this->stores = $storesJson
             ->concat($storesMnJson)
             ->concat($storesMnCiciJson)
+            ->concat($storesMbCiciJson)
             ->keyBy('code');
     }
 

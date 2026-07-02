@@ -19,7 +19,7 @@
     }
     $user = Auth::user();
     $userStore = null;
-    $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['mien_nam'] ?? [])->merge($stores['cici_mien_nam'] ?? []);
+    $allStores = collect(($stores['mien_bac'] ?? []))->merge($stores['cici_mien_bac'] ?? [])->merge($stores['mien_nam'] ?? [])->merge($stores['cici_mien_nam'] ?? []);
     if ($user) {
         $userStore = $allStores->first(fn($store) => isset($store['email']) && $store['email'] === $user->email);
     }
@@ -73,7 +73,7 @@
     <div class="col-md-6 mb-3">
         <label>{{ config('system.fields.branch_name') ?? 'Chi nhánh hệ thống' }}</label>
         <select 
-            class="form-control form-branch-name select2-branch"
+            class="form-control form-branch-name select2-branch select2-branch-system"
             name="branch_name"
             id="branch_name_select"
             @if($userStore) 
@@ -83,7 +83,7 @@
             @endif
         >
             <option value="">-- Chọn cơ sở --</option>
-            @foreach(['mien_bac'=>'Miền Bắc','mien_nam'=>'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $mien=>$label)
+            @foreach(['mien_bac'=>'Miền Bắc','cici_mien_bac' => 'Cici Miền Bắc','mien_nam'=>'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $mien=>$label)
                 @if(!empty($stores[$mien]))
                     <optgroup label="{{ $label }}">
                         @foreach($stores[$mien] as $store)
@@ -124,7 +124,7 @@
     {{-- Tên kỹ thuật viên --}}
     <div class="col-md-4 mb-3">
         <label>{{ config('system.fields.technician_name') ?? 'Tên kỹ thuật viên' }}</label>
-        <select class="form-control form-technician-name select2-branch" name="technician_name">
+        <select class="form-control form-technician-name select2-branch select2-system-tech" name="technician_name">
             <option value="">-- {{ config('system.fields.technician_name') ?? 'Kỹ thuật viên' }} --</option>
             @foreach($techs as $tech)
                 @if ($tech['email'] != 'liemhoang.support.hcm@tocotocotea.com')

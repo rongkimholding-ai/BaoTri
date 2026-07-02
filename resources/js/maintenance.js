@@ -430,6 +430,10 @@ $(function () {
         });
         
         let $modalSystem = $('#maintenanceModal');
+        $modalSystem.find('.select2-issue-name').select2({
+            width: '100%',
+            dropdownParent: $modalSystem
+        });
         $modalSystem.find('.select2-branch-system').select2({
             width: '100%',
             dropdownParent: $modalSystem

@@ -4,18 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMaintenanceSystemRequest;
 use App\Http\Requests\UpdateMaintenanceSystemRequest;
+use App\Mail\MaintenanceSystemAcceptanceMail;
+use App\Mail\MaintenanceSystemCompletedMail;
+use App\Mail\MaintenanceSystemReminderMail;
 use App\Models\MaintenanceSystem;
-use App\Models\MaintenanceSystemLog;
 use App\Services\SlaCalculatorService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class MaintenanceSystemController extends Controller
 {
     public function index(Request $request)
     {
         $items = MaintenanceSystem::query()
+            ->when($request->filled('id'), function ($query) use ($request) {
+                $query->where('id', $request->id);
+            })
             ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = trim($request->keyword);
                 $query->where(function ($q) use ($keyword) {
@@ -69,6 +74,20 @@ class MaintenanceSystemController extends Controller
             note: 'Khởi tạo yêu cầu'
         );
 
+        // Tự động gửi mail nhắc việc cho kỹ thuật viên khi tạo mới
+        if (!empty($maintenanceSystem->technician_email)) {
+            try {
+                $sendMail = $maintenanceSystem->technician_email;
+                \Mail::to($sendMail)->queue(new MaintenanceSystemReminderMail($maintenanceSystem));
+            } catch (\Throwable $e) {
+                \Log::error('Failed to send maintenance reminder email', [
+                    'id' => $maintenanceSystem->id,
+                    'email' => $maintenanceSystem->technician_email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         return redirect()
             ->route('maintenance-system.index')
             ->with('success', 'Tạo yêu cầu thành công.');
@@ -81,9 +100,11 @@ class MaintenanceSystemController extends Controller
                 $query->latest();
             }
         ]);
+
+        $title = 'Chi tiết bảo trì hạ tầng';
         return view(
-            'system.modals.detail',
-            compact('maintenanceSystem')
+            'system.show',
+            compact('maintenanceSystem','title')
         );
     }
 
@@ -189,7 +210,7 @@ class MaintenanceSystemController extends Controller
         $now = now();
 
         switch ($validated['status']) {
-            case config('sla_status.code.WAITING_CONFIRM'):
+            case config('sla_status.code_ht.WAITING_CONFIRM'):
                 $completedAt = $now;
                 $data['actual_completion_date'] = $completedAt;
                 $data['delay_reason'] = '';
@@ -199,21 +220,17 @@ class MaintenanceSystemController extends Controller
                     $maintenanceSystem,
                     $completedAt
                 );
+                $this->afterStatusChanged(
+                    $maintenanceSystem,
+                    $validated['status']
+                );
                 break;
             case 'COMPLETED':
                 if (!$maintenanceSystem->completed_at) {
                     $data['completed_at'] = $now;
                     $data['completed_by'] = auth()->user()->email ?? null;
                 }
-                // Tính actual_duration nếu có ngày bắt đầu/kết thúc
-                // (ví dụ: dựa trên request_date/completed_at như MaintenanceRequest)
-                if ($maintenanceSystem->request_date && (isset($data['completed_at']) || $maintenanceSystem->completed_at)) {
-                    $start = $maintenanceSystem->request_date;
-                    $end = $data['completed_at'] ?? $maintenanceSystem->completed_at;
-                    // Bạn có thể thay bằng Service hoặc helper nếu cần, đơn giản hóa ở đây (phút)
-                    $actualDuration = ceil((strtotime($end) - strtotime($start)) / 60);
-                    $data['actual_duration'] = $actualDuration;
-                }
+               
                 // Khi hoàn thành thì lý do trễ để rỗng
                 $data['delay_reason'] = '';
                 break;
@@ -242,9 +259,22 @@ class MaintenanceSystemController extends Controller
             note: $validated['note'] ?? null
         );
 
-        return redirect()
-            ->route('maintenance-system.index')
-            ->with('success', 'Đổi trạng thái thành công.');
+        return response()->json([
+            'success'    => true,
+            'status' => $maintenanceSystem->status,
+        ]);
+    }
+
+    private function afterStatusChanged(
+        MaintenanceSystem $maintenanceSystem,
+        string $requestStatus,
+    ): void {
+    
+        // Gửi mail
+        $this->handleSendMail(
+            $maintenanceSystem,
+            $requestStatus
+        );
     }
 
     /**
@@ -319,9 +349,10 @@ class MaintenanceSystemController extends Controller
             note: $validated['note'] ?? null
         );
 
-        return redirect()
-            ->route('maintenance-system.index')
-            ->with('success', 'Admin đã đổi trạng thái thành công.');
+        return response()->json([
+            'success'    => true,
+            'status' => $maintenanceSystem->status,
+        ]);
     }
 
     public function acceptance(Request $request)
@@ -376,6 +407,23 @@ class MaintenanceSystemController extends Controller
         // refresh để lấy data mới
         $item->refresh();
 
+        /*
+        |--------------------------------------------------------------------------
+        | 2. SEND MAIL → QUEUE (KHÔNG send sync)
+        |--------------------------------------------------------------------------
+        */
+        try {
+            Mail::to($item->technician_email)
+                ->queue(new MaintenanceSystemAcceptanceMail($item));
+
+        } catch (\Throwable $e) {
+            \Log::error('Failed to queue acceptance email', [
+                'id' => $item->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+
         return response()->json([
             'success' => true
         ]);
@@ -395,15 +443,18 @@ class MaintenanceSystemController extends Controller
     {
         $jsonPathNorth = resource_path('json/stores.json');
         $jsonPathSouth = resource_path('json/stores_mn.json');
+        $jsonPathCiciNorth = resource_path('json/stores_cici_mb.json');
         $jsonPathCiciSouth = resource_path('json/stores_cici_mn.json');
         $storesNorth = json_decode(file_get_contents($jsonPathNorth), true);
         $storesSouth = json_decode(file_get_contents($jsonPathSouth), true);
+        $storesCiciNorth = json_decode(file_get_contents($jsonPathCiciNorth), true);
         $storesCiciSouth = json_decode(file_get_contents($jsonPathCiciSouth), true);
 
         // Tạo cấu trúc rõ 2 miền
         $data = [
             'mien_bac' => $storesNorth,
             'mien_nam' => $storesSouth,
+            'cici_mien_bac' => $storesCiciNorth,
             'cici_mien_nam' => $storesCiciSouth,
         ];
 
@@ -414,5 +465,31 @@ class MaintenanceSystemController extends Controller
     {
         $data = config('technician_ht');
         return $data;
+    }
+    private function handleSendMail(
+        MaintenanceSystem $maintenanceRequest,
+        string $requestedStatus
+    ): void {
+    
+        try {
+    
+            switch ($requestedStatus) {
+    
+                case config('sla_status.code_ht.WAITING_CONFIRM'):
+    
+                    Mail::to($maintenanceRequest->branch_email)
+                        ->queue(new MaintenanceSystemCompletedMail($maintenanceRequest));
+    
+                    break;
+            }
+    
+        } catch (\Throwable $e) {
+    
+            \Log::error('Send mail failed', [
+                'maintenance_request_id' => $maintenanceRequest->id,
+                'status' => $requestedStatus,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

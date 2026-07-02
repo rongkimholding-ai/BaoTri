@@ -65,6 +65,7 @@
     </x-slot>
 
     <div class="card-body p-0">
+
         @if(session('success'))
             <div class="alert alert-success mb-0 p-3 border-0 rounded-0">
                 {{ session('success') }}
@@ -80,207 +81,356 @@
                 </ul>
             </div>
         @endif
-        <div class="card">
-            <div class="table-scroll-top-system">
-                <div></div>
-            </div>
-            <div class="table-responsive">
-                <table id="tblSystem" class="table table-bordered table-striped">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col" class="text-center" style="width: 48px;">STT</th>
-                            <th scope="col">Sự cố</th>
-                            <th scope="col">Chi nhánh</th>
-                            <th scope="col">KTV</th>
-                            <th scope="col">SLA</th>
-                            <th scope="col">Thời gian</th>
-                            <th scope="col" class="text-center">Trạng thái</th>
-                            <th scope="col" class="text-center">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($items as $item)
-                            @php
-                                $slaStatusBadge = data_get($StatusBadgeList, $item->status, 'badge badge-default');
-                                $slaStatusName = data_get($statuses, $item->status, $item->status);
-                            @endphp
+
+        {{-- Web Table View --}}
+        <div class="d-none d-md-block">
+            <div class="card">
+                <div class="table-scroll-top-system">
+                    <div></div>
+                </div>
+                <div class="table-responsive">
+                    <table id="tblSystem" class="table table-bordered table-striped">
+                        <thead class="table-light">
                             <tr>
-                                <td class="text-center">
-                                    {{ $items->firstItem() + $loop->index }}
-                                </td>
-                                <td style=" min-width: 300px;max-width: 350px;">
-                                    Mã: {{ $item->issue_code }} <br>
-                                    <div class="fw-semibold">
-                                        {{ $item->issue_name }}
-                                    </div>
-                                    <div class="text-muted small">
-                                        {{ $item->issue_description }}
-                                    </div>
-                                </td>
-                                <td style=" min-width: 200px;max-width: 250px;">
-                                    {{ $item->branch_name }}
-                                    <div class="text-muted small">{{ $item->branch_code }}</div>
-                                </td>
-                                <td style=" min-width: 200px;max-width: 250px;">
-                                    {{ $item->technician_name }}
-                                    <div class="text-muted small">{{ $item->technician_email }}</div>
-                                </td>
-                                <td style=" min-width: 100px;max-width: 150px;">
-                                    @php
-                                        $sla_configs = config('real_time');
-                                        $sla_display = '-';
-                                        if (!empty($item->standard_completion_time)) {
-                                            $configItem = collect($sla_configs)->firstWhere('key', $item->standard_completion_time);
-                                            if ($configItem) {
-                                                $sla_display = $configItem['name'];
-                                            } else {
-                                                $sla_display = str_replace('_', ' ', $item->standard_completion_time);
+                                <th scope="col" class="text-center" style="width: 48px;">STT</th>
+                                <th scope="col">Sự cố</th>
+                                <th scope="col">Chi nhánh</th>
+                                <th scope="col">KTV</th>
+                                <th scope="col">SLA</th>
+                                <th scope="col">Thời gian</th>
+                                <th scope="col" class="text-center">Trạng thái</th>
+                                <th scope="col" class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($items as $item)
+                                @php
+                                    $slaStatusBadge = data_get($StatusBadgeList, $item->status, 'badge badge-default');
+                                    $slaStatusName = data_get($statuses, $item->status, $item->status);
+                                    $detailRoute = route('maintenance-system.show', $item->id);
+                                    $currentStatus = $item->status;
+                                    $workflow = config('maintenance_system.workflow');
+                                    $statusNamesHt = config('sla_status.names_ht_func');
+                                    $nextStatuses = $workflow[$currentStatus] ?? [];
+                                @endphp
+                                <tr data-id="{{ $item->id }}" class="tr-row-link" data-detail-url="{{ $detailRoute }}">
+                                    <td class="text-center">
+                                        {{ $items->firstItem() + $loop->index }}
+                                    </td>
+                                    <td style="min-width: 300px;max-width: 350px;">
+                                        Mã: {{ $item->issue_code }} <br>
+                                        <div class="fw-semibold">
+                                            {{ $item->issue_name }}
+                                        </div>
+                                        <div class="text-muted small">
+                                            {{ $item->issue_description }}
+                                        </div>
+                                    </td>
+                                    <td style="min-width: 200px;max-width: 250px;">
+                                        {{ $item->branch_name }}
+                                        <div class="text-muted small">{{ $item->branch_code }}</div>
+                                    </td>
+                                    <td style="min-width: 200px;max-width: 250px;">
+                                        {{ $item->technician_name }}
+                                        <div class="text-muted small">{{ $item->technician_email }}</div>
+                                    </td>
+                                    <td style="min-width: 100px;max-width: 150px;">
+                                        @php
+                                            $sla_configs = config('real_time');
+                                            $sla_display = '-';
+                                            if (!empty($item->standard_completion_time)) {
+                                                $configItem = collect($sla_configs)->firstWhere('key', $item->standard_completion_time);
+                                                if ($configItem) {
+                                                    $sla_display = $configItem['name'];
+                                                } else {
+                                                    $sla_display = $item->standard_completion_time;
+                                                }
                                             }
-                                        }
-                                    @endphp
-                                    {{ $sla_display }}
-                                </td>
-                                <td style=" min-width: 300px;max-width: 350px;">
-                                    Ngày yêu cầu:
-                                    {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
-                                    Yêu cầu hoàn thành: {{ $item->standard_completion_time }}
-                                    @if($item->actual_completion_date)
-                                        <br>Ngày hoàn thành:
-                                        {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}
-                                    @endif
-                                    @if($item->actual_duration)
-                                        <br>Thời gian thực tế: {{ ($item->actual_duration) }}
-                                    @endif
-                                    <hr>
-                                    Tạo: {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}<br>
-                                    Cập nhật: {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
-                                </td>
-                                <td class="text-center">
-                                    <span class="status_badge {{ $slaStatusBadge }}">
-                                        {{ $slaStatusName }}
-                                    </span><br>
-                                    <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
-                                        {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
-                                    </span>
-                                </td>
-                                <td class="action-column action-cell">
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary dropdown-toggle action-btn" type="button"
-                                            data-bs-toggle="dropdown">Thao tác</button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="javascript:void(0)"
-                                                    onclick="openMaintenanceModal('detail',{{ $item->id }})"
-                                                    class="dropdown-item text-success">
-                                                    <i class="bi bi-eye"></i> Chi tiết
-                                                </a>
-                                            </li>
-                                            @hasanyrole('technician_system|admin')
-                                            @can('change-system-status')
-                                                @php
-                                                    // Lấy workflow từ config
-                                                    $workflow = config('maintenance_system.workflow');
-                                                    $statusNamesHt = config('sla_status.names_ht_func');
-                                                    $currentStatus = $item->status;
-                                                    $nextStatuses = $workflow[$currentStatus] ?? [];
-                                                @endphp
-
-                                                @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
-                                                    @foreach ($nextStatuses as $nextStatus)
-                                                        @if(
-                                                                ($currentStatus === 'CONFIRMED' && auth()->user()->hasRole('admin')) ||
-                                                                ($currentStatus !== 'CONFIRMED')
-                                                            )
-                                                            <li>
-                                                                <a href="javascript:void(0)"
-                                                                    onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
-                                                                    class="dropdown-item">
-                                                                    {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
-                                                                </a>
-                                                            </li>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-
-                                            @endcan
-                                            @endhasanyrole
-
-                                            @role('admin')
-                                            <li>
-                                                <a href="javascript:void(0)"
-                                                    class="dropdown-item admin-change-status-system-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
-                                                    data-id="{{ $item->id }}" data-current-status="{{ $item->status }}">
-                                                    Đổi trạng thái
-                                                </a>
-                                            </li>
-                                            @if($item->status == 'NEW')
+                                        @endphp
+                                        {{ $sla_display }}
+                                    </td>
+                                    <td style="min-width: 300px;max-width: 350px;">
+                                        Ngày yêu cầu:
+                                        {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}<br>
+                                        Yêu cầu hoàn thành: {{ $item->standard_completion_time }}
+                                        @if($item->actual_completion_date)
+                                            <br>Ngày hoàn thành:
+                                            {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}
+                                        @endif
+                                        @if($item->actual_duration)
+                                            <br>Thời gian thực tế: {{ ($item->actual_duration) }}
+                                        @endif
+                                        <hr>
+                                        Tạo: {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}<br>
+                                        Cập nhật: {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="status_badge {{ $slaStatusBadge }}">
+                                            {{ $slaStatusName }}
+                                        </span><br>
+                                        <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
+                                            {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
+                                        </span>
+                                    </td>
+                                    <td class="action-column action-cell">
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle action-btn" type="button"
+                                                data-bs-toggle="dropdown">Thao tác</button>
+                                            <ul class="dropdown-menu">
+                                                @hasanyrole('technician_system|admin')
+                                                @can('change-system-status')
+                                                    @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
+                                                        @foreach ($nextStatuses as $nextStatus)
+                                                            @if(
+                                                                    ($currentStatus === 'CONFIRMED' && auth()->user()->hasRole('admin')) ||
+                                                                    ($currentStatus !== 'CONFIRMED')
+                                                                )
+                                                                <li>
+                                                                    <a href="javascript:void(0)"
+                                                                        onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
+                                                                        class="dropdown-item">
+                                                                        {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                @endcan
+                                                @endhasanyrole
+                                                @role('admin')
                                                 <li>
                                                     <a href="javascript:void(0)"
-                                                        onclick="openMaintenanceModal('edit',{{ $item->id }})"
-                                                        class="dropdown-item text-primary">
-                                                        <i class="bi bi-pencil"></i> Sửa
+                                                        class="dropdown-item admin-change-status-system-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
+                                                        data-id="{{ $item->id }}" data-current-status="{{ $item->status }}">
+                                                        Đổi trạng thái
                                                     </a>
                                                 </li>
-                                            @endif
-                                            @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
+                                                @if($item->status == 'NEW')
+                                                    <li>
+                                                        <a href="javascript:void(0)"
+                                                            onclick="openMaintenanceModal('edit',{{ $item->id }})"
+                                                            class="dropdown-item text-primary">
+                                                            <i class="bi bi-pencil"></i> Sửa
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                                @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
+                                                    <li>
+                                                        <a href="javascript:void(0)" class="dropdown-item acceptance-system-btn"
+                                                            data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
+                                                            data-id="{{ $item->id }}">
+                                                            Nghiệm thu
+                                                        </a>
+                                                    </li>
+                                                @endif
                                                 <li>
-                                                    <a href="javascript:void(0)" class="dropdown-item acceptance-system-btn"
-                                                        data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
-                                                        data-id="{{ $item->id }}">
-                                                        Nghiệm thu
-                                                    </a>
+                                                    <form action="{{ route('maintenance-system.destroy', $item->id) }}"
+                                                        method="POST" onsubmit="return confirm('Xóa bản ghi này?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="bi bi-trash"></i> Xóa
+                                                        </button>
+                                                    </form>
                                                 </li>
-                                            @endif
-                                            <li>
-                                                <form action="{{ route('maintenance-system.destroy', $item->id) }}"
-                                                    method="POST" onsubmit="return confirm('Xóa bản ghi này?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-trash"></i> Xóa
-                                                    </button>
-                                                </form>
-                                            </li>
-                                            @endrole
-                                        </ul>
-                                    </div>
-                                </td>
-
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="10" class="text-center py-5 text-muted">
-                                    Chưa có dữ liệu.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                                @endrole
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="10" class="text-center py-5 text-muted">
+                                        Chưa có dữ liệu.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                {{ $items->links() }}
             </div>
         </div>
-        <div class="card-footer bg-white">
-            {{ $items->links() }}
+
+        {{-- Mobile Card View --}}
+        <div class="d-block d-md-none">
+            <div class="row g-3">
+                @forelse($items as $item)
+                @php
+                    $slaStatusBadge = data_get($StatusBadgeList, $item->status, 'badge badge-default');
+                    $slaStatusName = data_get($statuses, $item->status, $item->status);
+                    $detailRoute = route('maintenance-system.show', $item->id);
+                    $currentStatus = $item->status;
+                    $workflow = config('maintenance_system.workflow');
+                    $statusNamesHt = config('sla_status.names_ht_func');
+                    $nextStatuses = $workflow[$currentStatus] ?? [];
+                    $sla_configs = config('real_time');
+                    $sla_display = '-';
+                    if (!empty($item->standard_completion_time)) {
+                        $configItem = collect($sla_configs)->firstWhere('key', $item->standard_completion_time);
+                        if ($configItem) {
+                            $sla_display = $configItem['name'];
+                        } else {
+                            $sla_display = $item->standard_completion_time;
+                        }
+                    }
+                @endphp
+                <div class="col-12">
+                    <div class="card mobile-row-link" style="cursor:pointer" data-url="{{ $detailRoute }}">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="status_badge {{ $slaStatusBadge }}">
+                                    {{ $slaStatusName }}
+                                </span>
+                                <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
+                                </span>
+                            </div>
+                            <h6 class="mt-3 mb-1 text-primary fw-bold">
+                                {{ $item->issue_name }}
+                            </h6>
+                            <div class="mb-1 small">
+                                <span class="fw-semibold">Mã:</span> {{ $item->issue_code }}<br>
+                                <span class="fw-semibold text-muted">{{ $item->issue_description }}</span>
+                            </div>
+                            <div class="mb-1 small">
+                                <span class="fw-semibold">Chi nhánh:</span> {{ $item->branch_name }} ({{ $item->branch_code }})<br>
+                                <span class="fw-semibold">KTV:</span> {{ $item->technician_name }} ({{ $item->technician_email }})
+                            </div>
+                            <div class="mb-1 small">
+                                <span class="fw-semibold">SLA:</span> {{ $sla_display }}
+                            </div>
+                            <div class="mb-1 small">
+                                <span class="fw-semibold">Ngày Yêu Cầu:</span> {{ $item->request_date ? \Carbon\Carbon::parse($item->request_date)->format('d/m/Y H:i:s') : '' }}
+                            </div>
+                            <div class="mb-1 small">
+                                <span class="fw-semibold">Yêu cầu hoàn thành:</span> {{ $item->standard_completion_time }}
+                            </div>
+                            @if($item->actual_completion_date)
+                                <div class="mb-1 small">
+                                    <span class="fw-semibold">Ngày hoàn thành:</span> {{ \Carbon\Carbon::parse($item->actual_completion_date)->format('d/m/Y H:i:s') }}
+                                </div>
+                            @endif
+                            @if($item->actual_duration)
+                                <div class="mb-1 small">
+                                    <span class="fw-semibold">Thời gian thực tế:</span> {{ ($item->actual_duration) }}
+                                </div>
+                            @endif
+                            <!-- <div class="mb-1 small">
+                                <span class="fw-semibold">Tạo:</span> {{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}
+                            </div>
+                            <div class="mb-2 small">
+                                <span class="fw-semibold">Cập nhật:</span> {{ \Carbon\Carbon::parse($item->updated_at)->format('d/m/Y H:i:s') }}
+                            </div> -->
+                            <div class="dropdown mt-2">
+                                <button class="btn btn-primary btn-sm dropdown-toggle action-btn w-100" type="button"
+                                    data-bs-toggle="dropdown">Thao tác</button>
+                                <ul class="dropdown-menu w-100">
+                                    @hasanyrole('technician_system|admin')
+                                    @can('change-system-status')
+                                        @if(!in_array($currentStatus, ['COMPLETED', 'LATED']))
+                                            @foreach ($nextStatuses as $nextStatus)
+                                                @if(
+                                                    ($currentStatus === 'CONFIRMED' && auth()->user()->hasRole('admin')) ||
+                                                    ($currentStatus !== 'CONFIRMED')
+                                                )
+                                                    <li>
+                                                        <a href="javascript:void(0)"
+                                                            onclick="openMaintenanceModal('status',{{ $item->id }},'{{ $nextStatus }}')"
+                                                            class="dropdown-item">
+                                                            {{ $statusNamesHt[$nextStatus] ?? str_replace('_', ' ', $nextStatus) }}
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endcan
+                                    @endhasanyrole
+                                    @role('admin')
+                                    <li>
+                                        <a href="javascript:void(0)"
+                                            class="dropdown-item admin-change-status-system-btn"
+                                            data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
+                                            data-id="{{ $item->id }}" data-current-status="{{ $item->status }}">
+                                            Đổi trạng thái
+                                        </a>
+                                    </li>
+                                    @if($item->status == 'NEW')
+                                        <li>
+                                            <a href="javascript:void(0)"
+                                                onclick="openMaintenanceModal('edit',{{ $item->id }})"
+                                                class="dropdown-item text-primary">
+                                                <i class="bi bi-pencil"></i> Sửa
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
+                                        <li>
+                                            <a href="javascript:void(0)" class="dropdown-item acceptance-system-btn"
+                                                data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
+                                                data-id="{{ $item->id }}">
+                                                Nghiệm thu
+                                            </a>
+                                        </li>
+                                    @endif
+                                    <li>
+                                        <form action="{{ route('maintenance-system.destroy', $item->id) }}"
+                                            method="POST" onsubmit="return confirm('Xóa bản ghi này?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="bi bi-trash"></i> Xóa
+                                            </button>
+                                        </form>
+                                    </li>
+                                    @endrole
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-12">
+                    <div class="card text-center py-4 text-muted">
+                        Chưa có dữ liệu.
+                    </div>
+                </div>
+                @endforelse
+            </div>
+            <div class="card-footer bg-white">
+                {{ $items->links() }}
+            </div>
         </div>
     </div>
 
     {{-- Modal --}}
-    <div id="maintenanceModal" class="modal fade" tabindex="-1" aria-labelledby="maintenanceModalTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 id="maintenanceModalTitle" class="modal-title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                </div>
-                <div id="system-form-errors" class="alert alert-danger d-none"></div>
-                <div id="maintenanceModalContent" class="modal-body"></div>
-            </div>
-        </div>
-    </div>
+    @include('system.modals.modal')
     @include('system.modals.acceptance')
     @include('system.modals.change-status-admin')
-
+    <style>
+        .tr-row-link { cursor: pointer; }
+        .mobile-row-link { cursor: pointer; }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.tr-row-link').forEach(function (row) {
+            row.addEventListener('click', function (e) {
+                if (e.target.closest('a, button, .dropdown, .dropdown-menu')) return;
+                const url = this.dataset.detailUrl;
+                if (url) window.location.href = url;
+            });
+        });
+        document.querySelectorAll('.mobile-row-link').forEach(function(card){
+            card.addEventListener('click', function(e){
+                if(e.target.closest('a,button,.dropdown,.dropdown-menu')) return;
+                window.location.href = this.dataset.url;
+            });
+        });
+    });
+    </script>
     <script>
         /**
          * Hiển thị modal bảo trì hệ thống (pattern follow permissions).
@@ -290,7 +440,6 @@
          */
         function openMaintenanceModal(action, id = null, status = null) {
             if (typeof window.openMaintenanceModalBase === "function") {
-                // Nếu JS gốc đã khai báo, gọi hàm chuẩn dùng chung ở maintenance.js
                 window.openMaintenanceModalBase({
                     urlCreate: "{{ route('maintenance-system.create') }}",
                     urlEdit: id ? `/maintenance-system/${id}/edit` : null,
@@ -302,7 +451,6 @@
                     modalContentId: 'maintenanceModalContent'
                 });
             } else {
-                // Tạm fallback: logic tự động fetch và hiển thị modal trong trường hợp JS base chưa được include
                 let url = '';
                 let title = '';
 
@@ -327,6 +475,63 @@
                     .then(html => {
                         document.getElementById('maintenanceModalTitle').innerText = title;
                         document.getElementById('maintenanceModalContent').innerHTML = html;
+
+                        if (action === 'status') {
+                            setTimeout(function () {
+                                var form = document.querySelector('#maintenanceModalContent form');
+                                if (form) {
+                                    form.addEventListener('submit', function (e) {
+                                        e.preventDefault();
+
+                                        var formData = new FormData(form);
+                                        var actionUrl = form.getAttribute('action');
+
+                                        var errorBox = document.getElementById('system-form-errors');
+                                        if (errorBox) {
+                                            errorBox.classList.add('d-none');
+                                            errorBox.innerHTML = '';
+                                        }
+
+                                        fetch(actionUrl, {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                            },
+                                            body: formData
+                                        })
+                                            .then(async res => {
+                                                if (res.ok) {
+                                                    location.reload();
+                                                } else if (res.status === 422) {
+                                                    const json = await res.json();
+                                                    if (errorBox) {
+                                                        errorBox.classList.remove('d-none');
+                                                        errorBox.innerHTML = Object.values(json.errors).map(x => x.join(', ')).join('<br>');
+                                                    }
+                                                } else if (res.status === 403) {
+                                                    if (errorBox) {
+                                                        errorBox.classList.remove('d-none');
+                                                        errorBox.innerHTML = 'Bạn không có quyền thực hiện!';
+                                                    }
+                                                } else {
+                                                    if (errorBox) {
+                                                        errorBox.classList.remove('d-none');
+                                                        errorBox.innerHTML = 'Lỗi không xác định!';
+                                                    }
+                                                }
+                                            })
+                                            .catch(function () {
+                                                if (errorBox) {
+                                                    errorBox.classList.remove('d-none');
+                                                    errorBox.innerHTML = 'Không thể gửi yêu cầu. Vui lòng thử lại!';
+                                                }
+                                            });
+                                    });
+                                }
+                            }, 20);
+                        }
+
                         bootstrap.Modal
                             .getOrCreateInstance(document.getElementById('maintenanceModal'))
                             .show();
@@ -335,7 +540,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-
             const topScroll = document.querySelector('.table-scroll-top-system');
             const topScrollInner = topScroll ? topScroll.querySelector('div') : null;
             const tableResponsive = document.querySelector('.table-responsive');
@@ -349,34 +553,26 @@
                 topScrollInner.style.width = table.scrollWidth + 'px';
             }
 
-            // Đồng bộ chiều rộng khi load
             syncScrollWidth();
-
-            // Đồng bộ khi resize
             window.addEventListener('resize', syncScrollWidth);
 
-            // Đồng bộ khi bảng thay đổi kích thước (nếu trình duyệt hỗ trợ)
             if (window.ResizeObserver) {
                 const observer = new ResizeObserver(syncScrollWidth);
                 observer.observe(table);
             }
 
-            // Scroll trên -> dưới
             topScroll.addEventListener('scroll', function () {
                 if (tableResponsive.scrollLeft !== topScroll.scrollLeft) {
                     tableResponsive.scrollLeft = topScroll.scrollLeft;
                 }
             });
 
-            // Scroll dưới -> trên
             tableResponsive.addEventListener('scroll', function () {
                 if (topScroll.scrollLeft !== tableResponsive.scrollLeft) {
                     topScroll.scrollLeft = tableResponsive.scrollLeft;
                 }
             });
-
         });
-
     </script>
     <style>
         .table-scroll-top-system {
@@ -385,10 +581,8 @@
             height: 16px;
             margin-bottom: 5px;
         }
-
         .table-scroll-top-system div {
             height: 1px;
         }
     </style>
-
 </x-app-layout>

@@ -90,7 +90,7 @@
                             <label for="branch_name" class="form-label mb-1">Tên cơ sở</label>
                             <select class="form-control select2-branch" name="branch_name" id="branch_name" data-field="branch_name">
                                 <option value="">-- Chọn cơ sở --</option>
-                                @foreach(['mien_bac' => 'Miền Bắc', 'mien_nam' => 'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $region => $label)
+                                @foreach(['mien_bac' => 'Miền Bắc','cici_mien_bac' => 'Cici Miền Bắc', 'mien_nam' => 'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $region => $label)
                                     @if(!empty($stores[$region]))
                                         <optgroup label="{{ $label }}">
                                             @foreach($stores[$region] as $store)

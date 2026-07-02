@@ -15,6 +15,7 @@ class StoreUserSeeder extends Seeder
         $paths = [
             resource_path('json/stores.json'),
             resource_path('json/stores_mn.json'),
+            resource_path('json/stores_cici_mb.json'),
             resource_path('json/stores_cici_mn.json'),
         ];
 
