@@ -29,7 +29,7 @@
             @endif
         >
             <option value="">-- Chọn cơ sở --</option>
-            @foreach(['mien_bac'=>'Miền Bắc','mien_nam'=>'Miền Nam'] as $mien=>$label)
+            @foreach(['mien_bac'=>'Miền Bắc','mien_nam'=>'Miền Nam','cici_mien_nam' => 'Cici Miền Nam'] as $mien=>$label)
                 @if(!empty($stores[$mien]))
                     <optgroup label="{{ $label }}">
                         @foreach($stores[$mien] as $store)

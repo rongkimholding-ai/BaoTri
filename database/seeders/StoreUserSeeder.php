@@ -15,6 +15,7 @@ class StoreUserSeeder extends Seeder
         $paths = [
             resource_path('json/stores.json'),
             resource_path('json/stores_mn.json'),
+            resource_path('json/stores_cici_mn.json'),
         ];
 
         $stores = [];
@@ -45,11 +46,6 @@ class StoreUserSeeder extends Seeder
          */
         $userRole = Role::firstOrCreate([
             'name' => 'user',
-            'guard_name' => 'web',
-        ]);
-
-        $managerRole = Role::firstOrCreate([
-            'name' => 'manager',
             'guard_name' => 'web',
         ]);
 
@@ -95,7 +91,7 @@ class StoreUserSeeder extends Seeder
                     ]
                 );
 
-                $amUser->syncRoles([$managerRole->name]);
+                $amUser->syncRoles('am');
                 $count++;
             }
 
@@ -116,7 +112,7 @@ class StoreUserSeeder extends Seeder
                     ]
                 );
 
-                $omUser->syncRoles([$managerRole->name]);
+                $omUser->syncRoles('om');
                 $count++;
             }
         }

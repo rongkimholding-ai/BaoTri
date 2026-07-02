@@ -395,13 +395,16 @@ class MaintenanceSystemController extends Controller
     {
         $jsonPathNorth = resource_path('json/stores.json');
         $jsonPathSouth = resource_path('json/stores_mn.json');
+        $jsonPathCiciSouth = resource_path('json/stores_cici_mn.json');
         $storesNorth = json_decode(file_get_contents($jsonPathNorth), true);
         $storesSouth = json_decode(file_get_contents($jsonPathSouth), true);
+        $storesCiciSouth = json_decode(file_get_contents($jsonPathCiciSouth), true);
 
         // Tạo cấu trúc rõ 2 miền
         $data = [
             'mien_bac' => $storesNorth,
             'mien_nam' => $storesSouth,
+            'cici_mien_nam' => $storesCiciSouth,
         ];
 
         return $data;

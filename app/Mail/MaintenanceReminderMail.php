@@ -42,7 +42,8 @@ class MaintenanceReminderMail extends Mailable
 
         $files = [
             resource_path('json/stores.json'),
-            resource_path('json/stores_mn.json')
+            resource_path('json/stores_mn.json'),
+            resource_path('json/stores_cici_mn.json')
         ];
 
         foreach ($files as $file) {
