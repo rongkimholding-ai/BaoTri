@@ -72,6 +72,10 @@
     {{-- Thông tin chi nhánh hệ thống --}}
     <div class="col-md-6 mb-3">
         <label>{{ config('system.fields.branch_name') ?? 'Chi nhánh hệ thống' }}</label>
+        @if($userStore)
+            {{-- Nếu đã có userStore, luôn truyền branch_name qua input hidden --}}
+            <input type="hidden" name="branch_name" value="{{ old('branch_name', $maintenanceSystem->branch_name ?? ($userStore['name'] ?? '')) }}">
+        @endif
         <select 
             class="form-control form-branch-name select2-branch select2-branch-system"
             name="branch_name"
