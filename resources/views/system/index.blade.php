@@ -15,7 +15,7 @@
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
             <h3 class="mb-0 fs-5 fs-md-3">{{ $title }}</h3>
             <div class="d-flex flex-column flex-md-row gap-2">
-                @can('create data')
+                @can('create-system-task')
                     <button class="btn btn-outline-primary flex-fill mt-2 mt-md-0" onclick="openMaintenanceModal('create')"
                         type="button">
                         <i class="bi bi-plus-circle"></i> Thêm mới
