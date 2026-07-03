@@ -30,6 +30,10 @@
         <label>{{ config('system.fields.branch_code') }}</label>
         <input class="form-control form-branch-code" name="branch_code" value="{{ old('branch_code', $maintenanceSystem->branch_code ?? $userStore['code'] ?? '') }}">
     </div>
+    <div class="col-md-6 mb-3 d-none">
+        <label>{{ config('system.fields.branch_name') }}</label>
+        <input class="form-control form-branch-name" name="branch_name" value="{{ old('branch_name', $maintenanceSystem->branch_name ?? $userStore['name'] ?? '') }}">
+    </div>
 
     {{-- Tên sự cố / dịch vụ --}}
     <div class="col-md-6 mb-3">
@@ -72,18 +76,15 @@
     {{-- Thông tin chi nhánh hệ thống --}}
     <div class="col-md-6 mb-3">
         <label>{{ config('system.fields.branch_name') ?? 'Chi nhánh hệ thống' }}</label>
-        @if($userStore)
-            {{-- Nếu đã có userStore, luôn truyền branch_name qua input hidden --}}
-            <input type="hidden" name="branch_name" value="{{ old('branch_name', $maintenanceSystem->branch_name ?? ($userStore['name'] ?? '')) }}">
-        @endif
         <select 
             class="form-control form-branch-name select2-branch select2-branch-system"
-            name="branch_name"
             id="branch_name_select"
             @if($userStore) 
                 disabled 
                 tabindex="-1" 
                 style="pointer-events: none; background: #eee;"
+            @else
+                name="branch_name"
             @endif
         >
             <option value="">-- Chọn cơ sở --</option>
@@ -105,6 +106,7 @@
             <option value="other_store" data-custom="1" @if(old('branch_name')=='other_store') selected @endif>Cửa hàng khác</option>
         </select>
         @if($userStore)
+            <input type="hidden" name="branch_name" value="{{ $userStore['name'] }}">
             <input type="hidden" name="branch_code" value="{{ $userStore['code'] }}">
             <input type="hidden" name="branch_email" value="{{ $userStore['email'] }}">
         @endif
