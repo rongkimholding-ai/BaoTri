@@ -125,7 +125,10 @@
                     </div>
                     <div>
                         <span class="fw-bold">TG thực tế: </span>
-                        {{ $maintenanceSystem->actual_duration ? format_duration($maintenanceSystem->actual_duration) : '' }}
+                        @php
+                            $duration = $maintenanceSystem->actual_duration;
+                        @endphp
+                        {{ ($duration && preg_match('/^\d{2}:\d{2}:\d{2}$/', $duration)) ? format_duration($duration) : $duration }}
                     </div>
                     <div>
                         <span class="fw-bold">Tạo: </span>
