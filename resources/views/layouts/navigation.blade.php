@@ -36,6 +36,10 @@
                     @endif
 
                     @role('admin')
+                    <a href="{{ route('stores.index') }}"
+                                class="nav-item {{ request()->routeIs('stores.*') ? 'active' : '' }}">
+                                Cửa hàng
+                            </a>
                     {{-- Ngày lễ --}}
                     <a href="{{ route('holiday-calendars.index') }}"
                         class="nav-item {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">

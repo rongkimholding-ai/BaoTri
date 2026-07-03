@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             TechnicianSystemUserSeeder::class,
             StoreUserSeeder::class,
             HolidayCalendarSeeder::class,
+            StoreSeeder::class,
             // KTNBRoleSeeder::class,
             // BPXDRoleSeeder::class,
         ]);

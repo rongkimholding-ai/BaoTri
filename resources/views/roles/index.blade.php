@@ -39,13 +39,18 @@
                         @foreach($roles as $role)
                             <tr class="border-b">
                                 <td class="py-2">{{ $role->name }}</td>
-                                <td class="text-sm text-gray-600">
+                                <td class="text-sm text-gray-600" style="max-width:400px;">
                                     @php
-                                        $permNames = $role->permissions->pluck('name');
-                                        $displayNames = $permNames->take(3)->join(', ');
-                                        $hasMore = $permNames->count() > 3;
+                                        $permissions = $role->permissions;
                                     @endphp
-                                    {{ $displayNames }}@if($hasMore), ...@endif
+                                    @foreach($permissions as $permission)
+                                        <div class="inline-block mr-1 mb-1 py-1">
+                                            <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2 py-1 rounded border border-gray-300">
+                                                {{ $permission->name }}
+                                            </span>
+                                        </div>
+                                    @endforeach
+                               
                                 </td>
                                 <td class="py-2">
                                     <button onclick="openRoleModal('edit', {{ $role->id }})" class="btn btn-outline-primary">

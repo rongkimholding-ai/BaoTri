@@ -7,6 +7,7 @@ use App\Http\Controllers\MaintenanceSystemController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -91,6 +92,7 @@ Route::middleware('auth')->group(function () {
         });
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
     Route::resource('maintenance-system', MaintenanceSystemController::class);
+    Route::resource('stores', StoreController::class);
 });
 
 
