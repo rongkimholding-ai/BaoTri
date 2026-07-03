@@ -1943,5 +1943,29 @@
     "email": "khokieuki@tocotocotea.com",
     "technician_name": "Nguyễn Đức Dư",
     "muasam_email": "hungtran.muahang@tocotocotea.com"
+  },
+  {
+    "code": "",
+    "name": "Nhà máy Hưng Yên",
+    "am_name": "",
+    "am_email": "",
+    "om_name": "Nguyễn Văn Vinh",
+    "om_email": "vinhnguyen.nhamay@tocotocotea.com",
+    "region": "",
+    "email": "nhamayhy@tocotocotea.com",
+    "technician_name": "Nguyễn Đức Dư",
+    "muasam_email": "hungtran.muahang@tocotocotea.com"
+  },
+  {
+    "code": "",
+    "name": "VP miền Bắc",
+    "am_name": "",
+    "am_email": "",
+    "om_name": "Hoàng Quốc Hoạt",
+    "om_email": "hoathoang.it@tocotocotea.com",
+    "region": "",
+    "email": "vptaco@tocotocotea.com",
+    "technician_name": "Nguyễn Đức Dư",
+    "muasam_email": "hungtran.muahang@tocotocotea.com"
   }
 ]
