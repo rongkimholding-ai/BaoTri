@@ -135,6 +135,7 @@ class MaintenanceRequestController extends Controller
         }
 
         $completedStatus = config('sla_status.code.COMPLETED');
+        $latedStatus = config('sla_status.code.LATED');
         $newStatus = config('sla_status.code.NEW');
         $severityOrder = collect(config('severities'))->pluck('key')->all();
         $severityOrderStr = implode("','", $severityOrder);
@@ -151,8 +152,8 @@ class MaintenanceRequestController extends Controller
         $allRequests = $addOrderBySeverity($baseQueryClone())->paginate(20, ['*'], 'all_page')->withQueryString();
 
         $processingRequests = $addOrderBySeverity(
-            tap($baseQueryClone(), function ($q) use ($completedStatus, $newStatus) {
-                $q->whereNotIn('sla_status', [$completedStatus, $newStatus])
+            tap($baseQueryClone(), function ($q) use ($completedStatus, $latedStatus, $newStatus) {
+                $q->whereNotIn('sla_status', [$completedStatus, $latedStatus, $newStatus])
                   ->where('is_confirmed', '!=', true);
             })
         )->paginate(20, ['*'], 'processing_page')->withQueryString();
@@ -168,7 +169,7 @@ class MaintenanceRequestController extends Controller
 
         $processingCount = $baseQueryClone()
             ->whereNotNull('technician_name')
-            ->whereNotIn('sla_status', [$completedStatus, $newStatus])
+            ->whereNotIn('sla_status', [$completedStatus, $latedStatus, $newStatus])
             ->where('is_confirmed', '!=', true)
             ->count();
 

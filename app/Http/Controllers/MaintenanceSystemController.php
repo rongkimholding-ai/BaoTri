@@ -112,6 +112,7 @@ class MaintenanceSystemController extends Controller
 
         // Helper to get status codes for tab logic
         $completedStatus = 'COMPLETED'; // or config if needed
+        $latedStatus = 'LATED'; // or config if needed
         $newStatus = 'NEW';
 
         $tab = $request->get('tab', 'all');
@@ -141,8 +142,8 @@ class MaintenanceSystemController extends Controller
             ->withQueryString();
 
         // processingRequests tab (đang xử lý)
-        $processingRequests = tap($baseQueryClone(), function ($q) use ($completedStatus, $newStatus) {
-                $q->whereNotIn('status', [$completedStatus, $newStatus]);
+        $processingRequests = tap($baseQueryClone(), function ($q) use ($completedStatus, $latedStatus, $newStatus) {
+                $q->whereNotIn('status', [$completedStatus, $latedStatus, $newStatus]);
             })
             ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = trim($request->keyword);
@@ -161,7 +162,7 @@ class MaintenanceSystemController extends Controller
 
         // completedRequests tab (đã hoàn thành)
         $completedRequests = tap($baseQueryClone(), function ($q) {
-                $q->where('status', 'COMPLETED');
+                $q->where('is_confirmed', true);
             })
             ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = trim($request->keyword);
@@ -182,11 +183,11 @@ class MaintenanceSystemController extends Controller
         $totalCount = $baseQueryClone()->count();
 
         $processingCount = $baseQueryClone()
-            ->whereNotIn('status', [$completedStatus, $newStatus])
+            ->whereNotIn('status', [$completedStatus, $latedStatus, $newStatus])
             ->count();
 
         $completedCount = $baseQueryClone()
-            ->where('status', 'COMPLETED')
+            ->where('is_confirmed', true)
             ->count();
 
         $stores = $this->getData();
