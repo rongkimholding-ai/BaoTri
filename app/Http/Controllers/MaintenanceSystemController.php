@@ -544,6 +544,7 @@ class MaintenanceSystemController extends Controller
             $item->save();
 
             $item->writeLog(
+                id: $item->id,
                 action: 'ACCEPTANCE',
                 oldStatus: $item->status,
                 newStatus: $item->status,

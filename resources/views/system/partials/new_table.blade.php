@@ -131,6 +131,17 @@
                                                     @endif
                                                 @endcan
                                                 @endhasanyrole
+                                                @can('acceptance-system-task')
+                                                @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
+                                                    <li>
+                                                        <a href="javascript:void(0)" class="dropdown-item acceptance-system-btn"
+                                                            data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
+                                                            data-id="{{ $item->id }}">
+                                                            Nghiệm thu
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                                @endcan
                                                 @role('admin')
                                                 <li>
                                                     <a href="javascript:void(0)"
@@ -149,15 +160,7 @@
                                                         </a>
                                                     </li>
                                                 @endif
-                                                @if (in_array($currentStatus, ['COMPLETED', 'LATED']) && !$item->is_confirmed)
-                                                    <li>
-                                                        <a href="javascript:void(0)" class="dropdown-item acceptance-system-btn"
-                                                            data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
-                                                            data-id="{{ $item->id }}">
-                                                            Nghiệm thu
-                                                        </a>
-                                                    </li>
-                                                @endif
+                                                
                                                 <li>
                                                     <form action="{{ route('maintenance-system.destroy', $item->id) }}"
                                                         method="POST" onsubmit="return confirm('Xóa bản ghi này?')">

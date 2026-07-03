@@ -60,13 +60,14 @@
                 </a>
                 @endrole
 
-                @if (in_array($maintenanceSystem->status, ['COMPLETED', 'LATED']) && !$maintenanceSystem->is_confirmed)
-                    <a href="javascript:void(0)" class="btn btn-outline-success acceptance-system-btn"
-                        data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
-                        data-id="{{ $maintenanceSystem->id }}">
-                        Nghiệm thu
-                    </a>
-                @endif
+                @can('acceptance-system-task')
+                    @if (in_array($maintenanceSystem->status, ['COMPLETED', 'LATED']) && !$maintenanceSystem->is_confirmed)
+                        <a href="javascript:void(0)" class="btn btn-outline-info acceptance-system-btn" data-bs-toggle="modal"
+                            data-bs-target="#acceptanceSystemModal" data-id="{{ $maintenanceSystem->id }}">
+                            Nghiệm thu
+                        </a>
+                    @endif
+                @endcan
 
                 @can('delete data')
                     @hasrole('admin')
