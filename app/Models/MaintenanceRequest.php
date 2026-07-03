@@ -37,6 +37,7 @@ class MaintenanceRequest extends Model
         'pending_at',
         'processing_at',
         'confirmed_at',
+        'created_by',
     ];
 
     

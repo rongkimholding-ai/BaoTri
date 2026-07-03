@@ -26,10 +26,16 @@ class MaintenanceSystemController extends Controller
         $baseQuery = MaintenanceSystem::query();
         switch ($role) {
             case 'technician_system':
-                $baseQuery->where('technician_email', $email);
+                $baseQuery->where(function ($query) use ($email) {
+                    $query->where('technician_email', $email)
+                          ->orWhere('created_by', $email);
+                });
                 break;
             case 'user':
-                $baseQuery->where('branch_email', $email);
+                $baseQuery->where(function ($query) use ($email) {
+                    $query->where('branch_email', $email)
+                          ->orWhere('created_by', $email);
+                });
                 break;
             case 'manager':
             case 'am':
@@ -63,10 +69,15 @@ class MaintenanceSystemController extends Controller
                         ->values()
                         ->all();
 
-                    $baseQuery->when(!empty($branchEmails),
-                        fn($q) => $q->whereIn('branch_email', $branchEmails),
-                        fn($q) => $q->whereRaw('1=0')
-                    );
+                    $baseQuery->where(function($q) use ($branchEmails, $email) {
+                        if (!empty($branchEmails)) {
+                            $q->whereIn('branch_email', $branchEmails);
+                        } else {
+                            $q->whereRaw('1=0');
+                        }
+                        // OR created_by current user
+                        $q->orWhere('created_by', $email);
+                    });
                 }
                 // else: allow all
                 break;

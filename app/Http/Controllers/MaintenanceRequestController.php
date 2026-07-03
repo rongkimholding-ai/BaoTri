@@ -42,10 +42,16 @@ class MaintenanceRequestController extends Controller
         // ----------------------------------------
         switch ($role) {
             case 'technician':
-                $baseQuery->where('technician_email', $user->email);
+                $baseQuery->where(function ($q) use ($user) {
+                    $q->where('technician_email', $user->email)
+                      ->orWhere('created_by', $user->email);
+                });
                 break;
             case 'user':
-                $baseQuery->where('branch_email', $user->email);
+                $baseQuery->where(function ($q) use ($user) {
+                    $q->where('branch_email', $user->email)
+                      ->orWhere('created_by', $user->email);
+                });
                 break;
             case 'manager':
             case 'am':
@@ -80,14 +86,19 @@ class MaintenanceRequestController extends Controller
                         ->values()
                         ->all();
 
-                    $baseQuery->when(!empty($emails),
-                        fn($q) => $q->whereIn('branch_email', $emails),
-                        fn($q) => $q->whereRaw('1=0')
-                    );
+                    $baseQuery->where(function ($q) use ($emails, $user) {
+                        if (!empty($emails)) {
+                            $q->whereIn('branch_email', $emails);
+                        } else {
+                            $q->whereRaw('1=0');
+                        }
+                        // OR created_by current user
+                        $q->orWhere('created_by', $user->email);
+                    });
                 }
                 // else: allow all
                 break;
- 
+
             case 'muasam':
                 $baseQuery->where('sla_status', config('sla_status.code.PENDING'));
                 break;
