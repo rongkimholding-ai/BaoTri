@@ -213,6 +213,7 @@ class MaintenanceSystemController extends Controller
         $maintenanceSystem = MaintenanceSystem::create($data);
 
         $maintenanceSystem->writeLog(
+            id: $maintenanceSystem->id,
             action: 'CREATE',
             newStatus: $maintenanceSystem->status,
             note: 'Khởi tạo yêu cầu'
@@ -286,6 +287,7 @@ class MaintenanceSystemController extends Controller
         $maintenanceSystem->update($data);
 
         $maintenanceSystem->writeLog(
+            id: $maintenanceSystem->id,
             action: 'UPDATE',
             oldStatus: $oldStatus,
             newStatus: $maintenanceSystem->status,
@@ -397,6 +399,7 @@ class MaintenanceSystemController extends Controller
         $maintenanceSystem->update($data);
 
         $maintenanceSystem->writeLog(
+            id: $maintenanceSystem->id,
             action: 'CHANGE_STATUS',
             oldStatus: $oldStatus,
             newStatus: $maintenanceSystem->status,
@@ -487,6 +490,7 @@ class MaintenanceSystemController extends Controller
         $maintenanceSystem->update($data);
 
         $maintenanceSystem->writeLog(
+            id: $maintenanceSystem->id,
             action: 'CHANGE_STATUS_ADMIN',
             oldStatus: $oldStatus,
             newStatus: $maintenanceSystem->status,

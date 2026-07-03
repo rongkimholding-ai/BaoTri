@@ -3,11 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ProcessSlaFinalizationJob;
+use App\Jobs\ProcessSlaFinalizationSystemJob;
 use App\Queries\SlaDueQuery;
 use Illuminate\Console\Command;
-use App\Models\MaintenanceRequest;
-use App\Services\SlaAutoAcceptanceService;
-use Carbon\Carbon;
 
 class AutoSlaFinalizeCommand extends Command
 {
@@ -18,14 +16,29 @@ class AutoSlaFinalizeCommand extends Command
         $items = $query->get();
 
         if ($items->isEmpty()) {
-            $this->info("Không có Status nào cần Auto");
-            return;
+            $this->info("Không có Maintenances nào cần Auto");
+        } else {
+            foreach ($items as $item) {
+                logger('Dispatch Maintenances Job', ['id' => $item->id]);
+                ProcessSlaFinalizationJob::dispatch($item->id);
+            }
+
+            $this->info("Queued Maintenances: " . $items->count());
         }
 
-        foreach ($items as $item) {
-            ProcessSlaFinalizationJob::dispatch($item->id);
+        $systemItems = $query->getSystem();
+
+        if ($systemItems->isEmpty()) {
+            $this->info("Không có System nào cần Auto");
+        } else {
+            foreach ($systemItems as $item) {
+                logger('Dispatch System Job', ['id' => $item->id]);
+
+                ProcessSlaFinalizationSystemJob::dispatch($item->id);
+            }
+
+            $this->info("Queued System: " . $systemItems->count());
         }
 
-        $this->info("Queued: " . $items->count());
     }
 }

@@ -78,17 +78,21 @@ class MaintenanceSystem extends Model
     }
 
     public function writeLog(
+        string $id,
         string $action,
         ?string $oldStatus = null,
         ?string $newStatus = null,
         ?string $note = null
     ): void {
+        $performedBy = auth()->user()?->email ?? 'SYSTEM';
+
         $this->logs()->create([
+            'maintenance_system_id' => $id,
             'action' => $action,
             'old_status' => $oldStatus,
             'new_status' => $newStatus,
             'note' => $note,
-            'performed_by' => auth()->user()->email,
+            'performed_by' => $performedBy,
         ]);
     }
 }

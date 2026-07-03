@@ -3,6 +3,7 @@
 namespace App\Queries;
 
 use App\Models\MaintenanceRequest;
+use App\Models\MaintenanceSystem;
 
 class SlaDueQuery
 {
@@ -12,6 +13,24 @@ class SlaDueQuery
             ->whereIn('sla_status', [
                 config('sla_status.code.COMPLETED'),
                 config('sla_status.code.LATED'),
+            ])
+            ->where(function ($q) {
+                $q->where('is_confirmed', 0)
+                  ->orWhereNull('is_confirmed');
+            })
+            ->whereNotNull('actual_completion_date')
+            ->whereRaw('actual_completion_date <= DATE_SUB(NOW(), INTERVAL 3 DAY)')
+            // ->whereRaw('actual_completion_date <= DATE_SUB(NOW(), INTERVAL 2 MINUTE)')
+            ->limit(500)
+            ->get();
+    }
+
+    public function getSystem()
+    {
+        return MaintenanceSystem::query()
+            ->whereIn('status', [
+                config('sla_status.code_ht.COMPLETED'),
+                config('sla_status.code_ht.LATED'),
             ])
             ->where(function ($q) {
                 $q->where('is_confirmed', 0)
