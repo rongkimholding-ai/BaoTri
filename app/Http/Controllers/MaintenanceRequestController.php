@@ -32,6 +32,7 @@ class MaintenanceRequestController extends Controller
      */
     public function index(Request $request)
     {
+        session(['current_module' => 'facility']);
         $user = auth()->user();
         $role = $user->getRoleNames()->first();
         $email = strtolower($user->email);

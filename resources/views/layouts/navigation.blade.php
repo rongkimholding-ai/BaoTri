@@ -1,3 +1,6 @@
+@php
+    $module = session('current_module');
+@endphp
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -5,30 +8,34 @@
             <div class="flex">
                 <!-- Navigation Links -->
                 <div class="hidden sm:flex sm:items-center sm:ml-10 gap-8">
+                    @if($module === 'facility')
+                        {{-- Danh sách bảo trì --}}
+                        @can('view data')
+                            <a href="{{ route('maintenance-requests.index') }}"
+                                class="nav-item {{ request()->routeIs('maintenance-requests.*') ? 'active' : '' }}">
+                                Bảo trì cơ sở
+                            </a>
+                        @endcan
+                        @can('view report')
+                            {{-- Báo cáo --}}
+                            <a href="{{ route('reports.technicians') }}"
+                                class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                                Báo cáo Công việc
+                            </a>
+                        @endcan
+                    @endif
+                    @if($module === 'system')
 
-                    {{-- Danh sách bảo trì --}}
-                    <a href="{{ route('maintenance-requests.index') }}"
-                        class="nav-item {{ request()->routeIs('maintenance-requests.*') ? 'active' : '' }}">
-                        Bảo trì cơ sở
-                    </a>
+                        {{-- Danh sách CV hạ tầng --}}
+                        @can('view-system-task')
+                            <a href="{{ route('maintenance-system.index') }}"
+                                class="nav-item {{ request()->routeIs('maintenance-system.*') ? 'active' : '' }}">
+                                Bảo trì hạ tầng
+                            </a>
+                        @endcan
+                    @endif
 
-                    {{-- Danh sách CV hạ tầng --}}
-                    @can('view-system-task')
-                    <a href="{{ route('maintenance-system.index') }}"
-                        class="nav-item {{ request()->routeIs('maintenance-system.*') ? 'active' : '' }}">
-                        Bảo trì hạ tầng
-                    </a>
-                    @endcan
-
-                    @can('view report')
-                    {{-- Báo cáo --}}
-                    <a href="{{ route('reports.technicians') }}"
-                        class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                        Báo cáo Công việc
-                    </a>
-                    @endcan
                     @role('admin')
-
                     {{-- Ngày lễ --}}
                     <a href="{{ route('holiday-calendars.index') }}"
                         class="nav-item {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">
@@ -37,11 +44,8 @@
                     {{-- Hệ thống --}}
                     <div class="relative h-16 flex items-center" x-data="{ openSystem: false }">
 
-                    <button
-                        type="button"
-                        @click="openSystem = !openSystem"
-                        class="nav-item {{ request()->routeIs('users.*','roles.*','permissions.*') ? 'active' : '' }}"
-                    >
+                        <button type="button" @click="openSystem = !openSystem"
+                            class="nav-item {{ request()->routeIs('users.*', 'roles.*', 'permissions.*') ? 'active' : '' }}">
                             Hệ thống &nbsp;
 
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': openSystem }"

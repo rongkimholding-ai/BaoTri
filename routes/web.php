@@ -138,4 +138,15 @@ Route::get('/health-check', function () {
     ]);
 });
 
+Route::post('/select-module', function (\Illuminate\Http\Request $request) {
+
+    $request->validate([
+        'module' => 'required|in:facility,system'
+    ]);
+
+    session(['current_module' => $request->module]);
+
+    return redirect()->to($request->redirect);
+})->name('select-module');
+
 require __DIR__ . '/auth.php';

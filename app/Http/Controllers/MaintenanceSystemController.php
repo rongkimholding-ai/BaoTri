@@ -18,6 +18,7 @@ class MaintenanceSystemController extends Controller
 {
     public function index(Request $request)
     {
+        session(['current_module' => 'system']);
         $user = auth()->user();
         $role = $user->getRoleNames()->first();
         $email = strtolower($user->email);
@@ -100,6 +101,7 @@ class MaintenanceSystemController extends Controller
             },
             'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
             'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
+            'status'      => fn($q, $v) => $q->where('status', $v),
             'id'          => fn($q, $v) => $q->where('id', $v),
         ];
         foreach ($filters as $field => $filter) {
