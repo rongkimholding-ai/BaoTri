@@ -105,6 +105,12 @@
         "name": "Thu hồi / Bàn giao / Thanh lý",
         "processing_time": "OTHER",
         "processing_time_word": "Theo lịch bàn giao của của cơ sở"
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -139,6 +145,12 @@
         "processing_time": "4_HOURS",
         "processing_time_word": "Dưới 4 Tiếng",
         "max_second": 14400
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -187,6 +199,12 @@
         "processing_time": "4_HOURS",
         "processing_time_word": "Dưới 4 Tiếng",
         "max_second": 14400
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -221,6 +239,12 @@
         "processing_time": "4_HOURS",
         "processing_time_word": "Dưới 4 Tiếng",
         "max_second": 14400
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -268,6 +292,12 @@
         "name": "Kiểm tra lưu trữ & Góc quay",
         "processing_time": "OTHER",
         "processing_time_word": "Hàng tháng"
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -301,6 +331,12 @@
         "name": "Khảo sát & Tối ưu vùng phủ sóng",
         "processing_time": "OTHER",
         "processing_time_word": "Theo lịch"
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -342,6 +378,12 @@
         "processing_time": "8_HOURS",
         "processing_time_word": "Dưới 8 Tiếng",
         "max_second": 28800
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -376,6 +418,12 @@
         "processing_time": "4_HOURS",
         "processing_time_word": "Dưới 4 Tiếng",
         "max_second": 14400
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -410,6 +458,12 @@
         "processing_time": "8_HOURS",
         "processing_time_word": "Dưới 8 Tiếng",
         "max_second": 28800
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
     ]
   },
@@ -520,9 +574,13 @@
         "processing_time_word": "3 tháng/lần/cửa hàng",
         "detail": "Thực hiện quy trình test xả tải UPS bằng cách ngắt nguồn điện lưới đầu vào của tủ Rack trong vòng 5 phút, quan sát xem UPS có chuyển mạch sang chạy ắc quy ổn định không, đo thời gian suy giảm dung lượng pin để kịp thời phát hiện và thay thế các bình ắc quy bị chai, phồng trước khi xảy ra sự cố mất điện thực tế.",
         "deadline": "Tối thiểu 03 tháng/lần"
+      },
+      {
+        "key": "OTHER",
+        "name": "Các lỗi khác",
+        "processing_time": "8_HOURS",
+        "solution": "Đơn vị xử lý sẽ kiểm tra và lên phương án khắc phục."
       }
- 
- 
     ]
   }
 ]
