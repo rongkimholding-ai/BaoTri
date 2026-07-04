@@ -11,6 +11,10 @@ class StoreController extends Controller
 {
     public function index(Request $request)
     {
+        abort_unless(
+            auth()->user()->can('view-stores'),
+            403
+        );
         $query = Store::query();
 
         if ($request->filled('keyword')) {

@@ -35,11 +35,13 @@
                         @endcan
                     @endif
 
+                    @can('view-stores')
+                        <a href="{{ route('stores.index') }}"
+                            class="nav-item {{ request()->routeIs('stores.*') ? 'active' : '' }}">
+                            Cửa hàng
+                        </a>
+                    @endcan
                     @role('admin')
-                    <a href="{{ route('stores.index') }}"
-                                class="nav-item {{ request()->routeIs('stores.*') ? 'active' : '' }}">
-                                Cửa hàng
-                            </a>
                     {{-- Ngày lễ --}}
                     <a href="{{ route('holiday-calendars.index') }}"
                         class="nav-item {{ request()->routeIs('holiday-calendars.*') ? 'active' : '' }}">
@@ -139,7 +141,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div x-show="open" x-transition class="sm:hidden" @click.outside="open = false">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('maintenance-requests.index')"
                 :active="request()->routeIs('maintenance-requests.index')">
