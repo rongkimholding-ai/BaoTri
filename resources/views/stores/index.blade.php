@@ -4,11 +4,13 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Quản lý cửa hàng
             </h2>
+            @can('create-store')
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createStoreModal">
                     <i class="fa fa-plus"></i> Thêm cửa hàng
                 </button>
             </div>
+            @endcan
         </div>
 
         <form method="GET" action="{{ route('stores.index') }}" class="row g-3 mb-3">
@@ -49,19 +51,19 @@
                     <table class="table table-bordered table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th width="60">#</th>
+                                <th width="40">STT</th>
                                 <th>Cửa hàng</th>
                                 <th>AM</th>
                                 <th>OM</th>
                                 <th>KTV</th>
                                 <th>Email mua sắm</th>
-                                <th width="150">Thao tác</th>
+                                <th width="120">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                         @forelse($stores as $store)
                             <tr>
-                                <td>
+                                <td class="text-center">
                                     {{ $stores->firstItem() + $loop->index }}
                                 </td>
                                 <td>
@@ -89,6 +91,7 @@
                                 <td>{{ $store->technician_name }}</td>
                                 <td>{{ $store->muasam_email }}</td>
                                 <td>
+                                    @can('edit-store')
                                     <button type="button"
                                         class="btn btn-warning btn-sm btn-edit"
                                         data-id="{{ $store->id }}"
@@ -107,6 +110,8 @@
                                     >
                                         <i class="fa fa-edit"></i> Sửa
                                     </button>
+                                    @endcan
+                                    @can('delete-store')
                                     <form action="{{ route('stores.destroy', $store) }}" method="POST" class="d-inline"
                                           onsubmit="return confirm('Xóa cửa hàng này?')">
                                         @csrf
@@ -115,6 +120,7 @@
                                             <i class="fa fa-trash"></i> Xóa
                                         </button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty
