@@ -1,0 +1,1604 @@
+[
+  {
+    "code": "CC0001",
+    "fullName": "Trương Linh Chi",
+    "department": "Ban Giám Đốc CiCi",
+    "position": "Phó Tổng Giám Đốc CiCi Phụ Trách Mảng Đại Lý",
+    "phone": "0964426666",
+    "email": "ceo@thuongdinhyen.vn",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "VP022",
+    "fullName": "Lê Thị Kim Yến",
+    "department": "Ban Trợ Lý",
+    "position": "Thư Ký Chủ Tịch HĐQT",
+    "phone": "0977320290",
+    "email": "yenle.thuky@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP091",
+    "fullName": "Hoàng Thị Trang",
+    "department": "Ban Trợ Lý",
+    "position": "Trưởng Ban Trợ Lý",
+    "phone": "0983385080",
+    "email": "troly@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP434",
+    "fullName": "Lê Yến Phương",
+    "department": "Ban Trợ Lý",
+    "position": "Trợ lý Chủ Tịch HĐQT",
+    "phone": "0988170590",
+    "email": "phuongle.thuky@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP929",
+    "fullName": "Nguyễn Thế Hoàng",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hạ Tầng Kỹ Thuật",
+    "phone": "0979284181",
+    "email": "hoangnguyen.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP944",
+    "fullName": "Bùi Xuân Giáp",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "TBP Hỗ Trợ Phần Mềm Và Nghiệp Vụ",
+    "phone": "0976583124",
+    "email": "giapbui.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1117",
+    "fullName": "Phùng Minh Tú",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hạ Tầng Kỹ Thuật",
+    "phone": "0949522754",
+    "email": "phuntu94hp@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1117",
+    "fullName": "Phùng Minh Tú",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hạ Tầng Kỹ Thuật",
+    "phone": "0949522754",
+    "email": "tuphung.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1234",
+    "fullName": "Nguyễn Thị Hiền",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hỗ Trợ Phần Mềm Và Nghiệp Vụ",
+    "phone": "0961307087",
+    "email": "hiennguyen.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1241",
+    "fullName": "Hoàng Quốc Hoạt",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Quản Trị Hệ Thống",
+    "phone": "0985234416",
+    "email": "hoathoang.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1307",
+    "fullName": "Nguyễn Thị An",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hỗ Trợ Phần Mềm Và Nghiệp Vụ",
+    "phone": "0397004987",
+    "email": "annguyen.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1393",
+    "fullName": "Trịnh Duy Minh",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hạ Tầng Kỹ Thuật",
+    "phone": "0334750004",
+    "email": "minhtrinh.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1636",
+    "fullName": "Nguyễn Thị Huyền Thơ",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Hỗ Trợ Phần Mềm Và Nghiệp Vụ",
+    "phone": "0355740518",
+    "email": "thonguyen.it@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1749",
+    "fullName": "Vũ Hải Phong",
+    "department": "Phòng Công Nghệ Thông Tin",
+    "position": "NV Phát Triển Phần Mềm",
+    "phone": "0985906919",
+    "email": "phongvu.it@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB441",
+    "fullName": "Nguyễn Thu Trang",
+    "department": "Phòng Đào Tạo MB",
+    "position": "NV Đào Tạo",
+    "phone": "0343357134",
+    "email": "trangnguyen.daotao@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB1919",
+    "fullName": "Nguyễn Hữu Thắng",
+    "department": "Phòng Đào Tạo MB",
+    "position": "NV Đào Tạo",
+    "phone": "0387486342",
+    "email": "thangnguyen.daotao@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP865",
+    "fullName": "Nguyễn Thị Ngọc Phượng",
+    "department": "Phòng Đào Tạo MB",
+    "position": "TBP Đào Tạo Miền Bắc",
+    "phone": "0904466885",
+    "email": "ngocphuong.nguyen1407@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP865",
+    "fullName": "Nguyễn Thị Ngọc Phượng",
+    "department": "Phòng Đào Tạo MB",
+    "position": "TBP Đào Tạo Miền Bắc",
+    "phone": "0904466885",
+    "email": "phuongnguyen.daotao@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP979",
+    "fullName": "Trần Hải Mỹ Anh",
+    "department": "Phòng Đào Tạo MB",
+    "position": "NV Admin Đào Tạo",
+    "phone": "0387420428",
+    "email": "anhtran.daotao@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1524",
+    "fullName": "Nguyễn Thị Diệu Liên",
+    "department": "Phòng Đào Tạo MB",
+    "position": "NV Đào Tạo",
+    "phone": "0339544144",
+    "email": "liennguyen.daotao@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP305",
+    "fullName": "Nguyễn Văn Hưng",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "Truyền Thông Nội Bộ",
+    "phone": "0983140191",
+    "email": "hungnguyen.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP567",
+    "fullName": "Nguyễn Hải Yến",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Tiền Lương",
+    "phone": "0985719000",
+    "email": "huyennguyen.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP568",
+    "fullName": "Trần Thị Loan",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "Trưởng Nhóm C&B",
+    "phone": "0917921485",
+    "email": "loantran.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP913",
+    "fullName": "Hồ Thị Hạnh",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "TP Hành Chính Nhân Sự Toàn Quốc",
+    "phone": "0904190109",
+    "email": "hanhho.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1239",
+    "fullName": "Phạm Thị Linh Hằng",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Hành chính Văn Thư Lễ Tân",
+    "phone": "0868359398",
+    "email": "hangpham.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1505",
+    "fullName": "Nguyễn Mạnh Hiệp",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Quan Hệ Lao Động",
+    "phone": "0365459927",
+    "email": "hiepnguyen.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1505",
+    "fullName": "Nguyễn Mạnh Hiệp",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Quan Hệ Lao Động",
+    "phone": "0365459927",
+    "email": "hiepnguyen.hr@gdg.vn",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1508",
+    "fullName": "Phạm Thị Hạnh",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Tuyển Dụng",
+    "phone": "0942794123",
+    "email": "hanhpham.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1523",
+    "fullName": "Vũ Thuỳ Trang",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Tuyển Dụng",
+    "phone": "0844806373",
+    "email": "trangvu.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1525",
+    "fullName": "Đoàn Văn Tú",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Tiền Lương",
+    "phone": "0338002580",
+    "email": "tudoan.hr@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1547",
+    "fullName": "Nguyễn Khánh Huyền",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "NV Tuyển Dụng",
+    "phone": "0363928619",
+    "email": "huyennguyen1.hr@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1740",
+    "fullName": "Tưởng Vũ Hồng Nhung",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "Thực Tập Sinh Nhân Sự",
+    "phone": "0982075112",
+    "email": "hongnhung004qr@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1752",
+    "fullName": "Đoàn Trường Sơn",
+    "department": "Phòng Hành Chính Nhân Sự",
+    "position": "Thực Tập Sinh Nhân Sự",
+    "phone": "0936895206",
+    "email": "danhenry2018@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CC0006",
+    "fullName": "Hồ Thị Hằng",
+    "department": "Phòng Kế Toán CiCi",
+    "position": "NV Mua Sắm",
+    "phone": "0987017640",
+    "email": "hohanghatinh@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0353",
+    "fullName": "Phan Thị Bắc",
+    "department": "Phòng Kế Toán CiCi",
+    "position": "Kế Toán",
+    "phone": "0916710286",
+    "email": "bacphan.CC0353.cici@thuongdinhyen.vn",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0391",
+    "fullName": "Nguyễn Thị Luyên",
+    "department": "Phòng Kế Toán CiCi",
+    "position": "Kế toán doanh thu",
+    "phone": "0976857133",
+    "email": "n.t.luyenkt1990@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0511",
+    "fullName": "Ngô Thị Thanh Hiền",
+    "department": "Phòng Kế Toán CiCi",
+    "position": "Thực Tập Sinh Kế Toán",
+    "phone": "0342706189",
+    "email": "ngothithanhhien0919@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0524",
+    "fullName": "Nguyễn Ngọc Thư",
+    "department": "Phòng Kế Toán CiCi",
+    "position": "NV Kế Toán Kho",
+    "phone": "0965053840",
+    "email": "nguyenngocthu2002@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "VP558",
+    "fullName": "Hoàng Thị Minh",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "TBP Kiểm Toán Tài Chính Kiêm TBP Kiểm Toán Tuân Thủ",
+    "phone": "0346376233",
+    "email": "minhhoang.ksnb@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB2263",
+    "fullName": "Nguyễn Thị Huệ",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "NV Thanh Tra Hoạt Động Nhượng Quyền",
+    "phone": "0961443181",
+    "email": "huenguyen.ksnb@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1537",
+    "fullName": "Nguyễn Thị Lan Anh",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "NV Kiểm Soát Tài Chính",
+    "phone": "0941525919",
+    "email": "anhpham.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1575",
+    "fullName": "Trịnh Thị Minh Anh",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "NV Kiểm Soát Tài Chính",
+    "phone": "0333864907",
+    "email": "hoaile.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1604",
+    "fullName": "Nguyễn Văn Công",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "NV Kiểm Soát Tuân Thủ Cơ Sở",
+    "phone": "0986776710",
+    "email": "congnguyen1.ksnb@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB9565",
+    "fullName": "Trần Trọng Tư",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "NV Kiểm Soát Tuân Thủ Cơ Sở",
+    "phone": "0976009425",
+    "email": "tutran.ksnb@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1717",
+    "fullName": "Nguyễn Lương Trang",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "Trưởng nhóm kiểm soát tài chính",
+    "phone": "0352007533",
+    "email": "trangluong.ksnb@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1751",
+    "fullName": "Nguyễn Thị Mai Anh",
+    "department": "Phòng Kiểm Toán Nội Bộ",
+    "position": "NV Kiểm Soát Tuân Thủ Cơ Sở",
+    "phone": "0789300199",
+    "email": "anhnguyen1.ksnb@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "NMLG001",
+    "fullName": "Đinh Sơn Lâm",
+    "department": "Phòng Kinh Doanh Nguyên Liệu MB",
+    "position": "Trưởng Phòng Kinh Doanh Nguyên Liệu",
+    "phone": "0912125185",
+    "email": "dinhsonlam@gmail.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "NMLG002",
+    "fullName": "Nguyễn Thị Hương",
+    "department": "Phòng Kinh Doanh Nguyên Liệu MB",
+    "position": "NV Kinh Doanh Nguyên Liệu",
+    "phone": "0976450969",
+    "email": "thanhhatb1268@gmail.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "NMLG045",
+    "fullName": "Nguyễn Thu Trang",
+    "department": "Phòng Kinh Doanh Nguyên Liệu MB",
+    "position": "NV Kinh Doanh Nguyên Liệu",
+    "phone": "0968578894",
+    "email": "trangnguyen.kinhdoanh@nmlglobal.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "NMLG286",
+    "fullName": "Phạm Thị Duyên",
+    "department": "Phòng Kinh Doanh Nguyên Liệu MB",
+    "position": "NV Kinh Doanh Nguyên Liệu",
+    "phone": "0363278125",
+    "email": "duyenpham.kdnl@ciciholdings.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "NMLG305",
+    "fullName": "Nguyễn Thị Hiền",
+    "department": "Phòng Kinh Doanh Nguyên Liệu MB",
+    "position": "NV Kinh Doanh Nguyên Liệu",
+    "phone": "0969440864",
+    "email": "hiennguyen.kdnl@ciciholdings.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "NMLG312",
+    "fullName": "Vũ Tiến Nhật",
+    "department": "Phòng Kinh Doanh Nguyên Liệu MB",
+    "position": "NV Kinh Doanh Nguyên Liệu",
+    "phone": "0388130803",
+    "email": "nhatvu.kdnl@ciciholdings.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "CHMB190",
+    "fullName": "Nguyễn Thị Tình",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "TN Chăm Sóc Đại Lý",
+    "phone": "0965372016",
+    "email": "tinhnguyen.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1120",
+    "fullName": "Trần Thị Phương Anh",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "Sale Admin",
+    "phone": "0347376310",
+    "email": "anhpt11198@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1120",
+    "fullName": "Trần Thị Phương Anh",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "Sale Admin",
+    "phone": "0347376310",
+    "email": "anhtran.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB4639",
+    "fullName": "Đặng Thị Băng",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Phát Triển Đại Lý",
+    "phone": "0363494162",
+    "email": "bangdang.kdnq@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1310",
+    "fullName": "Phạm Thanh Hà",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "TN Chăm Sóc Đại Lý",
+    "phone": "0916525254",
+    "email": "hapham.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB9024",
+    "fullName": "Nguyễn Việt Linh",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "TN Chăm Sóc Đại Lý",
+    "phone": "0919576969",
+    "email": "linhnguyen.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1613",
+    "fullName": "Đỗ Thị Thu",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0326430487",
+    "email": "thudo1.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1661",
+    "fullName": "Đinh Thị Dưỡng",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "Trưởng Phòng Kinh Doanh Nhượng Quyền",
+    "phone": "0912913219",
+    "email": "duongdinh.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB10753",
+    "fullName": "Nguyễn Thị Minh Phương",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0564360504",
+    "email": "phuongnguyen.kdnq@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1691",
+    "fullName": "Nguyễn Thị Quỳnh Nga",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0961528859",
+    "email": "nganguyen1.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1705",
+    "fullName": "Nguyễn Thị Thu Ngọc",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0846382899",
+    "email": "ngocnguyen.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1743",
+    "fullName": "Phạm Văn Đức",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Phát Triển Đại Lý",
+    "phone": "0978868213",
+    "email": "ducpham.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1746",
+    "fullName": "Trần Đức Anh",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0935611168",
+    "email": "anhtran.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1755",
+    "fullName": "Bùi Thị Quỳnh Huê",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0945971997",
+    "email": "huebui.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1761",
+    "fullName": "Hoàng Phương Thảo",
+    "department": "Phòng Kinh Doanh Nhượng Quyền MB",
+    "position": "NV Phát Triển Đại Lý",
+    "phone": "0368306686",
+    "email": "thaohoang.kdnq@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP003",
+    "fullName": "Vũ Mai Phương",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "Trưởng phòng Kinh doanh",
+    "phone": "0946870990",
+    "email": "phuongvu.ksnb@tocotocotea.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0020",
+    "fullName": "Nguyễn Đức Văn Tú",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0965940700",
+    "email": "vantu17997@gmail.com",
+    "work_place": null
+  },
+  {
+    "code": "CC0261",
+    "fullName": "Nguyễn Hương Ly",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "Sale Admin",
+    "phone": "0905500893",
+    "email": "linienguyen2012@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "VP1556",
+    "fullName": "Nguyễn Minh Quân",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0936028263",
+    "email": "quannguyen.kdnq@tocotocotea.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0349",
+    "fullName": "Phạm Lệ Quyên",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0867053319",
+    "email": "plquyen612@gmai.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0414",
+    "fullName": "Trần Kim Khánh",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0365674371",
+    "email": "Trankimkhanh292000@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0431",
+    "fullName": "Trần Thị Minh Nguyệt",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0398496341",
+    "email": "nguyet.tranminh91@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0458",
+    "fullName": "Phạm Thị Quỳnh Trang",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0372368892",
+    "email": "trangphamtt0509@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0478",
+    "fullName": "Vũ Thế Anh",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Chăm Sóc Đại Lý",
+    "phone": "0866985131",
+    "email": "theanh1212003@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0486",
+    "fullName": "Nguyễn Mai Anh",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0913690217",
+    "email": "nmaianh881@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0498",
+    "fullName": "Tạ Thị Ngọc Châm",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "Kinh Doanh Sàn Thương Mại Điện Tử",
+    "phone": "0368507484",
+    "email": "ngoccham27102001@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0519",
+    "fullName": "Phạm Yến Nhi",
+    "department": "Phòng Kinh Doanh Online CiCi",
+    "position": "NV Sale Online FT",
+    "phone": "0368829735",
+    "email": "phamyennhi049@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "VP980",
+    "fullName": "Trần Thị Ánh",
+    "department": "Phòng Kỹ Thuật Công Nghệ",
+    "position": "NV R&D Nguyên Liệu",
+    "phone": "0919583527",
+    "email": "anhtran.ktcn@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1724",
+    "fullName": "Trần Thu Thủy",
+    "department": "Phòng Kỹ Thuật Công Nghệ",
+    "position": "NV R&D Sản Phẩm",
+    "phone": "0378657830",
+    "email": "thuytran.ktcn@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1730",
+    "fullName": "Nguyễn Việt Thọ",
+    "department": "Phòng Kỹ Thuật Công Nghệ",
+    "position": "NV R&D Sản Phẩm",
+    "phone": "0338425472",
+    "email": "thonguyen.ktcn@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1750",
+    "fullName": "Nguyễn Thị Tuyết",
+    "department": "Phòng Kỹ Thuật Công Nghệ",
+    "position": "Trưởng Phòng Kỹ Thuật Công Nghệ",
+    "phone": "0977552407",
+    "email": "tuyetnguyen.ktcn@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1760",
+    "fullName": "Nguyễn Thị Hoài Mến",
+    "department": "Phòng Kỹ Thuật Công Nghệ",
+    "position": "NV R&D Nguyên Liệu",
+    "phone": "0395798355",
+    "email": "mennguyen.ktcn@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX074",
+    "fullName": "Hà Minh Tuân",
+    "department": "Phòng Logistic",
+    "position": "NV Phụ Kho",
+    "phone": "0981106176",
+    "email": "tuanha.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX121",
+    "fullName": "Nguyễn Văn Hùng",
+    "department": "Phòng Logistic",
+    "position": "NV Lái Xe Nâng",
+    "phone": "0392124860",
+    "email": "hunvan.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX167",
+    "fullName": "Phan Lạc Thắng",
+    "department": "Phòng Logistic",
+    "position": "NV Phụ Kho",
+    "phone": "0986721278",
+    "email": "phanlacthang@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX172",
+    "fullName": "Nguyễn Thị Tố Loan",
+    "department": "Phòng Logistic",
+    "position": "NV Dữ Liệu Kho",
+    "phone": "0984654982",
+    "email": "loannguyen.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX174",
+    "fullName": "Nguyễn Phương Diệu",
+    "department": "Phòng Logistic",
+    "position": "NV Thủ Kho",
+    "phone": "0355944563",
+    "email": "dieunguyen.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX175",
+    "fullName": "Trần Hồng Phong",
+    "department": "Phòng Logistic",
+    "position": "NV Phụ Kho",
+    "phone": "0961851972",
+    "email": "tranphong311072@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX185",
+    "fullName": "Nguyễn Thị Thu Thúy",
+    "department": "Phòng Logistic",
+    "position": "NV Thủ Kho",
+    "phone": "0965708008",
+    "email": "thuynguyen.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX186",
+    "fullName": "Đỗ Thị Quyên",
+    "department": "Phòng Logistic",
+    "position": "NV Dữ Liệu Kho",
+    "phone": "0828885651",
+    "email": "quyendo.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX188",
+    "fullName": "Bùi Văn Dương",
+    "department": "Phòng Logistic",
+    "position": "NV Phụ Kho",
+    "phone": "0357037998",
+    "email": "buiduong1349@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX190",
+    "fullName": "Trần Văn Thiện",
+    "department": "Phòng Logistic",
+    "position": "NV Phụ Kho",
+    "phone": "0776368337",
+    "email": "tranthien110296@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX193",
+    "fullName": "Đoàn Thị Hằng Nga",
+    "department": "Phòng Logistic",
+    "position": "NV Thủ Kho",
+    "phone": "0983066082",
+    "email": "ngadoan.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX195",
+    "fullName": "Phùng Tuấn Anh",
+    "department": "Phòng Logistic",
+    "position": "NV Thủ Kho",
+    "phone": "0946619968",
+    "email": "anhphung.kho@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX197",
+    "fullName": "Đặng Sỹ Khoa",
+    "department": "Phòng Logistic",
+    "position": "NV Phụ Kho",
+    "phone": "0974672153",
+    "email": "dangsykhoa1979@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX198",
+    "fullName": "Đoàn Anh Đức",
+    "department": "Phòng Logistic",
+    "position": "Trưởng Phòng Logistic",
+    "phone": "0986989529",
+    "email": "Doan.anh.duchanoi1979@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "SX200",
+    "fullName": "Phạm Việt Anh",
+    "department": "Phòng Logistic",
+    "position": "NV Dữ Liệu Kho",
+    "phone": "0919935893",
+    "email": "anhpham.kho@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CC0028",
+    "fullName": "Nguyễn Việt Hà",
+    "department": "Phòng Marketing CiCi",
+    "position": "Digital Marketing",
+    "phone": "0865257890",
+    "email": "nguyenvietha2307@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0294",
+    "fullName": "Nguyễn Hữu Thắng",
+    "department": "Phòng Marketing CiCi",
+    "position": "Digital Marketing",
+    "phone": "0372191539",
+    "email": "thang057@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0300",
+    "fullName": "Nguyễn Kim Phong",
+    "department": "Phòng Marketing CiCi",
+    "position": "Digital Marketing",
+    "phone": "0971460002",
+    "email": "phonggoodly9@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0409",
+    "fullName": "Đào Lê Vân Anh",
+    "department": "Phòng Marketing CiCi",
+    "position": "Digital Marketing",
+    "phone": "0359033010",
+    "email": "van0136anh@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0437",
+    "fullName": "Phùng Thị Ngọc Anh",
+    "department": "Phòng Marketing CiCi",
+    "position": "NV Thiết Kế",
+    "phone": "0915078066",
+    "email": "ngocanh.hinanaxxi@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0446",
+    "fullName": "Chu Minh Tùng",
+    "department": "Phòng Marketing CiCi",
+    "position": "NV Media",
+    "phone": "0904889696",
+    "email": "chuminhtung98@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0452",
+    "fullName": "Đỗ Minh Quân",
+    "department": "Phòng Marketing CiCi",
+    "position": "Digital Marketing",
+    "phone": "0377504088",
+    "email": "quachit123@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "CC0459",
+    "fullName": "Phạm Tuấn Thành",
+    "department": "Phòng Marketing CiCi",
+    "position": "Content Marketing",
+    "phone": "0915644274",
+    "email": "tuannthanhhpyc@gmail.com",
+    "work_place": "CICI TĐY"
+  },
+  {
+    "code": "VP1738",
+    "fullName": "Đinh Thành Nam",
+    "department": "Phòng Marketing MB",
+    "position": "NV Local Store Trade Marketing",
+    "phone": "0982405090",
+    "email": "namdinh.mkt@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP280",
+    "fullName": "Nguyễn Hương Huế",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "TBP Mua Sắm",
+    "phone": "0915487819",
+    "email": "huenguyen.muahang@tocotocotea.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "VP549",
+    "fullName": "Nguyễn Thị Lệ Hằng",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "TBP Mua Sắm",
+    "phone": "0913298909",
+    "email": "hangnguyen.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP924",
+    "fullName": "Trần Ngọc Hưng",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "NV Mua Sắm",
+    "phone": "0376127131",
+    "email": "hungtran.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP995",
+    "fullName": "Nguyễn Quỳnh Vân",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "Trưởng Phòng Mua Sắm Toàn Quốc",
+    "phone": "0912649900",
+    "email": "van.nguyenquynh1977@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP995",
+    "fullName": "Nguyễn Quỳnh Vân",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "Trưởng Phòng Mua Sắm Toàn Quốc",
+    "phone": "0912649900",
+    "email": "vannguyen.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1125",
+    "fullName": "Lê Thị Kim Nguyệt",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "NV Mua Sắm",
+    "phone": "0878269526",
+    "email": "nguyetle.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1173",
+    "fullName": "Nguyễn Thị Ngọc Sen",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "NV Mua Sắm",
+    "phone": "0367654758",
+    "email": "sennguyen.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1324",
+    "fullName": "Giang Thị Lý",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "NV Mua Sắm",
+    "phone": "0982298358",
+    "email": "lygiang.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1736",
+    "fullName": "Nguyễn Thị Lan",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "NV Mua Sắm",
+    "phone": "0983361802",
+    "email": "lannguyen1.muasam@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1745",
+    "fullName": "Nguyễn Minh Châu",
+    "department": "Phòng Mua Sắm Và Kế Hoạch",
+    "position": "NV Mua Sắm",
+    "phone": "0826731134",
+    "email": "chaunguyen.muahang@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1628",
+    "fullName": "Trần Thị Thúy Hồng",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "Trưởng Phòng Quản Lý Chất Lượng Toàn Quốc",
+    "phone": "0987491682",
+    "email": "hongtran.qlcl@tocotocotea.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "VP1630",
+    "fullName": "Cao Thị Giang",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "NV QC Sản Phẩm Kho",
+    "phone": "0358965186",
+    "email": "giangcao.qlcl@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1653",
+    "fullName": "Đinh Minh Anh",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "NV QC Sản Phẩm Chuỗi CH",
+    "phone": "0868455180",
+    "email": "anhdinh.qlcl@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1655",
+    "fullName": "Nguyễn Thị Uyên",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "NV QC Sản Phẩm Chuỗi CH",
+    "phone": "0348074616",
+    "email": "uyennguyen.qlcl@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1695",
+    "fullName": "Lê Thị Hằng",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "NV QC Sản Phẩm Chuỗi CH",
+    "phone": "0973189701,0352 897 045",
+    "email": "hangle.qlcl@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1719",
+    "fullName": "Nguyễn Văn Khánh",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "NV QC Sản Phẩm Chuỗi CH",
+    "phone": "0357921757",
+    "email": "khanhnguyen.qlcl@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1729",
+    "fullName": "Hà Mạnh Đức",
+    "department": "Phòng Quản Lý Chất Lượng",
+    "position": "NV QC Sản Phẩm Chuỗi CH",
+    "phone": "0865448915",
+    "email": "ducha.qlcl@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP663",
+    "fullName": "Hoàng Mỹ Hương",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Trưởng nhóm Kế toán công nợ, thanh toán",
+    "phone": "0976116486",
+    "email": "huonghoang.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP860",
+    "fullName": "Kiều Huyền Trang",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Thanh Toán",
+    "phone": "0985425457",
+    "email": "kieutrang.tuu@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "NMLG039",
+    "fullName": "Vũ Hồng Hạnh",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Kế Toán Trưởng NML",
+    "phone": "0985694682",
+    "email": "hanhvu.ketoan@tocotocotea.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "VP1160",
+    "fullName": "Trần Thị Nguyệt",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Trưởng nhóm Tài chính",
+    "phone": "0987393771",
+    "email": "nguyettran.taichinh@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1160",
+    "fullName": "Trần Thị Nguyệt",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Trưởng nhóm Tài chính",
+    "phone": "0987393771",
+    "email": "senmuaha07@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1384",
+    "fullName": "Nguyễn Thị Thùy Linh",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Công Nợ Phải Trả",
+    "phone": "0373556338",
+    "email": "linhnguyen.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1418",
+    "fullName": "Nguyễn Hồng Ánh",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Công Nợ Phải Thu",
+    "phone": "0968969508",
+    "email": "anhnguyen.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1445",
+    "fullName": "Tạ Duy Cường",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "TN Kế Toán Kho Công ty",
+    "phone": "0976868015",
+    "email": "cuongta.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1445",
+    "fullName": "Tạ Duy Cường",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "TN Kế Toán Kho Công ty",
+    "phone": "0976868015",
+    "email": "taduycuongken@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1452",
+    "fullName": "Trần Thị Quyên",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Công Nợ Phải Trả",
+    "phone": "0356487582",
+    "email": "tranthiquyen020397@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1452",
+    "fullName": "Trần Thị Quyên",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Công Nợ Phải Trả",
+    "phone": "0356487582",
+    "email": "quyentran.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1462",
+    "fullName": "Nguyễn Hoàng Nam",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Kế toán doanh thu",
+    "phone": "0378864721",
+    "email": "namnguyenhoang_92@outlook.com.vn",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1462",
+    "fullName": "Nguyễn Hoàng Nam",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Kế toán doanh thu",
+    "phone": "0378864721",
+    "email": "namnguyen.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1485",
+    "fullName": "Hoàng Hồng Tuấn",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Thuế",
+    "phone": "0325783131",
+    "email": "tuanhoang1608.hvnh@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1485",
+    "fullName": "Hoàng Hồng Tuấn",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Thuế",
+    "phone": "0325783131",
+    "email": "tuanhoang.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "NMLG294",
+    "fullName": "Phạm Thị Thùy Linh",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Tài Sản",
+    "phone": "0965395627",
+    "email": "linhthuy1218@gmail.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "NMLG294",
+    "fullName": "Phạm Thị Thùy Linh",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Tài Sản",
+    "phone": "0965395627",
+    "email": "linhpham.ketoan@tocotocotea.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "VP1581",
+    "fullName": "Lê Thị Nhật",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Thuế",
+    "phone": "0369761901",
+    "email": "nhatle.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1632",
+    "fullName": "Lê Phương Thảo",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Công Nợ Phải Trả",
+    "phone": "0974383911",
+    "email": "dieunguyen.om@totcotocotea.com",
+    "work_place": "CICI H"
+  },
+  {
+    "code": "VP1643",
+    "fullName": "Đặng Thị Hà Phương",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Thuế",
+    "phone": "0944848313",
+    "email": "phuong6bnam@gmail.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "VP1648",
+    "fullName": "Ngô Thị Hồng",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Kho",
+    "phone": "0983256884",
+    "email": "\nhongngo.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1654",
+    "fullName": "Vi Thành Long",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Tài Chính",
+    "phone": "0823935707",
+    "email": "longvi.taichinh@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1700",
+    "fullName": "Ngô Thị Dung",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Kế Toán Tổng Hợp",
+    "phone": "0973371836",
+    "email": "dungngo.ketoan@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1739",
+    "fullName": "Vũ Ngọc Hà",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế toán Ngân hàng",
+    "phone": "0968413313",
+    "email": "havu.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1754",
+    "fullName": "Lại Thị Vân",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "Kế toán trưởng UNI",
+    "phone": "0904321699",
+    "email": "vanlai.ketoan@tocotocotea.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "VP1758",
+    "fullName": "Trương Văn Quý",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Quản Lý Kho Cơ Sở",
+    "phone": "0972678505",
+    "email": "quytruong.ketoan@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1759",
+    "fullName": "Nguyễn Quỳnh Chi",
+    "department": "Phòng Tài chính Kế toán MB",
+    "position": "NV Kế Toán Thuế",
+    "phone": "0945048803",
+    "email": "chinguyen.ketoan@tocotocotea.com",
+    "work_place": "UNI"
+  },
+  {
+    "code": "CHMB057",
+    "fullName": "Trần Văn Quý",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "OM",
+    "phone": "0977637084",
+    "email": "quytran.om@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB136",
+    "fullName": "Nguyễn Đức Minh",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "OM",
+    "phone": "0388354079",
+    "email": "minhnguyen.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB1427",
+    "fullName": "Nguyễn Ngọc Ánh",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0963768532",
+    "email": "anhnguyen.am@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB1963",
+    "fullName": "Nguyễn Quỳnh Trang",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "AM",
+    "phone": "0366556440",
+    "email": "trangnguyen.am@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP773",
+    "fullName": "Phạm Văn Ven",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Senior OM",
+    "phone": "0362261893",
+    "email": "rudoven.11@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB2819",
+    "fullName": "Phạm Thị Minh Nguyệt",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "AM",
+    "phone": "0787169676",
+    "email": "trangnguyet02112002@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB3100",
+    "fullName": "Lê Bá Hùng",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0967809271",
+    "email": "hungle.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB3331",
+    "fullName": "Đỗ Thị Mai Hồng",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0363556050",
+    "email": "hongdo.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB4884",
+    "fullName": "Lê Thùy Dương",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0368213064",
+    "email": "duongle.am.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB5575",
+    "fullName": "Phạm Đức Thắng",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0349748562",
+    "email": "thangpham.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1325",
+    "fullName": "Ngô Hải Nam",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "NV Admin Vận Hành",
+    "phone": "0338911453",
+    "email": "namngo.admin@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1360",
+    "fullName": "Nguyễn Anh Tuấn",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "OM",
+    "phone": "0982773115",
+    "email": "tuannguyen.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1399",
+    "fullName": "Đặng Khoa Tùng",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Senior AM",
+    "phone": "0376331695",
+    "email": "tungdang.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1400",
+    "fullName": "Lê Anh Tài",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting OM",
+    "phone": "0353313663",
+    "email": "taile.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB7153",
+    "fullName": "Lê Thị Kiều",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "AM",
+    "phone": "0399812110",
+    "email": "kieule.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1466",
+    "fullName": "Lê Đức Thọ",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Senior AM",
+    "phone": "0349621107,0779535069",
+    "email": "thole.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB7433",
+    "fullName": "Đỗ Anh Đạt",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0394896123",
+    "email": "doanhdat.13122001@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB7433",
+    "fullName": "Đỗ Anh Đạt",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0394896123",
+    "email": "datdo.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB9230",
+    "fullName": "Ngô Trung Hiếu",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0394700217",
+    "email": "hieungo.am@tocotocotea.com\n",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1617",
+    "fullName": "Đỗ Trung Anh",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Senior AM",
+    "phone": "0971244069",
+    "email": "trunganh031095@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "CHMB10081",
+    "fullName": "Vũ Thăng Long",
+    "department": "Phòng Vận Hành Miền Bắc",
+    "position": "Acting AM",
+    "phone": "0369028216",
+    "email": "longvu.am@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP761",
+    "fullName": "Nguyễn Thị Thúy Nga",
+    "department": "Phòng Xây Dựng",
+    "position": "TN Thiết Kế Xây Dựng",
+    "phone": "0344314655",
+    "email": "nguyenthithuynga301192@gmail.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP761",
+    "fullName": "Nguyễn Thị Thúy Nga",
+    "department": "Phòng Xây Dựng",
+    "position": "TN Thiết Kế Xây Dựng",
+    "phone": "0344314655",
+    "email": "nganguyen.support@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1706",
+    "fullName": "Nguyễn Đức Dư",
+    "department": "Phòng Xây Dựng",
+    "position": "TN Bảo Trì",
+    "phone": "0984476631",
+    "email": "dunguyen.support@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1710",
+    "fullName": "Nguyễn Văn Hoàng",
+    "department": "Phòng Xây Dựng",
+    "position": "NV Bảo trì",
+    "phone": "0357822338",
+    "email": "hoangnguyen.support@tocotocotea.com",
+    "work_place": "TACO"
+  },
+  {
+    "code": "VP1714",
+    "fullName": "Vũ Mạnh Hoà",
+    "department": "Phòng Xây Dựng",
+    "position": "NV Bảo trì",
+    "phone": "0961601851",
+    "email": "Manhhoavu459@gmail.com",
+    "work_place": "TACO"
+  }
+]
