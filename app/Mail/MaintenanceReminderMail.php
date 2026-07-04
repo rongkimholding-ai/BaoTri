@@ -23,7 +23,7 @@ class MaintenanceReminderMail extends Mailable
 
     public function envelope(): Envelope
     {
-        $cc = $this->getStoreCC();
+        $cc = $this->getCC();
 
         return new Envelope(
             subject: 'Nhắc việc Yêu cầu bảo trì',
@@ -31,45 +31,38 @@ class MaintenanceReminderMail extends Mailable
         );
     }
 
-    private function getStoreCC(): array
+    private function getCC(): array
     {
-        $cc = [];
+        $cc = config('mail.notification_cc', []);
         $storeCode = $this->maintenanceRequest->branch_code ?? null;
+        $storeEmail = $this->maintenanceRequest->branch_email ?? null;
 
-        if (!$storeCode) {
+        // Nếu không có code và cũng không có email thì return luôn
+        if (!$storeCode && !$storeEmail) {
             return $cc;
         }
+   
 
-        $files = [
-            resource_path('json/stores.json'),
-            resource_path('json/stores_mn.json'),
-            resource_path('json/stores_cici_mb.json'),
-            resource_path('json/stores_cici_mn.json'),
-        ];
+        // Lấy từ Store DB theo code hoặc name
+        $query = \App\Models\Store::query();
 
-        foreach ($files as $file) {
-            if (!file_exists($file)) {
-                continue;
+        if ($storeCode) {
+            $query->where('code', $storeCode);
+        } elseif ($storeEmail) {
+            $query->where('email', $storeEmail);
+        }
+
+        $store = $query->first();
+        if ($store) {
+            if (!empty($store->am_email)) {
+                $cc[] = $store->am_email;
             }
 
-            $stores = json_decode(file_get_contents($file), true);
-
-            foreach ($stores as $store) {
-                if (($store['code'] ?? null) === $storeCode) {
-
-                    if (!empty($store['am_email'])) {
-                        $cc[] = $store['am_email'];
-                    }
-
-                    if (!empty($store['om_email'])) {
-                        $cc[] = $store['om_email'];
-                    }
-
-                    break 2;
-                }
+            if (!empty($store->om_email)) {
+                $cc[] = $store->om_email;
             }
         }
 
-        return $cc;
+        return array_values(array_unique($cc));
     }
 }

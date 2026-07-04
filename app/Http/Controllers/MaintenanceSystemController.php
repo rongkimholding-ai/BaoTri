@@ -43,21 +43,8 @@ class MaintenanceSystemController extends Controller
             case 'om':
             case 'viewer':
                 if (!in_array($email, config('special_user.full_view'))) {
-                    $jsonPaths = [
-                        resource_path('json/stores.json'),
-                        resource_path('json/stores_mn.json'),
-                        resource_path('json/stores_cici_mb.json'),
-                        resource_path('json/stores_cici_mn.json'),
-                    ];
-                    $stores = [];
-                    foreach ($jsonPaths as $path) {
-                        if (is_file($path)) {
-                            $arr = json_decode(file_get_contents($path), true);
-                            if (is_array($arr)) {
-                                $stores = array_merge($stores, $arr);
-                            }
-                        }
-                    }
+                    // lấy theo Store từ DB
+                    $stores = \App\Models\Store::all()->toArray();
                     $branchEmails = collect($stores)
                         ->filter(function ($store) use ($email) {
                             return (
@@ -86,12 +73,19 @@ class MaintenanceSystemController extends Controller
         }
 
         // Filters
+        // Xử lý nhận giá trị mặc định ban đầu cho from_date và to_date (đầu/cuối tháng nếu không truyền lên)
+        $defaultFromDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $defaultToDate = Carbon::now()->endOfMonth()->format('Y-m-d');
         $filters = [
-            'from_date' => function ($q, $v) {
-                if ($v) $q->where('request_date', '>=', Carbon::parse($v)->startOfDay());
+            'from_date' => function ($q, $v) use ($defaultFromDate) {
+                // Nếu không có giá trị (không search), dùng ngày đầu tháng
+                $date = $v ?: $defaultFromDate;
+                if ($date) $q->where('request_date', '>=', Carbon::parse($date)->startOfDay());
             },
-            'to_date' => function ($q, $v) {
-                if ($v) $q->where('request_date', '<=', Carbon::parse($v)->endOfDay());
+            'to_date' => function ($q, $v) use ($defaultToDate) {
+                // Nếu không có giá trị (không search), dùng ngày cuối tháng
+                $date = $v ?: $defaultToDate;
+                if ($date) $q->where('request_date', '<=', Carbon::parse($date)->endOfDay());
             },
             'from_date_completed' => function ($q, $v) {
                 if ($v) $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay());
@@ -105,8 +99,13 @@ class MaintenanceSystemController extends Controller
             'id'          => fn($q, $v) => $q->where('id', $v),
         ];
         foreach ($filters as $field => $filter) {
-            if ($request->filled($field)) {
-                $filter($baseQuery, $request->$field);
+            // from_date & to_date: chèn mặc định nếu không search
+            if (in_array($field, ['from_date', 'to_date'])) {
+                $filter($baseQuery, $request->input($field));
+            } else {
+                if ($request->filled($field)) {
+                    $filter($baseQuery, $request->$field);
+                }
             }
         }
 
@@ -604,22 +603,25 @@ class MaintenanceSystemController extends Controller
 
     public function getData()
     {
-        $jsonPathNorth = resource_path('json/stores.json');
-        $jsonPathSouth = resource_path('json/stores_mn.json');
-        $jsonPathCiciNorth = resource_path('json/stores_cici_mb.json');
-        $jsonPathCiciSouth = resource_path('json/stores_cici_mn.json');
-        $storesNorth = json_decode(file_get_contents($jsonPathNorth), true);
-        $storesSouth = json_decode(file_get_contents($jsonPathSouth), true);
-        $storesCiciNorth = json_decode(file_get_contents($jsonPathCiciNorth), true);
-        $storesCiciSouth = json_decode(file_get_contents($jsonPathCiciSouth), true);
+        // Lấy dữ liệu theo giá trị trong db của Store (model tại app/Models/Store.php)
+        // Đưa về dạng phân chia theo area là 'north' hoặc 'south'
+        $stores = \App\Models\Store::all()->toArray();
 
-        // Tạo cấu trúc rõ 2 miền
-        $data = [
-            'mien_bac' => $storesNorth,
-            'mien_nam' => $storesSouth,
-            'cici_mien_bac' => $storesCiciNorth,
-            'cici_mien_nam' => $storesCiciSouth,
+        $groupedStores = [
+            'mien_bac' => [],
+            'mien_nam' => [],
         ];
+
+        foreach ($stores as $store) {
+            $area = strtolower($store['area'] ?? '');
+            if ($area === 'north') {
+                $groupedStores['mien_bac'][] = $store;
+            } elseif ($area === 'south') {
+                $groupedStores['mien_nam'][] = $store;
+            }
+        }
+
+        $data = $groupedStores;
 
         return $data;
     }

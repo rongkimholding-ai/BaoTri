@@ -24,35 +24,7 @@ class MaintenanceCompletedMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        $cc = [];
-
-        $storeCode = $this->maintenanceRequest->branch_code;
-
-        $store = app(StoreService::class)
-            ->findByCode($storeCode);
-
-        if ($store) {
-
-            if (!empty($store['am_email'])) {
-                $cc[] = $store['am_email'];
-            }
-
-            if (!empty($store['om_email'])) {
-                $cc[] = $store['om_email'];
-            }
-        }
-
-        $defaultCc = config(
-            'mail.notification_cc',
-            []
-        );
-
-        $cc = array_unique(
-            array_merge(
-                $defaultCc,
-                $cc
-            )
-        );
+        $cc = $this->getCC();
 
         return new Envelope(
             subject: 'Yêu cầu bảo trì đã được hỗ trợ',
@@ -73,5 +45,40 @@ class MaintenanceCompletedMail extends Mailable implements ShouldQueue
     public function attachments(): array
     {
         return [];
+    }
+
+    private function getCC(): array
+    {
+        $cc = config('mail.notification_cc', []);
+        $storeCode = $this->maintenanceRequest->branch_code ?? null;
+        $storeEmail = $this->maintenanceRequest->branch_email ?? null;
+
+        // Nếu không có code và cũng không có email thì return luôn
+        if (!$storeCode && !$storeEmail) {
+            return $cc;
+        }
+   
+
+        // Lấy từ Store DB theo code hoặc name
+        $query = \App\Models\Store::query();
+
+        if ($storeCode) {
+            $query->where('code', $storeCode);
+        } elseif ($storeEmail) {
+            $query->where('email', $storeEmail);
+        }
+
+        $store = $query->first();
+        if ($store) {
+            if (!empty($store->am_email)) {
+                $cc[] = $store->am_email;
+            }
+
+            if (!empty($store->om_email)) {
+                $cc[] = $store->om_email;
+            }
+        }
+
+        return array_values(array_unique($cc));
     }
 }

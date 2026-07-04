@@ -19,33 +19,11 @@ class StoreService
 
                 $result = [];
 
-                $files = [
-                    resource_path('json/stores.json'),
-                    resource_path('json/stores_mn.json'),
-                    resource_path('json/stores_cici_mb.json'),
-                    resource_path('json/stores_cici_mn.json'),
-                ];
-
-                foreach ($files as $file) {
-
-                    if (!file_exists($file)) {
-                        continue;
-                    }
-
-                    $json = file_get_contents($file);
-
-                    $stores = json_decode(
-                        $json,
-                        true
-                    );
-
-                    if (is_array($stores)) {
-                        $result = array_merge(
-                            $result,
-                            $stores
-                        );
-                    }
-                }
+                // Lấy danh sách store từ DB thay vì file JSON
+                $result = \App\Models\Store::all()->map(function ($store) {
+                    return $store->toArray();
+                })->toArray();
+        
 
                 return $result;
             }

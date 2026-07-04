@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\MaintenanceRequest;
+use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -29,47 +30,48 @@ class MaintenanceByBranchExport implements
     protected $toDateCompleted;
     protected $techEmails;
 
-    protected Collection $stores;
+    /**
+     * Map: branch_code(string) => Store
+     */
+    protected Collection $storesByCode;
 
-    public function __construct($fromDate, $toDate,$fromDateCompleted, $toDateCompleted,array $techEmails = [])
+    /**
+     * Map: normalized_branch_name(string) => Store
+     * (chỉ lấy store đầu tiên theo branch_name chuẩn hóa về lower-case + gộp space, loại bỏ null key)
+     */
+    protected Collection $storesByName;
+
+    public function __construct($fromDate, $toDate, $fromDateCompleted, $toDateCompleted, array $techEmails = [])
     {
-        $this->fromDate = Carbon::parse($fromDate)->startOfDay();
-        $this->toDate = Carbon::parse($toDate)->endOfDay();
-        $this->fromDateCompleted = Carbon::parse($fromDateCompleted)->startOfDay();
-        $this->toDateCompleted = Carbon::parse($toDateCompleted)->endOfDay();
+        $this->fromDate = $fromDate ? Carbon::parse($fromDate)->startOfDay() : null;
+        $this->toDate = $toDate ? Carbon::parse($toDate)->endOfDay() : null;
+        $this->fromDateCompleted = $fromDateCompleted ? Carbon::parse($fromDateCompleted)->startOfDay() : null;
+        $this->toDateCompleted = $toDateCompleted ? Carbon::parse($toDateCompleted)->endOfDay() : null;
         $this->techEmails = $techEmails;
 
-        // Lấy dữ liệu từ cả stores.json và stores_mn.json, sau đó merge lại theo 'code'
-        $storesJson = collect(
-            json_decode(
-                file_get_contents(resource_path('json/stores.json')),
-                true
-            )
-        );
-        $storesMnJson = collect(
-            json_decode(
-                file_get_contents(resource_path('json/stores_mn.json')),
-                true
-            )
-        );
-        $storesMnCiciJson = collect(
-            json_decode(
-                file_get_contents(resource_path('json/stores_cici_mn.json')),
-                true
-            )
-        );
-        $storesMbCiciJson = collect(
-            json_decode(
-                file_get_contents(resource_path('json/stores_cici_mb.json')),
-                true
-            )
-        );
-        // Gộp 2 collection, ưu tiên dữ liệu từ stores_mn.json khi trùng 'code'
-        $this->stores = $storesJson
-            ->concat($storesMnJson)
-            ->concat($storesMnCiciJson)
-            ->concat($storesMbCiciJson)
-            ->keyBy('code');
+        $stores = Store::all();
+
+        $storesByCode = [];
+        $storesByName = [];
+
+        foreach ($stores as $store) {
+            // Map by branch_code if code is not null/empty
+            $code = trim((string) $store->code);
+            if ($code !== '' && $code !== null) {
+                $storesByCode[$code] = $store;
+            }
+
+            // Map by normalized branch_name (trim, lower, collapse multi-spaces), skip if null or empty
+            if (isset($store->name) && trim($store->name) !== '') {
+                $normalizedName = preg_replace('/\s+/', ' ', mb_strtolower(trim($store->name)));
+                // Only store the first occurrence (usually enough for reporting by display name, can be changed to array if want all matches)
+                if (!isset($storesByName[$normalizedName])) {
+                    $storesByName[$normalizedName] = $store;
+                }
+            }
+        }
+        $this->storesByCode = collect($storesByCode);
+        $this->storesByName = collect($storesByName);
     }
 
     public function collection()
@@ -83,7 +85,7 @@ class MaintenanceByBranchExport implements
             ->selectRaw("
                 SUM(
                     CASE
-                        WHEN sla_status = '".config('sla_status.code.COMPLETED')."'
+                        WHEN sla_status = '" . config('sla_status.code.COMPLETED') . "'
                         THEN 1
                         ELSE 0
                     END
@@ -92,38 +94,45 @@ class MaintenanceByBranchExport implements
             ->selectRaw("
                 SUM(
                     CASE
-                        WHEN sla_status <> '".config('sla_status.code.COMPLETED')."'
+                        WHEN sla_status <> '" . config('sla_status.code.COMPLETED') . "'
                         THEN 1
                         ELSE 0
                     END
                 ) as overdue_requests
-            ")
-            ->whereBetween(
+            ");
+
+        if ($this->fromDate !== null && $this->toDate !== null) {
+            $query->whereBetween(
                 DB::raw('DATE(request_date)'),
                 [
                     $this->fromDate,
                     $this->toDate
                 ]
-                )
-            ->whereBetween(
+            );
+        }
+
+        if ($this->fromDateCompleted !== null && $this->toDateCompleted !== null) {
+            $query->whereBetween(
                 DB::raw('DATE(actual_completion_date)'),
                 [
                     $this->fromDateCompleted,
                     $this->toDateCompleted
                 ]);
+        }
 
-            // if (!empty($this->techEmails)) {
-            //     $query->whereIn(
-            //         'technician_email',
-            //         $this->techEmails
-            //     );
-            // }
-            return $query->groupBy(
-                        'branch_code',
-                        'branch_name'
-                    )
-                    ->orderBy('branch_code')
-                    ->get();
+        if (!empty($this->techEmails)) {
+            $query->whereIn(
+                'technician_email',
+                $this->techEmails
+            );
+        }
+
+        return $query->groupBy(
+                'branch_code',
+                'branch_name'
+            )
+            ->orderBy('branch_code')
+            ->get();
     }
 
     public function headings(): array
@@ -141,13 +150,38 @@ class MaintenanceByBranchExport implements
 
     public function map($row): array
     {
-        $store = $this->stores[$row->branch_code] ?? null;
+        $store = null;
+
+        // Ưu tiên ánh xạ theo branch_code nếu có (không null, không rỗng)
+        $code = trim((string) $row->branch_code);
+        if ($code !== '' && $code !== null) {
+            $store = $this->storesByCode[$code] ?? null;
+        }
+
+        // Nếu không tìm thấy bằng branch_code, thử với normalized branch_name
+        if (!$store) {
+            $normalizedBranchName = preg_replace('/\s+/', ' ', mb_strtolower(trim($row->branch_name)));
+            $store = $this->storesByName[$normalizedBranchName] ?? null;
+        }
+
+        // Chuẩn hóa extract được trường am_name, om_name
+        $am = '';
+        $om = '';
+        if ($store) {
+            if (is_object($store)) {
+                $am = $store->am_name ?? '';
+                $om = $store->om_name ?? '';
+            } elseif (is_array($store)) { // fallback if for any reason it's array
+                $am = $store['am_name'] ?? '';
+                $om = $store['om_name'] ?? '';
+            }
+        }
 
         return [
             $row->branch_code,
             $row->branch_name,
-            $store['am_name'] ?? '',
-            $store['om_name'] ?? '',
+            $am,
+            $om,
             $row->total_requests,
             $row->ontime_requests,
             $row->overdue_requests,
@@ -161,11 +195,7 @@ class MaintenanceByBranchExport implements
 
                 $sheet = $event->sheet->getDelegate();
 
-                /*
-                |--------------------------------------------------------------------------
-                | Thêm dòng tiêu đề
-                |--------------------------------------------------------------------------
-                */
+                // Thêm dòng tiêu đề đầu
                 $sheet->insertNewRowBefore(1, 1);
 
                 $title =
@@ -180,20 +210,10 @@ class MaintenanceByBranchExport implements
                 $highestRow = $sheet->getHighestRow();
                 $highestColumn = $sheet->getHighestColumn();
 
-                /*
-                |--------------------------------------------------------------------------
-                | Freeze Pane
-                |--------------------------------------------------------------------------
-                | Dòng 1: Tiêu đề
-                | Dòng 2: Header
-                */
+                // Freeze Pane
                 $sheet->freezePane('A3');
 
-                /*
-                |--------------------------------------------------------------------------
-                | Style tiêu đề
-                |--------------------------------------------------------------------------
-                */
+                // Style tiêu đề
                 $sheet->getStyle('A1:G1')->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -214,11 +234,7 @@ class MaintenanceByBranchExport implements
                     ],
                 ]);
 
-                /*
-                |--------------------------------------------------------------------------
-                | Style Header
-                |--------------------------------------------------------------------------
-                */
+                // Style Header
                 $sheet->getStyle('A2:G2')->applyFromArray([
                     'font' => [
                         'bold' => true,
@@ -240,11 +256,7 @@ class MaintenanceByBranchExport implements
                     ],
                 ]);
 
-                /*
-                |--------------------------------------------------------------------------
-                | Border toàn bảng
-                |--------------------------------------------------------------------------
-                */
+                // Border toàn bảng
                 $sheet->getStyle(
                     "A1:{$highestColumn}{$highestRow}"
                 )->applyFromArray([
@@ -258,54 +270,34 @@ class MaintenanceByBranchExport implements
                     ],
                 ]);
 
-                /*
-                |--------------------------------------------------------------------------
-                | Border ngoài đậm hơn
-                |--------------------------------------------------------------------------
-                */
+                // Border ngoài đậm hơn
                 $sheet->getStyle(
                     "A1:{$highestColumn}{$highestRow}"
                 )->getBorders()
                     ->getOutline()
                     ->setBorderStyle(Border::BORDER_MEDIUM);
 
-                /*
-                |--------------------------------------------------------------------------
-                | Auto row height
-                |--------------------------------------------------------------------------
-                */
-                foreach (range(1, $highestRow) as $row) {
-                    $sheet->getRowDimension($row)
+                // Auto row height
+                foreach (range(1, $highestRow) as $rowNum) {
+                    $sheet->getRowDimension($rowNum)
                         ->setRowHeight(-1);
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | Căn giữa header
-                |--------------------------------------------------------------------------
-                */
+                // Căn giữa header
                 $sheet->getStyle('A2:G2')
                     ->getAlignment()
                     ->setHorizontal(
                         Alignment::HORIZONTAL_CENTER
                     );
 
-                /*
-                |--------------------------------------------------------------------------
-                | Căn giữa cột số
-                |--------------------------------------------------------------------------
-                */
+                // Căn giữa các cột số
                 $sheet->getStyle("E3:G{$highestRow}")
                     ->getAlignment()
                     ->setHorizontal(
                         Alignment::HORIZONTAL_CENTER
                     );
 
-                /*
-                |--------------------------------------------------------------------------
-                | Căn giữa dọc toàn bảng
-                |--------------------------------------------------------------------------
-                */
+                // Căn giữa dọc toàn bảng
                 $sheet->getStyle(
                     "A1:{$highestColumn}{$highestRow}"
                 )->getAlignment()
@@ -313,22 +305,14 @@ class MaintenanceByBranchExport implements
                         Alignment::VERTICAL_CENTER
                     );
 
-                /*
-                |--------------------------------------------------------------------------
-                | Chiều cao dòng
-                |--------------------------------------------------------------------------
-                */
+                // Chiều cao dòng
                 $sheet->getRowDimension(1)
                     ->setRowHeight(28);
 
                 $sheet->getRowDimension(2)
                     ->setRowHeight(40);
 
-                /*
-                |--------------------------------------------------------------------------
-                | Width cố định đẹp hơn AutoSize
-                |--------------------------------------------------------------------------
-                */
+                // Đặt chiều rộng cột cố định
                 $sheet->getColumnDimension('A')->setWidth(15);
                 $sheet->getColumnDimension('B')->setWidth(40);
                 $sheet->getColumnDimension('C')->setWidth(25);
