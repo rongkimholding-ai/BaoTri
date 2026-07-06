@@ -601,6 +601,48 @@ class MaintenanceSystemController extends Controller
         );
     }
 
+    /**
+     * Cập nhật trường actual_duration cho một MaintenanceSystem cụ thể.
+     * Tính actual_duration dựa trên request_date và completed_at (hoặc ngày hiện tại nếu chưa có completed_at).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateActualDuration($id)
+    {
+        $item = MaintenanceSystem::find($id);
+
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy bản ghi.'
+            ], 404);
+        }
+
+        // Kiểm tra các trường cần thiết
+        if (!$item->request_date) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Thiếu trường request_date.'
+            ], 400);
+        }
+
+        // Nếu chưa có actual_completion_date thì lấy ngày hiện tại
+        $end = $item->actual_completion_date ?? now();
+
+        // Sử dụng service đã có để tính actual_duration (giả sử là chuỗi 'HH:MM:SS')
+        $slaService = app(SlaCalculatorService::class);
+        $actualDuration = $slaService->calculate($item, Carbon::parse($end));
+
+        $item->actual_duration = $actualDuration;
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'actual_duration' => $actualDuration
+        ]);
+    }
+
     public function getData()
     {
         // Lấy dữ liệu theo giá trị trong db của Store (model tại app/Models/Store.php)

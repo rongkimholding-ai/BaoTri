@@ -145,6 +145,13 @@
                                                 @role('admin')
                                                 <li>
                                                     <a href="javascript:void(0)"
+                                                        class="dropdown-item"
+                                                        onclick="updateActualDuration({{ $item->id }}, this)">
+                                                        <i class="bi bi-arrow-repeat"></i> Cập nhật thời gian thực tế
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0)"
                                                         class="dropdown-item admin-change-status-system-btn"
                                                         data-bs-toggle="modal" data-bs-target="#changeStatusSystemModal"
                                                         data-id="{{ $item->id }}" data-current-status="{{ $item->status }}">
@@ -398,4 +405,32 @@
             }
         });
     });
+    </script>
+    <script>
+        function updateActualDuration(id, el) {
+            if (!confirm('Bạn có chắc muốn cập nhật lại thời gian thực tế?')) return;
+            el.disabled = true;
+
+            fetch('/maintenance-system/update-actual-duration/' + id, {
+                method: 'PUT',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    alert('Đã cập nhật thời gian thực tế thành công!');
+                    window.location.reload();
+                } else {
+                    alert((data && data.message) ? data.message : 'Lỗi không xác định!');
+                    el.disabled = false;
+                }
+            })
+            .catch(() => {
+                alert('Có lỗi xảy ra!');
+                el.disabled = false;
+            });
+        }
     </script>
