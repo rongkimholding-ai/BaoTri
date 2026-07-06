@@ -222,6 +222,15 @@ class MaintenanceSystemController extends Controller
         $data['created_by'] = auth()->user()->email ?? null;
         $data['request_date'] = now();
         $data['status'] = 'NEW';
+        // Nếu ngày request_date là thứ 7 hoặc Chủ Nhật (cuối tuần) thì bật các flag tương ứng
+        $requestDate = now();
+        $weekday = Carbon::parse($requestDate)->dayOfWeekIso; // 6: Thứ 7, 7: CN
+        if ($weekday == 6) {
+            $data['include_saturday'] = true;
+        }
+        if ($weekday == 7) {
+            $data['include_sunday'] = true;
+        }
 
         $maintenanceSystem = MaintenanceSystem::create($data);
 
