@@ -643,6 +643,28 @@ class MaintenanceSystemController extends Controller
         ]);
     }
 
+    public function setIncludeWeekendTrue($id)
+    {
+        $item = MaintenanceSystem::find($id);
+
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy bản ghi.'
+            ], 404);
+        }
+
+        $item->include_saturday = true;
+        $item->include_sunday = true;
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'include_saturday' => $item->include_saturday,
+            'include_sunday' => $item->include_sunday,
+        ]);
+    }
+
     public function getData()
     {
         // Lấy dữ liệu theo giá trị trong db của Store (model tại app/Models/Store.php)

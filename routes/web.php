@@ -63,6 +63,9 @@ Route::middleware('auth')->group(function () {
             Route::put('/update-actual-duration/{id}', [MaintenanceSystemController::class, 'updateActualDuration'])
                 ->name('update-actual-duration');
 
+            Route::put('/include-weekend/{id}', [MaintenanceSystemController::class, 'setIncludeWeekendTrue'])
+                ->name('include-weekend');
+       
             Route::get('/{maintenanceSystem}', [MaintenanceSystemController::class, 'show'])->name('show');
 
             Route::get('/{maintenanceSystem}/edit', [MaintenanceSystemController::class, 'edit'])->name('edit');
