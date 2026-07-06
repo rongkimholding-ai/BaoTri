@@ -451,85 +451,105 @@ class MaintenanceRequestController extends Controller
         ]);
     }
 
+    /**
+     * Tối ưu xử lý thay đổi trạng thái cho web & mobile, tránh block UI mobile lâu hoặc treo.
+     */
     public function changeStatus(
         ChangeMaintenanceStatusRequest $request,
         MaintenanceRequest $maintenanceRequest
-    )
-    {
+    ) {
         $validated = $request->validated();
         $status = $validated['status'];
         $oldStatus = $maintenanceRequest->sla_status;
         $now = now();
+        $statusConfig = config('sla_status.code');
+        $user = auth()->user();
 
         $data = [
             'sla_status'   => $status,
             'delay_reason' => $request->note,
         ];
 
-        switch ($status) {
-            case config('sla_status.code.WAITING_CONFIRM'):
-                $completedAt = $now;
-                $data['actual_completion_date'] = $completedAt;
-                $data['delay_reason'] = '';
+        // Tối ưu riêng trạng thái WAITING_CONFIRM (giao diện mobile hay bị treo do tính toán lâu)
+        if ($status === $statusConfig['WAITING_CONFIRM']) {
+            $completedAt = $now;
 
-                $data['actual_duration'] = app(SlaCalculatorService::class)
-                ->calculate(
-                    $maintenanceRequest,
-                    $completedAt
-                );
+            $data['actual_completion_date'] = $completedAt;
+            $data['delay_reason'] = '';
 
-                if (auth()->user()->email === 'baotri@tocotocotea.com') {
-                    $data['is_off_worktime'] = true;
-                    // Get selected technician email from request
-                    $selectedTechEmail = $request->input('tech_mail');
-                    if ($selectedTechEmail) {
-                        $technicians = config('technician');
-                        // Remove any non-numeric key (like 'ngoai_gio')
-                        $techList = array_filter($technicians, function ($key) {
-                            return is_int($key) || ctype_digit((string) $key);
-                        }, ARRAY_FILTER_USE_KEY);
+            // Thay đổi: Không thực hiện tính toán SlaCalculatorService trực tiếp (có thể chậm), lưu lại trạng thái, dữ liệu còn lại xử lý async phía sau
+            $data['actual_duration'] = null; // Bỏ tính sync, sẽ update duration ở tiến trình nền/queue sau
 
-                        // Find technician matching selected email
-                        $selectedTech = collect($techList)->first(function ($tech) use ($selectedTechEmail) {
-                            return isset($tech['email']) && $tech['email'] === $selectedTechEmail;
-                        });
-                        if ($selectedTech) {
-                            $data['technician_email'] = $selectedTech['email'];
-                            $data['technician_name'] = $selectedTech['name'];
-                            $data['technician_mobile'] = $selectedTech['mobile'];
+            // Nếu cần đảm bảo duration ngay lập tức cho web, chỉ thực hiện cho request qua web (User-Agent hoặc request flag)
+            if (
+                (!request()->hasHeader('X-Client-Type') || request()->header('X-Client-Type') !== 'mobile')
+                && !$request->input('fast_mode', false)
+            ) {
+                // Web: thử tính luôn, nếu lỗi -> fallback
+                try {
+                    $data['actual_duration'] = app(SlaCalculatorService::class)
+                        ->calculate($maintenanceRequest, $completedAt);
+                } catch (\Throwable $e) {
+                    \Log::warning('SLA duration calculation fallback (web)', [
+                        'request_id' => $maintenanceRequest->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $data['actual_duration'] = '00:00:00';
+                }
+            } else {
+                // Mobile: sẽ đẩy tiến trình riêng để job queue cập nhật sau, không chặn UI
+                dispatch(function () use ($maintenanceRequest, $completedAt) {
+                    try {
+                        $duration = app(SlaCalculatorService::class)->calculate($maintenanceRequest->fresh(), $completedAt);
+                        $maintenanceRequest->update(['actual_duration' => $duration]);
+                    } catch (\Throwable $e) {
+                        \Log::error('SLA duration calculation failed (async)', [
+                            'request_id' => $maintenanceRequest->id,
+                            'error' => $e->getMessage(),
+                        ]);
+                        $maintenanceRequest->update(['actual_duration' => '00:00:00']);
+                    }
+                })->delay(1); // dispatch ngay lập tức
+            }
+
+            // Xử lý kỹ thuật viên chọn ngoài giờ nếu là mail bảo trì
+            if ($user->email === 'baotri@tocotocotea.com') {
+                $data['is_off_worktime'] = true;
+                // Lấy kỹ thuật viên chọn từ form (mobile/web)
+                $selectedTechEmail = $request->input('tech_mail');
+                if ($selectedTechEmail) {
+                    $selectedTech = null;
+
+                    foreach (config('technician', []) as $tech) {
+                        if (($tech['email'] ?? null) === $selectedTechEmail) {
+                            $selectedTech = $tech;
+                            break;
                         }
                     }
+
+                    if ($selectedTech) {
+                        $data['technician_email'] = $selectedTech['email'];
+                        $data['technician_name'] = $selectedTech['name'];
+                        $data['technician_mobile'] = $selectedTech['mobile'];
+                    }
                 }
-
-                break;
-
-            case config('sla_status.code.CONFIRMED'):
-                $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
-                break;
-        }
-
-        if ($status === config('sla_status.code.PENDING')) {
-            $data['pending_at'] = $now;
-            // Gửi mail thông báo khi mua sắm xong
-            try {
-                Mail::to($maintenanceRequest->technician_email)
-                    ->queue(new MaintenanceBuyerMail($maintenanceRequest));
-            } catch (\Throwable $e) {
-                \Log::error('Failed to send maintenance completed email', [
-                    'id' => $maintenanceRequest->id,
-                    'branch_email' => $maintenanceRequest->technician_email,
-                    'error' => $e->getMessage(),
-                ]);
             }
         }
-        if ($status === config('sla_status.code.PENDING_CONTRACTOR')) {
+
+        // Các trạng thái khác xử lý như cũ
+        if ($status === $statusConfig['CONFIRMED']) {
+            $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
+        }
+
+        if ($status === $statusConfig['PENDING']) {
             $data['pending_at'] = $now;
         }
-
-        if ($status === config('sla_status.code.CONTINUE_PROCESSING')) {
+        if ($status === $statusConfig['PENDING_CONTRACTOR']) {
+            $data['pending_at'] = $now;
+        }
+        if ($status === $statusConfig['CONTINUE_PROCESSING']) {
             $data['processing_at'] = $now;
         }
-
         if ($status === config('sla_status.code.REOPEN')) {
             $data = array_merge($data, [
                 'acceptance_result' => null,
@@ -539,7 +559,6 @@ class MaintenanceRequestController extends Controller
                 'is_confirmed' => false,
             ]);
         }
-        // dd($data);
 
         DB::transaction(function () use (
             $maintenanceRequest,
@@ -548,7 +567,6 @@ class MaintenanceRequestController extends Controller
             $status,
             $request
         ) {
-
             $maintenanceRequest->update($data);
 
             MaintenanceRequestLog::create([
@@ -558,16 +576,28 @@ class MaintenanceRequestController extends Controller
                 'new_status'             => $status,
                 'note'                   => $request->note,
             ]);
-
         });
 
-        $maintenanceRequest->refresh();
+        // Gọi các xử lý sau khi update trạng thái (upload ảnh, gửi mail, auto-confirm...)
+        // Có thể cân nhắc cho mobile: một số tác vụ nặng nên delay bằng queue/job
 
-        $this->afterStatusChanged(
-            $maintenanceRequest,
-            $status,
-            $request
-        );
+        // Nếu mobile, chỉ chạy các hàm sau trong queue để không block response cho người dùng di động
+        $isMobile = (request()->hasHeader('X-Client-Type') && request()->header('X-Client-Type') === 'mobile')
+            || $request->input('fast_mode', false);
+
+        if ($isMobile) {
+            // Queue thực hiện afterStatusChanged cho mobile (không block API/UI)
+            dispatch(function () use ($maintenanceRequest, $status, $request) {
+                $this->afterStatusChanged($maintenanceRequest->fresh(), $status, $request);
+            })->delay(1);
+        } else {
+            // Web vẫn xử lý synchronous
+            $this->afterStatusChanged(
+                $maintenanceRequest,
+                $status,
+                $request
+            );
+        }
 
         return response()->json([
             'success'    => true,
@@ -872,9 +902,11 @@ class MaintenanceRequestController extends Controller
 
     private function autoConfirm(MaintenanceRequest $maintenanceRequest): void
     {
-        $maintenanceRequest->refresh();
-
         $newStatus = $this->determineSlaStatus($maintenanceRequest);
+
+        if ($maintenanceRequest->sla_status === $newStatus) {
+            return;
+        }
 
         DB::transaction(function () use ($maintenanceRequest, $newStatus) {
 
@@ -890,8 +922,6 @@ class MaintenanceRequestController extends Controller
                 'note' => 'Auto duyệt yêu cầu',
             ]);
         });
-
-        $maintenanceRequest->refresh();
     }
 
     private function handleUploadImages(
@@ -908,10 +938,11 @@ class MaintenanceRequestController extends Controller
         }
     
         $tempFiles = [];
+        $files = $request->file('images', []);
     
-        foreach ($request->file('images') as $file) {
+        foreach ($files as $file) {
     
-            $tempName = Str::uuid().'.'.$file->getClientOriginalExtension();
+            $tempName = Str::uuid().'.'.$file->extension();
     
             $file->storeAs(
                 'temp-maintenance',
@@ -945,12 +976,12 @@ class MaintenanceRequestController extends Controller
     
                     break;
     
-                // case config('sla_status.code.PENDING'):
+                case config('sla_status.code.PENDING'):
     
-                //     Mail::to($maintenanceRequest->technician_email)
-                //         ->queue(new MaintenanceBuyerMail($maintenanceRequest));
+                    Mail::to($maintenanceRequest->technician_email)
+                        ->queue(new MaintenanceBuyerMail($maintenanceRequest));
     
-                //     break;
+                    break;
             }
     
         } catch (\Throwable $e) {
