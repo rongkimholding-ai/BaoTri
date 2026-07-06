@@ -483,7 +483,7 @@ class MaintenanceSystemController extends Controller
                     $start = $maintenanceSystem->request_date;
                     $end = $data['completed_at'] ?? $maintenanceSystem->completed_at;
                     $actualDuration = ceil((strtotime($end) - strtotime($start)) / 60);
-                    $data['actual_duration'] = $actualDuration;
+                    // $data['actual_duration'] = $actualDuration;
                 }
                 $data['delay_reason'] = '';
                 break;
