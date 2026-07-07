@@ -8,6 +8,7 @@ use App\Mail\MaintenanceSystemAcceptanceMail;
 use App\Mail\MaintenanceSystemCompletedMail;
 use App\Mail\MaintenanceSystemReminderMail;
 use App\Models\MaintenanceSystem;
+use App\Models\MaintenanceSystemLog;
 use App\Services\SlaCalculatorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -388,10 +389,6 @@ class MaintenanceSystemController extends Controller
                     $maintenanceSystem,
                     $completedAt
                 );
-                $this->afterStatusChanged(
-                    $maintenanceSystem,
-                    $validated['status']
-                );
                 break;
             case 'COMPLETED':
                 if (!$maintenanceSystem->completed_at) {
@@ -427,6 +424,11 @@ class MaintenanceSystemController extends Controller
             newStatus: $maintenanceSystem->status,
             note: $validated['note'] ?? null
         );
+        
+        $this->afterStatusChanged(
+            $maintenanceSystem,
+            $validated['status']
+        );
 
         return response()->json([
             'success'    => true,
@@ -438,6 +440,9 @@ class MaintenanceSystemController extends Controller
         MaintenanceSystem $maintenanceSystem,
         string $requestStatus,
     ): void {
+        if ($requestStatus == config('sla_status.code_ht.WAITING_CONFIRM')) {
+            $this->autoConfirm($maintenanceSystem);
+        }
     
         // Gửi mail
         $this->handleSendMail(
@@ -608,6 +613,27 @@ class MaintenanceSystemController extends Controller
             'success',
             'Đã xóa dữ liệu.'
         );
+    }
+
+    private function autoConfirm(MaintenanceSystem $maintenanceSystem): void
+    {
+        $newStatus = config('sla_status.code_ht.CONFIRMED');
+
+        DB::transaction(function () use ($maintenanceSystem, $newStatus) {
+
+            $maintenanceSystem->update([
+                'status' => $newStatus,
+            ]);
+            $oldStatus = config('sla_status.code_ht.WAITING_CONFIRM');
+
+            $maintenanceSystem->writeLog(
+                id: $maintenanceSystem->id,
+                action: 'CHANGE_STATUS',
+                oldStatus: $oldStatus,
+                newStatus: $newStatus,
+                note: 'Auto duyệt yêu cầu'
+            );
+        });
     }
 
     /**
