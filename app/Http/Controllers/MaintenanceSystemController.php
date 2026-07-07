@@ -248,8 +248,14 @@ class MaintenanceSystemController extends Controller
                 $sendMail = $maintenanceSystem->technician_email;
                 \Mail::to($sendMail)->queue(new MaintenanceSystemReminderMail($maintenanceSystem));
             } catch (\Throwable $e) {
-                \Log::error('Failed to send maintenance reminder email', [
-                    'id' => $maintenanceSystem->id,
+                // \Log::error('Failed to send maintenance reminder email', [
+                //     'id' => $maintenanceSystem->id,
+                //     'email' => $maintenanceSystem->technician_email,
+                //     'error' => $e->getMessage(),
+                // ]);
+                \App\Services\LogService::error('queue',"Failed to queue system reminder email", [
+                    'time' => microtime(true),
+                    'request_id' => $maintenanceSystem->id,
                     'email' => $maintenanceSystem->technician_email,
                     'error' => $e->getMessage(),
                 ]);
@@ -597,6 +603,11 @@ class MaintenanceSystemController extends Controller
                 'id' => $item->id,
                 'error' => $e->getMessage(),
             ]);
+            \App\Services\LogService::error('queue',"Failed to queue system acceptance email", [
+                    'time' => microtime(true),
+                    'request_id' => $item->id,
+                    'error' => $e->getMessage(),
+                ]);
         }
 
 
@@ -786,11 +797,18 @@ class MaintenanceSystemController extends Controller
     
         } catch (\Throwable $e) {
     
-            \Log::error('Send mail failed', [
-                'maintenance_request_id' => $maintenanceRequest->id,
-                'status' => $requestedStatus,
-                'message' => $e->getMessage(),
-            ]);
+            // \Log::error('Send mail failed', [
+            //     'maintenance_request_id' => $maintenanceRequest->id,
+            //     'status' => $requestedStatus,
+            //     'message' => $e->getMessage(),
+            // ]);
+            
+            \App\Services\LogService::error('queue',"Failed to queue system send email", [
+                    'time' => microtime(true),
+                    'request_id' => $maintenanceRequest->id,
+                    'status' => $requestedStatus,
+                    'error' => $e->getMessage(),
+                ]);
         }
     }
 }

@@ -687,52 +687,168 @@ $(function () {
         ).show();
     });
 
-    $('#confirmChangeStatus').on('click', function () {
-        let id = $('#statusRequestId').val();
-        let note = $('#statusNote').val();
-        let tech_mail = $('#technicianSelect').val();
-        let status;
+    // $('#confirmChangeStatus').on('click', function () {
+    //     let id = $('#statusRequestId').val();
+    //     let note = $('#statusNote').val();
+    //     let tech_mail = $('#technicianSelect').val();
+    //     let status;
+    //     let btn = $('#confirmChangeStatus');
+    //     btn.prop('disabled', true);
     
-        if ($('#statusSelectWrapper').hasClass('d-none')) {
-            status = $('#newStatus').val();
-        } else {
-            status = $('#statusSelect').val();
-        }
+    //     if ($('#statusSelectWrapper').hasClass('d-none')) {
+    //         status = $('#newStatus').val();
+    //     } else {
+    //         status = $('#statusSelect').val();
+    //     }
     
-        if (
-            status == window.slaStatusCodes.WAITING_CONFIRM &&
-            $('#completionImages')[0].files.length === 0
-        ) {
-            alert('Vui lòng tải lên ít nhất 1 ảnh.');
-            return;
-        }
+    //     if (
+    //         status == window.slaStatusCodes.WAITING_CONFIRM &&
+    //         $('#completionImages')[0].files.length === 0
+    //     ) {
+    //         alert('Vui lòng tải lên ít nhất 1 ảnh.');
+    //         return;
+    //     }
     
-        let formData = new FormData();
+    //     let formData = new FormData();
     
-        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-        formData.append('_method', 'PATCH');
-        formData.append('status', status);
-        formData.append('note', note);
-        formData.append('tech_mail', tech_mail);
+    //     formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+    //     formData.append('_method', 'PATCH');
+    //     formData.append('status', status);
+    //     formData.append('note', note);
+    //     formData.append('tech_mail', tech_mail);
     
-        let files = $('#completionImages')[0].files;
+    //     let files = $('#completionImages')[0].files;
     
-        for (let i = 0; i < files.length; i++) {
-            formData.append('images[]', files[i]);
-        }
+    //     for (let i = 0; i < files.length; i++) {
+    //         formData.append('images[]', files[i]);
+    //     }
     
-        $.ajax({
-            url: `/maintenance-requests/${id}/status`,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
+    //     $.ajax({
+    //         url: `/maintenance-requests/${id}/status`,
+    //         type: 'POST',
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
     
-            success: function () {
-                location.reload();
+    //         success: function () {
+    //             location.reload();
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.log(xhr);
+    //             console.log(status);
+    //             console.log(error);
+    //             alert('Có lỗi xảy ra: ' + xhr.status);
+            
+    //         },
+    //         complete:function(){
+    //             btn.prop('disabled',false);
+    //         }
+    //     });
+    // });
+
+    $(document)
+        .off('click', '#confirmChangeStatus')
+        .on('click', '#confirmChangeStatus', function () {
+            const btn = $(this);
+            if (btn.prop('disabled')) return;
+
+            const id = $('#statusRequestId').val();
+            const note = $('#statusNote').val();
+            const tech_mail = $('#technicianSelect').val();
+            const isStatusSelectHidden = $('#statusSelectWrapper').hasClass('d-none');
+            const status = isStatusSelectHidden ? $('#newStatus').val() : $('#statusSelect').val();
+            const imageInput = $('#completionImages')[0];
+            const images = imageInput.files;
+
+            if (
+                status === window.slaStatusCodes.WAITING_CONFIRM &&
+                images.length === 0
+            ) {
+                alert('Vui lòng tải lên ít nhất 1 ảnh.');
+                return;
             }
+
+            const formData = new FormData();
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            formData.append('_method', 'PATCH');
+            formData.append('status', status);
+            formData.append('note', note);
+            formData.append('tech_mail', tech_mail);
+
+            Array.from(images).forEach(file => {
+                formData.append('images[]', file);
+            });
+
+            btn.prop('disabled', true);
+
+            $.ajax({
+                url: `/maintenance-requests/${id}/status`,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 1200000,
+
+                beforeSend() {
+                    console.log('Change status start', { id, status, imageCount: images.length });
+                },
+
+                xhr() {
+                    const xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', function (e) {
+                            if (e.lengthComputable) {
+                                const percent = Math.round(e.loaded / e.total * 100);
+                                console.log('Upload progress', `${percent}%`);
+                            }
+                        }, false);
+                    }
+                    return xhr;
+                },
+
+                success() {
+                    location.reload();
+                },
+
+                error(xhr, textStatus, errorThrown) {
+                    console.error('Change status error', {
+                        status: xhr.status,
+                        textStatus,
+                        error: errorThrown,
+                        response: xhr.responseText
+                    });
+
+                    if (textStatus === 'timeout') {
+                        alert('Hệ thống xử lý quá lâu hoặc kết nối mạng không ổn định. Vui lòng kiểm tra lại sau.');
+                        return;
+                    }
+
+                    if (xhr.status === 422) {
+                        try {
+                            const errors = xhr.responseJSON.errors;
+                            const message = Object.values(errors).map(arr => arr[0]).join('\n');
+                            alert(message);
+                        } catch {
+                            alert('Dữ liệu không hợp lệ.');
+                        }
+                        return;
+                    }
+
+                    if (xhr.status === 419) {
+                        alert('Phiên đăng nhập đã hết hạn. Vui lòng tải lại trang.');
+                        return;
+                    }
+
+                    alert('Có lỗi xảy ra khi chuyển trạng thái.');
+                },
+
+                complete() {
+                    btn.prop('disabled', false);
+                    console.log('Change status complete');
+                }
+            });
         });
-    });
 
     $(document).on(
         'click',

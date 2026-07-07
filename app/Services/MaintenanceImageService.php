@@ -55,11 +55,17 @@ class MaintenanceImageService
                 $afterSave($storagePath);
             }
         } catch (\Throwable $e) {
-            Log::error('Upload maintenance image failed', [
-                'request_id' => $requestId,
-                'file_name' => $logFileName ?? (is_object($input) && method_exists($input, 'getClientOriginalName') ? $input->getClientOriginalName() : (string)$storagePath),
-                'error' => $e->getMessage(),
-            ]);
+            // Log::error('Upload maintenance image failed', [
+            //     'request_id' => $requestId,
+            //     'file_name' => $logFileName ?? (is_object($input) && method_exists($input, 'getClientOriginalName') ? $input->getClientOriginalName() : (string)$storagePath),
+            //     'error' => $e->getMessage(),
+            // ]);
+            \App\Services\LogService::error('maintenance',"Upload maintenance image failed", [
+                    'time' => microtime(true),
+                    'request_id' => $requestId,
+                    'file_name' => $logFileName ?? (is_object($input) && method_exists($input, 'getClientOriginalName') ? $input->getClientOriginalName() : (string)$storagePath),
+                    'error' => $e->getMessage(),
+                ]);
             throw $e;
         }
     }

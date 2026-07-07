@@ -34,8 +34,12 @@ class ProcessSlaFinalizationJob implements ShouldQueue
 
         // $status = $service->evaluate($item);
 
-        \Log::info('AUTO SLA', [
-            'id' => $item->id,
+        // \Log::info('AUTO SLA', [
+        //     'id' => $item->id,
+        // ]);
+        \App\Services\LogService::maintenance("AUTO SLA", [
+            'time' => microtime(true),
+            'request_id' => $item->id,
         ]);
 
         $item->update([

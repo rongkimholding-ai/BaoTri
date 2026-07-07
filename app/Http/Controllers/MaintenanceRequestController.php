@@ -45,13 +45,13 @@ class MaintenanceRequestController extends Controller
             case 'technician':
                 $baseQuery->where(function ($q) use ($user) {
                     $q->where('technician_email', $user->email)
-                      ->orWhere('created_by', $user->email);
+                        ->orWhere('created_by', $user->email);
                 });
                 break;
             case 'user':
                 $baseQuery->where(function ($q) use ($user) {
                     $q->where('branch_email', $user->email)
-                      ->orWhere('created_by', $user->email);
+                        ->orWhere('created_by', $user->email);
                 });
                 break;
             case 'manager':
@@ -62,7 +62,7 @@ class MaintenanceRequestController extends Controller
                 if (!in_array($email, config('special_user.full_view'))) {
                     // lấy theo Store từ DB
                     $stores = \App\Models\Store::all()->toArray();
-            
+
                     $emails = collect($stores)
                         ->filter(function ($store) use ($email) {
                             return (
@@ -155,7 +155,7 @@ class MaintenanceRequestController extends Controller
         $processingRequests = $addOrderBySeverity(
             tap($baseQueryClone(), function ($q) use ($completedStatus, $latedStatus, $newStatus) {
                 $q->whereNotIn('sla_status', [$completedStatus, $latedStatus, $newStatus])
-                  ->where('is_confirmed', '!=', true);
+                    ->where('is_confirmed', '!=', true);
             })
         )->paginate(20, ['*'], 'processing_page')->withQueryString();
 
@@ -246,11 +246,17 @@ class MaintenanceRequestController extends Controller
                 \Mail::to($sendMail)->queue(new MaintenanceReminderMail($created));
                 $created->increment('reminder_count', 1, ['last_reminded_at' => now()]);
             } catch (\Throwable $e) {
-                \Log::error('Failed to send maintenance reminder email', [
-                    'id' => $created->id,
+                \App\Services\LogService::error('maintenance',"AUTO SLA SYSTEM", [
+                    'time' => microtime(true),
+                    'request_id' => $created->id,
                     'email' => $created->technician_email,
                     'error' => $e->getMessage(),
                 ]);
+                // \Log::error('Failed to send maintenance reminder email', [
+                //     'id' => $created->id,
+                //     'email' => $created->technician_email,
+                //     'error' => $e->getMessage(),
+                // ]);
             }
         }
 
@@ -272,10 +278,10 @@ class MaintenanceRequestController extends Controller
         ]);
 
         $title = 'Chi tiết yêu cầu #' . $maintenanceRequest->id;
-    
+
         return view(
             'maintenance.show',
-            compact('maintenanceRequest','title')
+            compact('maintenanceRequest', 'title')
         );
     }
 
@@ -285,7 +291,7 @@ class MaintenanceRequestController extends Controller
         $maintenanceRequest->load(['images']);
         $logs = $this->logs($maintenanceRequest);
 
-    
+
         return view(
             'maintenance.partials.detail',
             compact('maintenanceRequest')
@@ -458,12 +464,17 @@ class MaintenanceRequestController extends Controller
         ChangeMaintenanceStatusRequest $request,
         MaintenanceRequest $maintenanceRequest
     ) {
+        \App\Services\LogService::maintenance("ENTER changeStatus", [
+            'time' => microtime(true),
+        ]);
+   
         $validated = $request->validated();
         $status = $validated['status'];
         $oldStatus = $maintenanceRequest->sla_status;
         $now = now();
         $statusConfig = config('sla_status.code');
         $user = auth()->user();
+        $start = microtime(true);
 
         $data = [
             'sla_status'   => $status,
@@ -479,37 +490,16 @@ class MaintenanceRequestController extends Controller
 
             // Thay đổi: Không thực hiện tính toán SlaCalculatorService trực tiếp (có thể chậm), lưu lại trạng thái, dữ liệu còn lại xử lý async phía sau
             $data['actual_duration'] = null; // Bỏ tính sync, sẽ update duration ở tiến trình nền/queue sau
-
-            // Nếu cần đảm bảo duration ngay lập tức cho web, chỉ thực hiện cho request qua web (User-Agent hoặc request flag)
-            if (
-                (!request()->hasHeader('X-Client-Type') || request()->header('X-Client-Type') !== 'mobile')
-                && !$request->input('fast_mode', false)
-            ) {
-                // Web: thử tính luôn, nếu lỗi -> fallback
-                try {
-                    $data['actual_duration'] = app(SlaCalculatorService::class)
-                        ->calculate($maintenanceRequest, $completedAt);
-                } catch (\Throwable $e) {
-                    \Log::warning('SLA duration calculation fallback (web)', [
-                        'request_id' => $maintenanceRequest->id,
-                        'error' => $e->getMessage(),
-                    ]);
-                    $data['actual_duration'] = '00:00:00';
-                }
-            } else {
-                // Mobile: sẽ đẩy tiến trình riêng để job queue cập nhật sau, không chặn UI
-                dispatch(function () use ($maintenanceRequest, $completedAt) {
-                    try {
-                        $duration = app(SlaCalculatorService::class)->calculate($maintenanceRequest->fresh(), $completedAt);
-                        $maintenanceRequest->update(['actual_duration' => $duration]);
-                    } catch (\Throwable $e) {
-                        \Log::error('SLA duration calculation failed (async)', [
-                            'request_id' => $maintenanceRequest->id,
-                            'error' => $e->getMessage(),
-                        ]);
-                        $maintenanceRequest->update(['actual_duration' => '00:00:00']);
-                    }
-                })->delay(1); // dispatch ngay lập tức
+            // Web: thử tính luôn, nếu lỗi -> fallback
+            try {
+                $data['actual_duration'] = app(SlaCalculatorService::class)
+                    ->calculate($maintenanceRequest, $completedAt);
+            } catch (\Throwable $e) {
+                \App\Services\LogService::error('maintenance','SLA duration calculation fallback (web)', [
+                    'request_id' => $maintenanceRequest->id,
+                    'error' => $e->getMessage(),
+                ]);
+                $data['actual_duration'] = '00:00:00';
             }
 
             // Xử lý kỹ thuật viên chọn ngoài giờ nếu là mail bảo trì
@@ -560,13 +550,14 @@ class MaintenanceRequestController extends Controller
             ]);
         }
 
-        DB::transaction(function () use (
-            $maintenanceRequest,
-            $data,
-            $oldStatus,
-            $status,
-            $request
-        ) {
+        \App\Services\LogService::maintenance('UPDATE TRANSACTION START', [
+            'data' => $data,
+            'old_status' => $oldStatus,
+            'new_status' => $status,
+            'request_id' => $maintenanceRequest->id,
+        ]);
+
+        DB::transaction(function () use ($maintenanceRequest, $data, $oldStatus, $status, $request) {
             $maintenanceRequest->update($data);
 
             MaintenanceRequestLog::create([
@@ -578,31 +569,40 @@ class MaintenanceRequestController extends Controller
             ]);
         });
 
-        // Gọi các xử lý sau khi update trạng thái (upload ảnh, gửi mail, auto-confirm...)
-        // Có thể cân nhắc cho mobile: một số tác vụ nặng nên delay bằng queue/job
+        \App\Services\LogService::maintenance('UPDATE DONE', [
+            'duration' => microtime(true) - $start,
+            'request_id' => $maintenanceRequest->id,
+        ]);
+        $maintenanceRequest->refresh();
 
-        // Nếu mobile, chỉ chạy các hàm sau trong queue để không block response cho người dùng di động
-        $isMobile = (request()->hasHeader('X-Client-Type') && request()->header('X-Client-Type') === 'mobile')
-            || $request->input('fast_mode', false);
-
-        if ($isMobile) {
-            // Queue thực hiện afterStatusChanged cho mobile (không block API/UI)
-            dispatch(function () use ($maintenanceRequest, $status, $request) {
-                $this->afterStatusChanged($maintenanceRequest->fresh(), $status, $request);
-            })->delay(1);
-        } else {
+        DB::afterCommit(function() use ($maintenanceRequest, $status, $request) {
             // Web vẫn xử lý synchronous
             $this->afterStatusChanged(
                 $maintenanceRequest,
                 $status,
                 $request
             );
-        }
+        });
 
-        return response()->json([
-            'success'    => true,
+        \App\Services\LogService::maintenance('AFTER STATUS DONE', [
+            'duration' => microtime(true) - $start,
+            'request_id' => $maintenanceRequest->id,
+        ]);
+
+        $response = response()->json([
+            'success' => true,
             'sla_status' => $maintenanceRequest->sla_status,
         ]);
+
+        \App\Services\LogService::maintenance('RETURN RESPONSE', [
+            'status' => $response->status(),
+            'request_id' => $maintenanceRequest->id,
+        ]);
+        \App\Services\LogService::maintenance("LEAVE changeStatus", [
+            'time' => microtime(true),
+        ]);
+
+        return $response;
     }
 
     private function afterStatusChanged(
@@ -610,19 +610,19 @@ class MaintenanceRequestController extends Controller
         string $requestedStatus,
         ChangeMaintenanceStatusRequest $request
     ): void {
-        
+
         // Xử lý theo trạng thái thực tế sau update
         if ($requestedStatus === config('sla_status.code.WAITING_CONFIRM')) {
             $this->autoConfirm($maintenanceRequest);
         }
-    
+
         // Upload ảnh
         $this->handleUploadImages(
             $maintenanceRequest,
             $requestedStatus,
             $request
         );
-    
+
         // Gửi mail
         $this->handleSendMail(
             $maintenanceRequest,
@@ -745,10 +745,15 @@ class MaintenanceRequestController extends Controller
                 ->queue(new MaintenanceAcceptanceMail($item));
 
         } catch (\Throwable $e) {
-            \Log::error('Failed to queue acceptance email', [
-                'id' => $item->id,
-                'error' => $e->getMessage(),
-            ]);
+            // \Log::error('Failed to queue acceptance email', [
+            //     'id' => $item->id,
+            //     'error' => $e->getMessage(),
+            // ]);
+            \App\Services\LogService::error('queue',"Failed to queue acceptance email", [
+                    'time' => microtime(true),
+                    'request_id' => $item->id,
+                    'error' => $e->getMessage(),
+                ]);
         }
 
         return response()->json([
@@ -759,35 +764,40 @@ class MaintenanceRequestController extends Controller
     public function destroyImage(
         MaintenanceRequestImage $image
     ) {
-    
+
         abort_unless(
             auth()->user()->hasRole('admin'),
             403
         );
-    
+
         try {
-    
+
             if (
                 $image->path &&
                 Storage::disk('public')->exists($image->path)
             ) {
                 Storage::disk('public')->delete($image->path);
             }
-    
+
             $image->delete();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Đã xóa hình ảnh'
             ]);
-    
+
         } catch (\Throwable $e) {
-    
-            \Log::error('Delete image failed', [
-                'image_id' => $image->id,
-                'error' => $e->getMessage(),
-            ]);
-    
+
+            // \Log::error('Delete image failed', [
+            //     'image_id' => $image->id,
+            //     'error' => $e->getMessage(),
+            // ]);
+            \App\Services\LogService::error('maintenace',"Delete image failed", [
+                    'time' => microtime(true),
+                    'image_id' => $image->id,
+                    'error' => $e->getMessage(),
+                ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Xóa ảnh thất bại'
@@ -902,6 +912,7 @@ class MaintenanceRequestController extends Controller
 
     private function autoConfirm(MaintenanceRequest $maintenanceRequest): void
     {
+        $maintenanceRequest->refresh();
         $newStatus = $this->determineSlaStatus($maintenanceRequest);
 
         if ($maintenanceRequest->sla_status === $newStatus) {
@@ -929,68 +940,92 @@ class MaintenanceRequestController extends Controller
         string $requestedStatus,
         ChangeMaintenanceStatusRequest $request
     ): void {
-    
+        $time = microtime(true);
+        if ($request->hasFile('images')) {
+            $filesInfo = collect($request->file('images'))
+                ->map(function ($f) {
+                    return [
+                        'size' => $f->getSize(),
+                        'name' => $f->getClientOriginalName()
+                    ];
+                });
+            
+            \App\Services\LogService::queue('Danh sách file upload:', [
+                'duration' => microtime(true) - $time,
+                'request_id' => $maintenanceRequest->id,
+                'FILES' => $filesInfo,
+            ]);
+        }
+   
         if (
             $requestedStatus !== config('sla_status.code.WAITING_CONFIRM')
             || !$request->hasFile('images')
         ) {
             return;
         }
-    
+
         $tempFiles = [];
         $files = $request->file('images', []);
-    
+
         foreach ($files as $file) {
-    
-            $tempName = Str::uuid().'.'.$file->extension();
-    
+
+            $tempName = Str::uuid() . '.' . $file->extension();
+
             $file->storeAs(
                 'temp-maintenance',
                 $tempName
             );
-    
+
             $tempFiles[] = $tempName;
         }
-    
+
         UploadMaintenanceImagesJob::dispatch(
             $maintenanceRequest->id,
             $tempFiles,
             $request->input('technician_mail')
-                ?: auth()->user()->email
-        )->afterCommit();
+            ?: auth()->user()->email
+        );
+        \App\Services\LogService::queue('UPLOAD TIME', [
+            'duration' => microtime(true) - $time,
+            'request_id' => $maintenanceRequest->id,
+        ]);
     }
 
     private function handleSendMail(
         MaintenanceRequest $maintenanceRequest,
         string $requestedStatus
     ): void {
-    
+        $time = microtime(true);
         try {
-    
+
             switch ($requestedStatus) {
-    
+
                 case config('sla_status.code.WAITING_CONFIRM'):
-    
+
                     Mail::to($maintenanceRequest->branch_email)
                         ->queue(new MaintenanceCompletedMail($maintenanceRequest));
-    
+
                     break;
-    
+
                 case config('sla_status.code.PENDING'):
-    
+
                     Mail::to($maintenanceRequest->technician_email)
                         ->queue(new MaintenanceBuyerMail($maintenanceRequest));
-    
+
                     break;
             }
-    
+
         } catch (\Throwable $e) {
-    
-            \Log::error('Send mail failed', [
-                'maintenance_request_id' => $maintenanceRequest->id,
+            \App\Services\LogService::error('queue', 'Send mail failed', [
+                'duration' => microtime(true) - $time,
+                'request_id' => $maintenanceRequest->id,
                 'status' => $requestedStatus,
-                'message' => $e->getMessage(),
+                'exception' => $e->getMessage(),
             ]);
         }
+        \App\Services\LogService::queue('MAIL TIME', [
+            'duration' => microtime(true) - $time,
+            'request_id' => $maintenanceRequest->id,
+        ]);
     }
 }
