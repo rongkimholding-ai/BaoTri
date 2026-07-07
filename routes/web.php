@@ -65,7 +65,10 @@ Route::middleware('auth')->group(function () {
 
             Route::put('/include-weekend/{id}', [MaintenanceSystemController::class, 'setIncludeWeekendTrue'])
                 ->name('include-weekend');
-       
+
+            Route::post('/update-technician-info/{id}', [MaintenanceSystemController::class, 'updateTechnicianInfo'])
+                ->name('update-technician-info');
+              
             Route::get('/{maintenanceSystem}', [MaintenanceSystemController::class, 'show'])->name('show');
 
             Route::get('/{maintenanceSystem}/edit', [MaintenanceSystemController::class, 'edit'])->name('edit');

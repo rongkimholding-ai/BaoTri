@@ -611,6 +611,43 @@ class MaintenanceSystemController extends Controller
     }
 
     /**
+     * Cập nhật tên, email và số điện thoại của kỹ thuật viên cho MaintenanceSystem.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateTechnicianInfo(Request $request, $id)
+    {
+        $item = MaintenanceSystem::find($id);
+
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy bản ghi.'
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'technician_name'   => 'required|string|max:255',
+            'technician_email'  => 'required|email|max:255',
+            'technician_mobile' => 'nullable|string|max:30',
+        ]);
+
+        $item->technician_name   = $validated['technician_name'];
+        $item->technician_email  = $validated['technician_email'];
+        $item->technician_mobile = $validated['technician_mobile'] ?? null;
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'technician_name'   => $item->technician_name,
+            'technician_email'  => $item->technician_email,
+            'technician_mobile' => $item->technician_mobile,
+        ]);
+    }
+
+    /**
      * Cập nhật trường actual_duration cho một MaintenanceSystem cụ thể.
      * Tính actual_duration dựa trên request_date và completed_at (hoặc ngày hiện tại nếu chưa có completed_at).
      *

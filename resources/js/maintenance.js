@@ -1572,4 +1572,95 @@ $(function () {
             modal.find('textarea[name="delay_reason"]').val('');
         }
     });
+
+    // Xử lý modal cập nhật kỹ thuật viên cho maintenance system (dùng bởi admin)
+    $(document).on('click', '.admin-update-tech-btn', function (e) {
+        e.preventDefault();
+
+        // Lấy thông tin từ data-* attribute của nút bấm
+        const $btn = $(this);
+        const id = $btn.data('id');
+        const name = $btn.data('name') || '';
+        const email = $btn.data('email') || '';
+        const mobile = $btn.data('mobile') || '';
+        const action = $btn.data('action') || '';
+
+        const updateTechModal = $('#updateTechModal');
+        const updateTechForm = $('#updateTechForm')[0];
+        const errorBox = $('#updateTechError');
+        const technicianNameSelect = $('#technician_name');
+        const technicianEmailInput = $('#technician_email');
+        const technicianMobileInput = $('#technician_mobile');
+
+        // Set action url
+        if (action) {
+            updateTechForm.action = action;
+        } else {
+            updateTechForm.action = "/maintenance-system/update-technician-info/" + id;
+        }
+
+        // Reset error
+        errorBox.addClass('d-none').html('');
+
+        // Reset values
+        technicianNameSelect.val(name);
+        technicianEmailInput.val(email);
+        technicianMobileInput.val(mobile);
+
+        // Nếu select chưa đúng option thì cố set theo text (cho trường hợp rỗng hoặc đặc biệt, fallback)
+        if (technicianNameSelect.val() !== name) {
+            technicianNameSelect.find('option').each(function() {
+                if ($(this).text() === name) {
+                    technicianNameSelect.val($(this).val());
+                }
+            });
+        }
+
+        // Show modal
+        const bsModal = bootstrap.Modal.getOrCreateInstance(updateTechModal[0]);
+        bsModal.show();
+
+        // Gắn lại sự kiện submit cho form (xoá cũ trước để không nhân bản)
+        $(updateTechForm).off('submit.updateTech').on('submit.updateTech', function(e) {
+            e.preventDefault();
+            errorBox.addClass('d-none').html('');
+            const formData = new FormData(updateTechForm);
+
+            // Show loading while submitting (using global window.Loading)
+            if (window.Loading && typeof window.Loading.show === 'function') {
+                window.Loading.show('Đang xử lý...');
+            }
+
+            fetch(updateTechForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json',
+                },
+                body: formData
+            })
+            .then(async response => {
+                if (window.Loading && typeof window.Loading.hide === 'function') {
+                    window.Loading.hide();
+                }
+                const data = await response.json();
+                if (!response.ok) throw data;
+                bsModal.hide();
+                window.dispatchEvent(new Event('tech-updated'));
+                location.reload();
+            })
+            .catch(error => {
+                if (window.Loading && typeof window.Loading.hide === 'function') {
+                    window.Loading.hide();
+                }
+                let msg = 'Có lỗi xảy ra.';
+                if (error && error.errors) {
+                    msg = Object.values(error.errors).flat().join('<br>');
+                } else if (error && error.message) {
+                    msg = error.message;
+                }
+                errorBox.html(msg).removeClass('d-none');
+            });
+        });
+    });
 });

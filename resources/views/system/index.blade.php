@@ -162,6 +162,7 @@
     @include('system.modals.modal')
     @include('system.modals.acceptance')
     @include('system.modals.change-status-admin')
+    @include('system.modals.update-tech')
     <script>
         /**
          * Hiển thị modal bảo trì hệ thống (pattern follow permissions).

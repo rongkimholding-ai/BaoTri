@@ -173,6 +173,19 @@
                                                             <i class="bi bi-pencil"></i> Sửa
                                                         </a>
                                                     </li>
+                                                    <li>
+                                                        <a href="javascript:void(0)"
+                                                        class="dropdown-item text-warning admin-update-tech-btn"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#updateTechModal"
+                                                        data-action="{{ route('maintenance-system.update-technician-info',['id'=>$item->id]) }}"
+                                                        data-id="{{ $item->id }}"
+                                                        data-name="{{ $item->technician_name }}"
+                                                        data-email="{{ $item->technician_email }}"
+                                                        data-mobile="{{ $item->technician_mobile }}">
+                                                            <i class="bi bi-tools"></i> Cập nhật kỹ thuật viên
+                                                        </a>
+                                                    </li>
                                                 @endif
 
                                                 <li>
@@ -324,6 +337,19 @@
                                                     data-bs-toggle="modal" data-bs-target="#acceptanceSystemModal"
                                                     data-id="{{ $item->id }}">
                                                     Nghiệm thu
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0)"
+                                                class="dropdown-item text-warning admin-update-tech-btn"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#updateTechModal"
+                                                data-action="{{ route('maintenance-system.update-technician-info',['id'=>$item->id]) }}"
+                                                data-id="{{ $item->id }}"
+                                                data-name="{{ $item->technician_name }}"
+                                                data-email="{{ $item->technician_email }}"
+                                                data-mobile="{{ $item->technician_mobile }}">
+                                                    <i class="bi bi-tools"></i> Cập nhật kỹ thuật viên
                                                 </a>
                                             </li>
                                         @endif
