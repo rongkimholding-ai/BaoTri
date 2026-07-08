@@ -101,13 +101,13 @@
                     @endif
                 @endcan
 
-                @role('admin')
+                @can('change-status-admin')
                     <a href="#" class="btn btn-outline-secondary admin-change-status-btn"
                        data-id="{{ $maintenanceRequest->id }}"
                        data-current-status="{{ $maintenanceRequest->sla_status }}">
                         Đổi trạng thái
                     </a>
-                @endrole
+                @endcan
 
                 @can('delete data')
                     @hasrole('admin')
