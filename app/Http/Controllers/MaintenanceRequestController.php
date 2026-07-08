@@ -13,6 +13,7 @@ use App\Models\MaintenanceRequestImage;
 use App\Models\MaintenanceRequestLog;
 use App\Services\MaintenanceImageService;
 use App\Services\MaintenanceRequestService;
+use App\Services\MaintenanceStatusService;
 use App\Services\SlaCalculatorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -460,175 +461,188 @@ class MaintenanceRequestController extends Controller
     /**
      * Tối ưu xử lý thay đổi trạng thái cho web & mobile, tránh block UI mobile lâu hoặc treo.
      */
-    public function changeStatus(
-        ChangeMaintenanceStatusRequest $request,
-        MaintenanceRequest $maintenanceRequest
-    ) {
-        \App\Services\LogService::maintenance("ENTER changeStatus", [
-            'time' => microtime(true),
-        ]);
+    // public function changeStatus(
+    //     ChangeMaintenanceStatusRequest $request,
+    //     MaintenanceRequest $maintenanceRequest
+    // ) {
+    //     \App\Services\LogService::maintenance("ENTER changeStatus", [
+    //         'time' => microtime(true),
+    //     ]);
    
-        $validated = $request->validated();
-        $status = $validated['status'];
-        $oldStatus = $maintenanceRequest->sla_status;
-        $now = now();
-        $statusConfig = config('sla_status.code');
-        $user = auth()->user();
-        $start = microtime(true);
+    //     $validated = $request->validated();
+    //     $status = $validated['status'];
+    //     $oldStatus = $maintenanceRequest->sla_status;
+    //     $now = now();
+    //     $statusConfig = config('sla_status.code');
+    //     $user = auth()->user();
+    //     $start = microtime(true);
 
-        $data = [
-            'sla_status'   => $status,
-            'delay_reason' => $request->note,
-        ];
+    //     $data = [
+    //         'sla_status'   => $status,
+    //         'delay_reason' => $request->note,
+    //     ];
 
-        // Tối ưu riêng trạng thái WAITING_CONFIRM (giao diện mobile hay bị treo do tính toán lâu)
-        if ($status === $statusConfig['WAITING_CONFIRM']) {
-            $completedAt = $now;
+    //     // Tối ưu riêng trạng thái WAITING_CONFIRM (giao diện mobile hay bị treo do tính toán lâu)
+    //     if ($status === $statusConfig['WAITING_CONFIRM']) {
+    //         $completedAt = $now;
 
-            $data['actual_completion_date'] = $completedAt;
-            $data['delay_reason'] = '';
+    //         $data['actual_completion_date'] = $completedAt;
+    //         $data['delay_reason'] = '';
 
-            // Thay đổi: Không thực hiện tính toán SlaCalculatorService trực tiếp (có thể chậm), lưu lại trạng thái, dữ liệu còn lại xử lý async phía sau
-            $data['actual_duration'] = null; // Bỏ tính sync, sẽ update duration ở tiến trình nền/queue sau
-            // Web: thử tính luôn, nếu lỗi -> fallback
-            try {
-                $data['actual_duration'] = app(SlaCalculatorService::class)
-                    ->calculate($maintenanceRequest, $completedAt);
-            } catch (\Throwable $e) {
-                \App\Services\LogService::error('maintenance','SLA duration calculation fallback (web)', [
-                    'request_id' => $maintenanceRequest->id,
-                    'error' => $e->getMessage(),
-                ]);
-                $data['actual_duration'] = '00:00:00';
-            }
+    //         // Thay đổi: Không thực hiện tính toán SlaCalculatorService trực tiếp (có thể chậm), lưu lại trạng thái, dữ liệu còn lại xử lý async phía sau
+    //         $data['actual_duration'] = null; // Bỏ tính sync, sẽ update duration ở tiến trình nền/queue sau
+    //         // Web: thử tính luôn, nếu lỗi -> fallback
+    //         try {
+    //             $data['actual_duration'] = app(SlaCalculatorService::class)
+    //                 ->calculate($maintenanceRequest, $completedAt);
+    //         } catch (\Throwable $e) {
+    //             \App\Services\LogService::error('maintenance','SLA duration calculation fallback (web)', [
+    //                 'request_id' => $maintenanceRequest->id,
+    //                 'error' => $e->getMessage(),
+    //             ]);
+    //             $data['actual_duration'] = '00:00:00';
+    //         }
 
-            // Xử lý kỹ thuật viên chọn ngoài giờ nếu là mail bảo trì
-            if ($user->email === 'baotri@tocotocotea.com') {
-                $data['is_off_worktime'] = true;
-                // Lấy kỹ thuật viên chọn từ form (mobile/web)
-                $selectedTechEmail = $request->input('tech_mail');
-                if ($selectedTechEmail) {
-                    $selectedTech = null;
+    //         // Xử lý kỹ thuật viên chọn ngoài giờ nếu là mail bảo trì
+    //         if ($user->email === 'baotri@tocotocotea.com') {
+    //             $data['is_off_worktime'] = true;
+    //             // Lấy kỹ thuật viên chọn từ form (mobile/web)
+    //             $selectedTechEmail = $request->input('tech_mail');
+    //             if ($selectedTechEmail) {
+    //                 $selectedTech = null;
 
-                    foreach (config('technician', []) as $tech) {
-                        if (($tech['email'] ?? null) === $selectedTechEmail) {
-                            $selectedTech = $tech;
-                            break;
-                        }
-                    }
+    //                 foreach (config('technician', []) as $tech) {
+    //                     if (($tech['email'] ?? null) === $selectedTechEmail) {
+    //                         $selectedTech = $tech;
+    //                         break;
+    //                     }
+    //                 }
 
-                    if ($selectedTech) {
-                        $data['technician_email'] = $selectedTech['email'];
-                        $data['technician_name'] = $selectedTech['name'];
-                        $data['technician_mobile'] = $selectedTech['mobile'];
-                    }
-                }
-            }
-        }
+    //                 if ($selectedTech) {
+    //                     $data['technician_email'] = $selectedTech['email'];
+    //                     $data['technician_name'] = $selectedTech['name'];
+    //                     $data['technician_mobile'] = $selectedTech['mobile'];
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        // Các trạng thái khác xử lý như cũ
-        if ($status === $statusConfig['CONFIRMED']) {
-            $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
-        }
+    //     // Các trạng thái khác xử lý như cũ
+    //     if ($status === $statusConfig['CONFIRMED']) {
+    //         $data['sla_status'] = $this->determineSlaStatus($maintenanceRequest);
+    //     }
 
-        if ($status === $statusConfig['PENDING']) {
-            $data['pending_at'] = $now;
-        }
-        if ($status === $statusConfig['PENDING_CONTRACTOR']) {
-            $data['pending_at'] = $now;
-        }
-        if ($status === $statusConfig['CONTINUE_PROCESSING']) {
-            $data['processing_at'] = $now;
-        }
-        if ($status === config('sla_status.code.REOPEN')) {
-            $data = array_merge($data, [
-                'acceptance_result' => null,
-                'acceptance_note' => null,
-                'acceptance_confirmed_by' => null,
-                'confirmed_at' => null,
-                'is_confirmed' => false,
-            ]);
-        }
+    //     if ($status === $statusConfig['PENDING']) {
+    //         $data['pending_at'] = $now;
+    //     }
+    //     if ($status === $statusConfig['PENDING_CONTRACTOR']) {
+    //         $data['pending_at'] = $now;
+    //     }
+    //     if ($status === $statusConfig['CONTINUE_PROCESSING']) {
+    //         $data['processing_at'] = $now;
+    //     }
+    //     if ($status === config('sla_status.code.REOPEN')) {
+    //         $data = array_merge($data, [
+    //             'acceptance_result' => null,
+    //             'acceptance_note' => null,
+    //             'acceptance_confirmed_by' => null,
+    //             'confirmed_at' => null,
+    //             'is_confirmed' => false,
+    //         ]);
+    //     }
 
-        \App\Services\LogService::maintenance('UPDATE TRANSACTION START', [
-            'data' => $data,
-            'old_status' => $oldStatus,
-            'new_status' => $status,
-            'request_id' => $maintenanceRequest->id,
-        ]);
+    //     \App\Services\LogService::maintenance('UPDATE TRANSACTION START', [
+    //         'data' => $data,
+    //         'old_status' => $oldStatus,
+    //         'new_status' => $status,
+    //         'request_id' => $maintenanceRequest->id,
+    //     ]);
 
-        DB::transaction(function () use ($maintenanceRequest, $data, $oldStatus, $status, $request) {
-            $maintenanceRequest->update($data);
+    //     DB::transaction(function () use ($maintenanceRequest, $data, $oldStatus, $status, $request) {
+    //         $maintenanceRequest->update($data);
 
-            MaintenanceRequestLog::create([
-                'maintenance_request_id' => $maintenanceRequest->id,
-                'user_id'                => auth()->id(),
-                'old_status'             => $oldStatus,
-                'new_status'             => $status,
-                'note'                   => $request->note,
-            ]);
-        });
+    //         MaintenanceRequestLog::create([
+    //             'maintenance_request_id' => $maintenanceRequest->id,
+    //             'user_id'                => auth()->id(),
+    //             'old_status'             => $oldStatus,
+    //             'new_status'             => $status,
+    //             'note'                   => $request->note,
+    //         ]);
+    //     });
 
-        \App\Services\LogService::maintenance('UPDATE DONE', [
-            'duration' => microtime(true) - $start,
-            'request_id' => $maintenanceRequest->id,
-        ]);
-        $maintenanceRequest->refresh();
+    //     \App\Services\LogService::maintenance('UPDATE DONE', [
+    //         'duration' => microtime(true) - $start,
+    //         'request_id' => $maintenanceRequest->id,
+    //     ]);
+    //     $maintenanceRequest->refresh();
 
-        DB::afterCommit(function() use ($maintenanceRequest, $status, $request) {
-            // Web vẫn xử lý synchronous
-            $this->afterStatusChanged(
-                $maintenanceRequest,
-                $status,
-                $request
-            );
-        });
+    //     DB::afterCommit(function() use ($maintenanceRequest, $status, $request) {
+    //         // Web vẫn xử lý synchronous
+    //         $this->afterStatusChanged(
+    //             $maintenanceRequest,
+    //             $status,
+    //             $request
+    //         );
+    //     });
 
-        \App\Services\LogService::maintenance('AFTER STATUS DONE', [
-            'duration' => microtime(true) - $start,
-            'request_id' => $maintenanceRequest->id,
-        ]);
+    //     \App\Services\LogService::maintenance('AFTER STATUS DONE', [
+    //         'duration' => microtime(true) - $start,
+    //         'request_id' => $maintenanceRequest->id,
+    //     ]);
 
-        $response = response()->json([
-            'success' => true,
-            'sla_status' => $maintenanceRequest->sla_status,
-        ]);
+    //     $response = response()->json([
+    //         'success' => true,
+    //         'sla_status' => $maintenanceRequest->sla_status,
+    //     ]);
 
-        \App\Services\LogService::maintenance('RETURN RESPONSE', [
-            'status' => $response->status(),
-            'request_id' => $maintenanceRequest->id,
-        ]);
-        \App\Services\LogService::maintenance("LEAVE changeStatus", [
-            'time' => microtime(true),
-        ]);
+    //     \App\Services\LogService::maintenance('RETURN RESPONSE', [
+    //         'status' => $response->status(),
+    //         'request_id' => $maintenanceRequest->id,
+    //     ]);
+    //     \App\Services\LogService::maintenance("LEAVE changeStatus", [
+    //         'time' => microtime(true),
+    //     ]);
 
-        return $response;
-    }
+    //     return $response;
+    // }
 
-    private function afterStatusChanged(
-        MaintenanceRequest $maintenanceRequest,
-        string $requestedStatus,
-        ChangeMaintenanceStatusRequest $request
-    ): void {
-
-        // Xử lý theo trạng thái thực tế sau update
-        if ($requestedStatus === config('sla_status.code.WAITING_CONFIRM')) {
-            $this->autoConfirm($maintenanceRequest);
-        }
-
-        // Upload ảnh
-        $this->handleUploadImages(
+    public function changeStatus(
+    ChangeMaintenanceStatusRequest $request,
+    MaintenanceRequest $maintenanceRequest,
+    MaintenanceStatusService $service
+) {
+    return response()->json(
+        $service->changeStatus(
             $maintenanceRequest,
-            $requestedStatus,
             $request
-        );
+        )
+    );
+}
 
-        // Gửi mail
-        $this->handleSendMail(
-            $maintenanceRequest,
-            $requestedStatus
-        );
-    }
+    // private function afterStatusChanged(
+    //     MaintenanceRequest $maintenanceRequest,
+    //     string $requestedStatus,
+    //     ChangeMaintenanceStatusRequest $request
+    // ): void {
+
+    //     // Xử lý theo trạng thái thực tế sau update
+    //     if ($requestedStatus === config('sla_status.code.WAITING_CONFIRM')) {
+    //         $this->autoConfirm($maintenanceRequest);
+    //     }
+
+    //     // Upload ảnh
+    //     $this->handleUploadImages(
+    //         $maintenanceRequest,
+    //         $requestedStatus,
+    //         $request
+    //     );
+
+    //     // Gửi mail
+    //     $this->handleSendMail(
+    //         $maintenanceRequest,
+    //         $requestedStatus
+    //     );
+    // }
 
     public function acceptance(Request $request)
     {
@@ -884,148 +898,148 @@ class MaintenanceRequestController extends Controller
         return $data;
     }
 
-    private function determineSlaStatus(MaintenanceRequest $item): string
-    {
+    // private function determineSlaStatus(MaintenanceRequest $item): string
+    // {
 
-        if (!$item->actual_duration) {
-            return config('sla_status.code.LATED');
-        }
+    //     if (!$item->actual_duration) {
+    //         return config('sla_status.code.LATED');
+    //     }
 
-        [$h, $i, $s] = explode(':', $item->actual_duration);
+    //     [$h, $i, $s] = explode(':', $item->actual_duration);
 
-        $actualSeconds = ((int) $h * 3600) + ((int) $i * 60) + (int) $s;
+    //     $actualSeconds = ((int) $h * 3600) + ((int) $i * 60) + (int) $s;
 
-        $realTimeList = config('real_time');
-        $realTimeMap = collect($realTimeList)->keyBy('key');
-        $stdKey = $item->standard_completion_time;
+    //     $realTimeList = config('real_time');
+    //     $realTimeMap = collect($realTimeList)->keyBy('key');
+    //     $stdKey = $item->standard_completion_time;
 
-        if (!$stdKey || !isset($realTimeMap[$stdKey])) {
-            return config('sla_status.code.LATED');
-        }
+    //     if (!$stdKey || !isset($realTimeMap[$stdKey])) {
+    //         return config('sla_status.code.LATED');
+    //     }
 
-        $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
+    //     $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
 
-        return $actualSeconds <= $maxSeconds
-            ? config('sla_status.code.COMPLETED')
-            : config('sla_status.code.LATED');
-    }
+    //     return $actualSeconds <= $maxSeconds
+    //         ? config('sla_status.code.COMPLETED')
+    //         : config('sla_status.code.LATED');
+    // }
 
-    private function autoConfirm(MaintenanceRequest $maintenanceRequest): void
-    {
-        $maintenanceRequest->refresh();
-        $newStatus = $this->determineSlaStatus($maintenanceRequest);
+    // private function autoConfirm(MaintenanceRequest $maintenanceRequest): void
+    // {
+    //     $maintenanceRequest->refresh();
+    //     $newStatus = $this->determineSlaStatus($maintenanceRequest);
 
-        if ($maintenanceRequest->sla_status === $newStatus) {
-            return;
-        }
+    //     if ($maintenanceRequest->sla_status === $newStatus) {
+    //         return;
+    //     }
 
-        DB::transaction(function () use ($maintenanceRequest, $newStatus) {
+    //     DB::transaction(function () use ($maintenanceRequest, $newStatus) {
 
-            $maintenanceRequest->update([
-                'sla_status' => $newStatus,
-            ]);
+    //         $maintenanceRequest->update([
+    //             'sla_status' => $newStatus,
+    //         ]);
 
-            MaintenanceRequestLog::create([
-                'maintenance_request_id' => $maintenanceRequest->id,
-                'user_id' => 1,
-                'old_status' => config('sla_status.code.WAITING_CONFIRM'),
-                'new_status' => $newStatus,
-                'note' => 'Auto duyệt yêu cầu',
-            ]);
-        });
-    }
+    //         MaintenanceRequestLog::create([
+    //             'maintenance_request_id' => $maintenanceRequest->id,
+    //             'user_id' => 1,
+    //             'old_status' => config('sla_status.code.WAITING_CONFIRM'),
+    //             'new_status' => $newStatus,
+    //             'note' => 'Auto duyệt yêu cầu',
+    //         ]);
+    //     });
+    // }
 
-    private function handleUploadImages(
-        MaintenanceRequest $maintenanceRequest,
-        string $requestedStatus,
-        ChangeMaintenanceStatusRequest $request
-    ): void {
-        $time = microtime(true);
-        if ($request->hasFile('images')) {
-            $filesInfo = collect($request->file('images'))
-                ->map(function ($f) {
-                    return [
-                        'size' => $f->getSize(),
-                        'name' => $f->getClientOriginalName()
-                    ];
-                });
+    // private function handleUploadImages(
+    //     MaintenanceRequest $maintenanceRequest,
+    //     string $requestedStatus,
+    //     ChangeMaintenanceStatusRequest $request
+    // ): void {
+    //     $time = microtime(true);
+    //     if ($request->hasFile('images')) {
+    //         $filesInfo = collect($request->file('images'))
+    //             ->map(function ($f) {
+    //                 return [
+    //                     'size' => $f->getSize(),
+    //                     'name' => $f->getClientOriginalName()
+    //                 ];
+    //             });
             
-            \App\Services\LogService::queue('Danh sách file upload:', [
-                'duration' => microtime(true) - $time,
-                'request_id' => $maintenanceRequest->id,
-                'FILES' => $filesInfo,
-            ]);
-        }
+    //         \App\Services\LogService::queue('Danh sách file upload:', [
+    //             'duration' => microtime(true) - $time,
+    //             'request_id' => $maintenanceRequest->id,
+    //             'FILES' => $filesInfo,
+    //         ]);
+    //     }
    
-        if (
-            $requestedStatus !== config('sla_status.code.WAITING_CONFIRM')
-            || !$request->hasFile('images')
-        ) {
-            return;
-        }
+    //     if (
+    //         $requestedStatus !== config('sla_status.code.WAITING_CONFIRM')
+    //         || !$request->hasFile('images')
+    //     ) {
+    //         return;
+    //     }
 
-        $tempFiles = [];
-        $files = $request->file('images', []);
+    //     $tempFiles = [];
+    //     $files = $request->file('images', []);
 
-        foreach ($files as $file) {
+    //     foreach ($files as $file) {
 
-            $tempName = Str::uuid() . '.' . $file->extension();
+    //         $tempName = Str::uuid() . '.' . $file->extension();
 
-            $file->storeAs(
-                'temp-maintenance',
-                $tempName
-            );
+    //         $file->storeAs(
+    //             'temp-maintenance',
+    //             $tempName
+    //         );
 
-            $tempFiles[] = $tempName;
-        }
+    //         $tempFiles[] = $tempName;
+    //     }
 
-        UploadMaintenanceImagesJob::dispatch(
-            $maintenanceRequest->id,
-            $tempFiles,
-            $request->input('technician_mail')
-            ?: auth()->user()->email
-        );
-        \App\Services\LogService::queue('UPLOAD TIME', [
-            'duration' => microtime(true) - $time,
-            'request_id' => $maintenanceRequest->id,
-        ]);
-    }
+    //     UploadMaintenanceImagesJob::dispatch(
+    //         $maintenanceRequest->id,
+    //         $tempFiles,
+    //         $request->input('technician_mail')
+    //         ?: auth()->user()->email
+    //     );
+    //     \App\Services\LogService::queue('UPLOAD TIME', [
+    //         'duration' => microtime(true) - $time,
+    //         'request_id' => $maintenanceRequest->id,
+    //     ]);
+    // }
 
-    private function handleSendMail(
-        MaintenanceRequest $maintenanceRequest,
-        string $requestedStatus
-    ): void {
-        $time = microtime(true);
-        try {
+    // private function handleSendMail(
+    //     MaintenanceRequest $maintenanceRequest,
+    //     string $requestedStatus
+    // ): void {
+    //     $time = microtime(true);
+    //     try {
 
-            switch ($requestedStatus) {
+    //         switch ($requestedStatus) {
 
-                case config('sla_status.code.WAITING_CONFIRM'):
+    //             case config('sla_status.code.WAITING_CONFIRM'):
 
-                    Mail::to($maintenanceRequest->branch_email)
-                        ->queue(new MaintenanceCompletedMail($maintenanceRequest));
+    //                 Mail::to($maintenanceRequest->branch_email)
+    //                     ->queue(new MaintenanceCompletedMail($maintenanceRequest));
 
-                    break;
+    //                 break;
 
-                case config('sla_status.code.PENDING'):
+    //             case config('sla_status.code.PENDING'):
 
-                    Mail::to($maintenanceRequest->technician_email)
-                        ->queue(new MaintenanceBuyerMail($maintenanceRequest));
+    //                 Mail::to($maintenanceRequest->technician_email)
+    //                     ->queue(new MaintenanceBuyerMail($maintenanceRequest));
 
-                    break;
-            }
+    //                 break;
+    //         }
 
-        } catch (\Throwable $e) {
-            \App\Services\LogService::error('queue', 'Send mail failed', [
-                'duration' => microtime(true) - $time,
-                'request_id' => $maintenanceRequest->id,
-                'status' => $requestedStatus,
-                'exception' => $e->getMessage(),
-            ]);
-        }
-        \App\Services\LogService::queue('MAIL TIME', [
-            'duration' => microtime(true) - $time,
-            'request_id' => $maintenanceRequest->id,
-        ]);
-    }
+    //     } catch (\Throwable $e) {
+    //         \App\Services\LogService::error('queue', 'Send mail failed', [
+    //             'duration' => microtime(true) - $time,
+    //             'request_id' => $maintenanceRequest->id,
+    //             'status' => $requestedStatus,
+    //             'exception' => $e->getMessage(),
+    //         ]);
+    //     }
+    //     \App\Services\LogService::queue('MAIL TIME', [
+    //         'duration' => microtime(true) - $time,
+    //         'request_id' => $maintenanceRequest->id,
+    //     ]);
+    // }
 }

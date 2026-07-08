@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\BusinessTimeHelper;
+use App\Models\MaintenanceRequest;
 use Carbon\Carbon;
 
 class SlaCalculatorService
@@ -29,5 +30,27 @@ class SlaCalculatorService
         );
 
         return BusinessTimeHelper::formatDuration($seconds);
+    }
+
+    /**
+     * Đánh giá SLA status từ actual_duration và standard_completion_time.
+     */
+    public function determineSlaStatus(MaintenanceRequest $item): string
+    {
+        if (!$item->actual_duration) return config('sla_status.code.LATED');
+
+        [$h, $i, $s] = array_pad(explode(':', $item->actual_duration), 3, 0);
+        $actualSeconds = ($h * 3600) + ($i * 60) + $s;
+
+        $realTimeList = config('real_time');
+        $realTimeMap = collect($realTimeList)->keyBy('key');
+        $stdKey = $item->standard_completion_time;
+        if (!$stdKey || !isset($realTimeMap[$stdKey])) return config('sla_status.code.LATED');
+
+        $maxSeconds = $realTimeMap[$stdKey]['max_seconds'] ?? 0;
+
+        return $actualSeconds <= $maxSeconds
+            ? config('sla_status.code.COMPLETED')
+            : config('sla_status.code.LATED');
     }
 }
