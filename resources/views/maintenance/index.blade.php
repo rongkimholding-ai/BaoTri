@@ -164,6 +164,7 @@
     </div>
 
     @include('maintenance.modals.create')
+    @include('maintenance.modals.edit')
     @include('maintenance.modals.change_status')
     @include('maintenance.modals.log')
     @include('maintenance.modals.acceptance')

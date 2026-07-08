@@ -72,6 +72,16 @@ class MaintenanceStatusService
             'delay_reason'  => $request->note,
         ];
 
+        if ($request->tech_mail) {
+            $tech = collect(config('technician', []))
+            ->first(fn($tech) => ($tech['email'] ?? null) === $request->tech_mail);
+            if ($tech) {
+                $data['technician_email']  = $tech['email'];
+                $data['technician_name']   = $tech['name'];
+                $data['technician_mobile'] = $tech['mobile'];
+            }
+        }
+
         switch ($status) {
             case $this->statusConfig['WAITING_CONFIRM']:
                 $data += $this->handleWaitingConfirm($maintenanceRequest, $request, $now, $user);

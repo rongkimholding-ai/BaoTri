@@ -232,6 +232,13 @@
                                             </li>
                                             @endif
                                         @endcan
+                                        @can('change-status-admin')
+                                            <li>
+                                                <a href="#" class="dropdown-item admin-change-status-btn" data-id="{{ $item->id }}" data-current-status="{{ $item->sla_status }}">
+                                                    Đổi trạng thái
+                                                </a>
+                                            </li>
+                                        @endcan
                                         @role('admin')
                                         <li>
                                                 <a href="javascript:void(0)"
@@ -244,11 +251,6 @@
                                                 data-email="{{ $item->technician_email }}"
                                                 data-mobile="{{ $item->technician_mobile }}">
                                                     <i class="bi bi-tools"></i> Cập nhật kỹ thuật viên
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="dropdown-item admin-change-status-btn" data-id="{{ $item->id }}" data-current-status="{{ $item->sla_status }}">
-                                                    Đổi trạng thái
                                                 </a>
                                             </li>
                                             <li>

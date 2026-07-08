@@ -768,6 +768,23 @@ $(function () {
                 return;
             }
 
+            const MAX_FILE_SIZE = 10 * 1024 * 1024;
+            const MAX_TOTAL_SIZE = 40 * 1024 * 1024;
+            let total = 0;
+
+            for (const file of images) {
+                if (file.size > MAX_FILE_SIZE) {
+                    alert(`${file.name} vượt quá 10MB`);
+                    return;
+                }
+                total += file.size;
+            }
+
+            if (total > MAX_TOTAL_SIZE) {
+                alert('Tổng dung lượng ảnh vượt quá 40MB.');
+                return;
+            }
+
             const formData = new FormData();
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
             formData.append('_method', 'PATCH');
@@ -788,7 +805,7 @@ $(function () {
                 processData: false,
                 contentType: false,
                 cache: false,
-                timeout: 1200000,
+                timeout: 600000,
 
                 beforeSend() {
                     console.log('Change status start', { id, status, imageCount: images.length });

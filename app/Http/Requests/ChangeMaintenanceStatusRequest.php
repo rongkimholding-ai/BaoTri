@@ -30,6 +30,7 @@ class ChangeMaintenanceStatusRequest extends FormRequest
                 'string',
                 Rule::in(config('sla_status.code'))
             ],
+            'technician_email' => ['string'],
         ];
 
         if (

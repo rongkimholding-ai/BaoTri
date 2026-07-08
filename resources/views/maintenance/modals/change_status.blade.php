@@ -25,7 +25,7 @@
                     }, ARRAY_FILTER_USE_KEY);
                 @endphp
 
-                @if($user && ($user->email === $baotriEmail || $user->hasRole('admin')))
+                @if($user && ($user->email === $baotriEmail || $user->hasAnyRole('admin|leadtech')))
                     <div class="mb-3">
                         <label for="technicianSelect" class="form-label">Kỹ thuật viên phụ trách</label>
                         <select id="technicianSelect" name="technician_email" class="form-select">
@@ -37,7 +37,7 @@
                     </div>
                 @endif
 
-                <div class="mb-3 d-none" id="statusSelectWrapper">
+                <div class="mb-3 d-none {{ !$user->hasRole('admin') ? 'hidden' :'' }}" id="statusSelectWrapper">
                     <label for="statusSelect" class="form-label">Chọn trạng thái</label>
                     <select id="statusSelect" class="form-select"></select>
                 </div>
