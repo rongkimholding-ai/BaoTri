@@ -145,6 +145,18 @@
                                                 Chi tiết
                                             </a>
                                         </li>
+                                        @can('change-maintenance')
+                                        <li>
+                                            <a href="#" 
+                                               class="dropdown-item edit-btn"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#editModal"
+                                               data-id="{{ $item->id }}">
+                                                Sửa
+                                            </a>
+                                        </li>
+                                        @endcan
+                                   
                                         @can('change-maintenance-status')
                                             @hasanyrole('technician|admin')
                                                 @if(in_array($item->sla_status, [$slaStatusCode['NEW'], $slaStatusCode['REOPEN']]))

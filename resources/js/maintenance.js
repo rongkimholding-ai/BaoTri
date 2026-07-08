@@ -271,6 +271,9 @@ $(function () {
                 // Auto check T7, CN
                 $modal.find('#include_saturday').prop('checked', true);
                 $modal.find('#include_sunday').prop('checked', true);
+            } else {
+                $modal.find('#include_saturday').prop('checked', false);
+                $modal.find('#include_sunday').prop('checked', false);
             }
             isUpdating = false;
         }
@@ -460,6 +463,68 @@ $(function () {
         .html('');
     });
 
+    $('#editModal').on('shown.bs.modal', function (e) {
+        // Cập nhật lại để lấy select2-category trong #editModal đúng cách (khởi tạo select2 cho field này khi #editModal hiển thị)
+        let $modal = $(this);
+        $modal.find('.select2-category').select2({
+            dropdownParent: $modal,
+            width: '100%'
+        });
+        $modal.find('.select2-branch').select2({
+            dropdownParent: $modal,
+            width: '100%'
+        });
+
+        // Lấy id từ data-id của nút hoặc từ modal (phải đảm bảo truyền data-id vào trigger hoặc modal khi mở)
+        let maintenanceRequestId = $(e.relatedTarget).data('id');
+        if (!maintenanceRequestId) {
+            // thử lấy từ chính modal nếu đã được set vào modal
+            maintenanceRequestId = $(this).data('id');
+        }
+
+        let $editForm = $('#editForm');
+        let baseAction = $editForm.data('base-action');
+
+        if (!baseAction) {
+            // Nếu chưa có baseAction, set luôn chuẩn Laravel update route ('maintenance-requests.update')
+            // Ví dụ: /maintenance-requests/{id}
+            baseAction = '/maintenance-requests/{id}';
+            $editForm.data('base-action', baseAction);
+        }
+
+        // Tự động route action về chuẩn Laravel route('maintenance-requests.update', [id]) dạng /maintenance-requests/{id}
+        // Nếu baseAction KHÔNG chứa {id} thì bắt buộc phải join lại chuẩn
+        if (typeof baseAction === "string" && maintenanceRequestId) {
+            // Xử lý baseAction là route update chuẩn của Laravel
+            // Ví dụ: /maintenance-requests/{id}
+            let newUrl = baseAction;
+            if (baseAction.includes('{id}')) {
+                newUrl = baseAction.replace('{id}', maintenanceRequestId);
+            } else {
+                // fallback: cố tìm đoạn số cuối cùng để thay, hoặc thêm mới id vào cuối
+                if (baseAction.match(/\/\d+$/)) {
+                    newUrl = baseAction.replace(/\/\d+$/, '/' + maintenanceRequestId);
+                } else if (baseAction.endsWith('/')) {
+                    newUrl = baseAction + maintenanceRequestId;
+                } else {
+                    newUrl = baseAction + '/' + maintenanceRequestId;
+                }
+            }
+            $editForm.attr('action', newUrl);
+        }
+    });
+
+    $('#editModal').on('hidden.bs.modal', function () {
+        const $modal = $(this);
+        $modal.find('form')[0].reset();
+        $modal.find('select').each(function () {
+            $(this).trigger('change.select2');
+        });
+        $('#edit-form-errors')
+        .addClass('d-none')
+        .html('');
+    });
+
     $(document).on('submit', '#createForm', function (e) {
         e.preventDefault();
 
@@ -546,6 +611,71 @@ $(function () {
             error: function (xhr) {
         
                 let errorBox = $('#create-form-errors');
+        
+                errorBox.html('');
+        
+                if (
+                    xhr.responseJSON &&
+                    xhr.responseJSON.errors
+                ) {
+        
+                    let html = '<ul class="mb-0">';
+        
+                    $.each(
+                        xhr.responseJSON.errors,
+                        function (field, messages) {
+        
+                            messages.forEach(function (message) {
+                                html += `<li>${message}</li>`;
+                            });
+        
+                        }
+                    );
+        
+                    html += '</ul>';
+        
+                    errorBox
+                        .removeClass('d-none')
+                        .html(html);
+        
+                } else {
+        
+                    errorBox
+                        .removeClass('d-none')
+                        .html(xhr.responseJSON?.message || 'Có lỗi xảy ra');
+                }
+        
+            }
+        });
+    });
+
+    $(document).on('submit', '#editForm', function (e) {
+        e.preventDefault();
+
+        $('#editForm select:disabled').prop('disabled', false);
+        console.log($(this).attr('action'));
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+        
+            success: function () {
+        
+                $('#edit-form-errors')
+                    .addClass('d-none')
+                    .html('');
+        
+                let modalEl = document.getElementById('editModal');
+                let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        
+                modal.hide();
+        
+                location.reload();
+            },
+        
+            error: function (xhr) {
+        
+                let errorBox = $('#edit-form-errors');
         
                 errorBox.html('');
         
@@ -1117,6 +1247,65 @@ $(function () {
     $(document).on('change', '#createModal .issue-selector', function () {
         toggleFormFields();
     });
+
+    function toggleFormEditFields() {
+        const modal = $('#editModal');
+        const key = modal.find('.issue-selector option:selected').data('key');
+
+        // Khóa toàn bộ trước
+        modal.find('input, textarea')
+            .prop('readonly', true);
+
+        modal.find('select')
+            .not('.form-branch-name, .issue-selector, .severity-field')
+            .prop('disabled', true);
+
+        // Bỏ highlight cũ
+        modal.find('.editable-highlight')
+            .removeClass('editable-highlight');
+
+        // Nếu là OTHER thì mở các trường được phép sửa
+        if (key === 'OTHER') {
+            // .severity-field,  .processing-time
+            modal.find(
+                ' .issue-description, .solution-description'
+            )
+                .prop('readonly', false)
+                .prop('disabled', false)
+                .addClass('editable-highlight');
+        }
+    }
+
+    toggleFormEditFields();
+    // Khi đổi hạng mục edit
+    $(document).on('change', '#editModal .issue-selector', function () {
+        toggleFormEditFields();
+    });
+
+    $('#editModal').on(
+        'change',
+        '.issue-selector',
+        function () {
+            if (isUpdating) return;
+            isUpdating = true;
+
+            let $modal = $('#editModal');
+            let $selected = $(this).find(':selected');
+            fillIssueData($modal, $selected);
+
+            // Check severity data
+            let severity = $selected.data('severity');
+            if (severity === '1A') {
+                // Auto check T7, CN
+                $modal.find('#include_saturday').prop('checked', true);
+                $modal.find('#include_sunday').prop('checked', true);
+            } else {
+                $modal.find('#include_saturday').prop('checked', false);
+                $modal.find('#include_sunday').prop('checked', false);
+            }
+            isUpdating = false;
+        }
+    );
 
     const requestTabs = document.getElementById('requestTabs');
     if (requestTabs) {

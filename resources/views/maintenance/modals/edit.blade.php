@@ -10,7 +10,7 @@
                 </div>
                 <div id="edit-form-errors" class="alert alert-danger d-none"></div>
                 <div class="modal-body">
-                    @include('maintenance._form')
+                    @include('maintenance.partials._form_edit')
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>

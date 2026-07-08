@@ -109,6 +109,16 @@
                     </a>
                 @endcan
 
+                @can('change-maintenance')
+                    <a href="#" 
+                        class="btn btn-outline-warning edit-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        data-id="{{ $maintenanceRequest->id }}">
+                        Sửa
+                    </a>
+                @endcan
+
                 @can('delete data')
                     @hasrole('admin')
                         @if($maintenanceRequest->sla_status == config('sla_status.code.PROCESSING'))
@@ -134,5 +144,6 @@
         @include('maintenance.partials.detail')
         @include('maintenance.modals.change_status')
         @include('maintenance.modals.acceptance')
+        @include('maintenance.modals.edit')
     </div>
 </x-app-layout>

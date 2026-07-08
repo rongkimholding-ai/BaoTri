@@ -280,9 +280,12 @@ class MaintenanceRequestController extends Controller
 
         $title = 'Chi tiết yêu cầu #' . $maintenanceRequest->id;
 
+        $checks = $this->getChecksData();
+        $severities = $this->getSeveritiesData();
+
         return view(
             'maintenance.show',
-            compact('maintenanceRequest', 'title')
+            compact('maintenanceRequest', 'title', 'checks', 'severities')
         );
     }
 
@@ -304,7 +307,15 @@ class MaintenanceRequestController extends Controller
      */
     public function edit(MaintenanceRequest $maintenanceRequest)
     {
-        //
+        $data = [
+            'stores'     => $this->getData(),
+            'checks'     => $this->getChecksData(),
+            'techs'      => $this->getTechnicianData(),
+            'severities' => $this->getSeveritiesData(),
+            'maintenanceRequest' => $maintenanceRequest->id,
+        ];
+
+        return view('maintenance.modals.edit', $data);
     }
 
     /**
