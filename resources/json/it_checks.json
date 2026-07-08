@@ -294,6 +294,13 @@
         "processing_time_word": "Hàng tháng"
       },
       {
+        "key": "LAP_BO_SUNG_CAMERA",
+        "name": "Lắp bổ sung CAMERA",
+        "processing_time": "3_DAYS",
+        "processing_time_word": "1-3 Ngày",
+        "max_second": 259200
+      },
+      {
         "key": "OTHER",
         "name": "Các lỗi khác",
         "processing_time": "8_HOURS",

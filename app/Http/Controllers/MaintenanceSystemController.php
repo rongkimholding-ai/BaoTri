@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMaintenanceSystemRequest;
 use App\Http\Requests\UpdateMaintenanceSystemRequest;
 use App\Mail\MaintenanceSystemAcceptanceMail;
+use App\Mail\MaintenanceSystemBuyerMail;
 use App\Mail\MaintenanceSystemCompletedMail;
 use App\Mail\MaintenanceSystemReminderMail;
 use App\Models\MaintenanceSystem;
@@ -405,6 +406,13 @@ class MaintenanceSystemController extends Controller
                 // Khi hoàn thành thì lý do trễ để rỗng
                 $data['delay_reason'] = '';
                 break;
+            case 'PENDING':
+            case 'PENDING_CONTRACTOR':
+                $data['pending_at'] = $now;
+                break;
+            case 'CONTINUE_PROCESSING':
+                $data['processing_at'] = $now;
+                break;
             case 'REOPEN':
                 // Reset thông tin xác nhận khi reopen, tương tự request controller
                 $data = array_merge($data, [
@@ -792,6 +800,11 @@ class MaintenanceSystemController extends Controller
                     Mail::to($maintenanceRequest->branch_email)
                         ->queue(new MaintenanceSystemCompletedMail($maintenanceRequest));
     
+                    break;
+
+                case config('sla_status.code_ht.PENDING'):
+                    Mail::to($maintenanceRequest->technician_email)
+                        ->queue(new MaintenanceSystemBuyerMail($maintenanceRequest));
                     break;
             }
     

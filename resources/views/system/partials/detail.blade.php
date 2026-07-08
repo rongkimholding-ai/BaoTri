@@ -5,7 +5,7 @@
     $sla = $maintenanceSystem->standard_completion_time ? ($realTimeMap[$maintenanceSystem->standard_completion_time] ?? null) : null;
 
     $slaStatusBadge = data_get($config['sla_status']['badge'] ?? [], $maintenanceSystem->status, 'badge badge-default');
-    $slaStatusName = data_get($config['sla_status']['names'] ?? [], $maintenanceSystem->status, $maintenanceSystem->status);
+    $slaStatusName = data_get($config['sla_status']['names_ht'] ?? [], $maintenanceSystem->status, $maintenanceSystem->status);
     $timeName = $maintenanceSystem->standard_completion_time
         ? ($realTimeMap[$maintenanceSystem->standard_completion_time]['name'] ?? $maintenanceSystem->standard_completion_time)
         : '';

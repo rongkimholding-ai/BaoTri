@@ -10,17 +10,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MaintenanceBuyerMail extends Mailable implements ShouldQueue
+class MaintenanceSystemBuyerMail extends Mailable implements ShouldQueue
 {
     use Queueable;
     use SerializesModels;
 
-    public $maintenanceRequest;
+    public $maintenanceSystem;
 
-    public function __construct($maintenanceRequest)
+    public function __construct($maintenanceSystem)
     {
-        $this->maintenanceRequest =
-            $maintenanceRequest;
+        $this->maintenanceSystem =
+            $maintenanceSystem;
     }
 
     public function envelope(): Envelope
@@ -28,7 +28,7 @@ class MaintenanceBuyerMail extends Mailable implements ShouldQueue
         $cc = $this->getCC();
 
         return new Envelope(
-            subject: 'Yêu cầu bảo trì cần được mua sắm bổ sung',
+            subject: 'Yêu cầu bảo trì hạ tầng cần được mua sắm bổ sung',
             cc: $cc
         );
     }
@@ -36,17 +36,17 @@ class MaintenanceBuyerMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.maintenance-buyer',
+            view: 'emails.maintenance-system-buyer',
             with: [
-                'maintenanceRequest' => $this->maintenanceRequest,
+                'maintenanceSystem' => $this->maintenanceSystem,
             ]
         );
     }
     private function getCC(): array
     {
         $cc = config('mail.notification_cc', []);
-        $storeCode = $this->maintenanceRequest->branch_code ?? null;
-        $storeEmail = $this->maintenanceRequest->branch_email ?? null;
+        $storeCode = $this->maintenanceSystem->branch_code ?? null;
+        $storeEmail = $this->maintenanceSystem->branch_email ?? null;
 
         // Nếu không có code và cũng không có email thì return luôn
         if (!$storeCode && !$storeEmail) {
@@ -72,7 +72,7 @@ class MaintenanceBuyerMail extends Mailable implements ShouldQueue
             if (!empty($store->om_email)) {
                 $cc[] = $store->om_email;
             }
-
+            
             if (!empty($store->muasam_email)) {
                 $cc[] = $store->muasam_email;
             }

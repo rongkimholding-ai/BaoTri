@@ -10,7 +10,17 @@ return [
 
         'PROCESSING' => [
             'WAITING_CONFIRM',
+            'PENDING',
+            'PENDING_CONTRACTOR',
             'REJECTED',
+        ],
+
+        'PENDING' => [
+            'CONTINUE_PROCESSING',
+        ],
+
+        'PENDING_CONTRACTOR' => [
+            'CONTINUE_PROCESSING',
         ],
 
         'REJECTED' => [
@@ -19,6 +29,12 @@ return [
 
         'REOPEN' => [
             'PROCESSING',
+        ],
+
+        'CONTINUE_PROCESSING' => [
+            'WAITING_CONFIRM',
+            'PENDING',
+            'PENDING_CONTRACTOR',
         ],
 
         'WAITING_CONFIRM' => [

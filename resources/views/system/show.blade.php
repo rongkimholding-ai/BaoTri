@@ -19,7 +19,10 @@
                         $nextStatuses = $workflow[$currentStatus] ?? [];
                         $statusBtnList = [
                             'PROCESSING' => 'btn-outline-warning',
-                            'WAITING_CONFIRM' => 'btn-outline-info',
+                            'CONTINUE_PROCESSING' => "btn-outline-warning",
+                            'PENDING' => "btn-outline-info",
+                            'PENDING_CONTRACTOR' => "btn-outline-secondary",
+                            'WAITING_CONFIRM' => 'btn-outline-success',
                             'REJECTED' => 'btn-outline-danger',
                             'REOPEN' => 'btn-outline-warning',
                             'CONFIRMED' => 'btn-outline-primary',
