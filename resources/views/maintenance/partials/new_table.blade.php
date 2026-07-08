@@ -233,6 +233,19 @@
                                             @endif
                                         @endcan
                                         @role('admin')
+                                        <li>
+                                                <a href="javascript:void(0)"
+                                                class="dropdown-item text-warning admin-update-tech-maintenance-btn"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#updateTechModal"
+                                                data-action="{{ route('maintenance-requests.update-technician-info',['id'=>$item->id]) }}"
+                                                data-id="{{ $item->id }}"
+                                                data-name="{{ $item->technician_name }}"
+                                                data-email="{{ $item->technician_email }}"
+                                                data-mobile="{{ $item->technician_mobile }}">
+                                                    <i class="bi bi-tools"></i> Cập nhật kỹ thuật viên
+                                                </a>
+                                            </li>
                                             <li>
                                                 <a href="#" class="dropdown-item admin-change-status-btn" data-id="{{ $item->id }}" data-current-status="{{ $item->sla_status }}">
                                                     Đổi trạng thái

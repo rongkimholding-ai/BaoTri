@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/maintenance-request/acceptance', [MaintenanceRequestController::class, 'acceptance'])->name('maintenance-requests.acceptance');
     Route::post('/maintenance-requests/remind', [MaintenanceRequestController::class, 'remind'])->name('maintenance-requests.remind');
     Route::patch('/maintenance-requests/{maintenanceRequest}/status', [MaintenanceRequestController::class, 'changeStatus'])->name('maintenance-requests.change-status');
+    Route::post('/maintenance-requests/update-technician-info/{id}', [MaintenanceRequestController::class, 'updateTechnicianInfo'])->name('maintenance-requests.update-technician-info');
     Route::get('/reports/technicians', [MaintenanceController::class, 'index'])->name('reports.technicians');
     Route::post('/reports/technician-update', [MaintenanceController::class, 'updateTarget'])->name('reports.technician-update');
     Route::get('/reports/technician-export', [MaintenanceController::class, 'exportTechs'])->name('reports.technician-export');
