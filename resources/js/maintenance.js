@@ -463,36 +463,41 @@ $(function () {
         .html('');
     });
 
+    let currentEditId = null;
+
     $('#editModal').on('show.bs.modal', function (e) {
-        const $modal = $(this);
-        const maintenanceRequestId = $(e.relatedTarget).data('id');
-        const $editForm = $('#editForm');
-        const baseAction = $editForm.data('base-action') || '/maintenance-requests/{id}';
 
-        // Lưu base-action nếu chưa lưu trước đó
-        if (!$editForm.data('base-action')) {
-            $editForm.data('base-action', baseAction);
-        }
+        currentEditId = $(e.relatedTarget).data('id');
 
-        $editForm.attr('action', baseAction.replace('{id}', maintenanceRequestId));
+        const $form = $('#editForm');
+        const baseAction = $form.data('base-action') || '/maintenance-requests/{id}';
 
-        $modal.find('.modal-body').html(`
+        $form.attr('action', baseAction.replace('{id}', currentEditId));
+
+        $(this).find('.modal-body').html(`
             <div class="text-center py-5">
                 <div class="spinner-border"></div>
             </div>
         `);
 
-        $.get(`/maintenance-requests/${maintenanceRequestId}/edit`, function (html) {
+    });
+
+    $('#editModal').on('shown.bs.modal', function () {
+
+        const $modal = $(this);
+
+        $.get(`/maintenance-requests/${currentEditId}/edit`, function (html) {
+
             $modal.find('.modal-body').html(html);
 
-            // Gộp các select cần select2
-            $modal.find('.select2-category, .select2-branch').each(function () {
-                $(this).select2({
-                    dropdownParent: $modal,
-                    width: '100%'
-                });
+            $modal.find('.select2-category, .select2-branch').select2({
+                dropdownParent: $modal,
+                width: '100%'
             });
+
+            toggleFormEditFields();
         });
+
     });
 
     $('#editModal').on('hidden.bs.modal', function () {
@@ -1232,28 +1237,31 @@ $(function () {
     function toggleFormEditFields() {
         const modal = $('#editModal');
         const key = modal.find('.issue-selector option:selected').data('key');
-
-        // Khóa toàn bộ trước
-        modal.find('input, textarea')
+    
+        // Khóa toàn bộ input
+        modal.find('input[type=text], input[type=email], input[type=number]')
             .prop('readonly', true);
-
-        modal.find('select')
-            .not('.form-branch-name, .issue-selector, .severity-field')
-            .prop('disabled', true);
-
-        // Bỏ highlight cũ
+    
+        // Khóa textarea
+        modal.find('textarea')
+            .prop('readonly', true);
+    
+        // Bỏ highlight
         modal.find('.editable-highlight')
             .removeClass('editable-highlight');
-
-        // Nếu là OTHER thì mở các trường được phép sửa
+    
+        // Chỉ cho chọn hạng mục
+        modal.find('.issue-selector')
+            .prop('disabled', false);
+    
+        // Nếu OTHER
         if (key === 'OTHER') {
-            // .severity-field,  .processing-time
             modal.find(
-                ' .issue-description, .solution-description'
+                '.issue-description, .solution-description'
             )
-                .prop('readonly', false)
-                .prop('disabled', false)
-                .addClass('editable-highlight');
+            .prop('readonly', false)
+            .prop('disabled', false)
+            .addClass('editable-highlight');
         }
     }
 
