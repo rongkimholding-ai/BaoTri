@@ -463,55 +463,36 @@ $(function () {
         .html('');
     });
 
-    $('#editModal').on('shown.bs.modal', function (e) {
-        // Cập nhật lại để lấy select2-category trong #editModal đúng cách (khởi tạo select2 cho field này khi #editModal hiển thị)
-        let $modal = $(this);
-        $modal.find('.select2-category').select2({
-            dropdownParent: $modal,
-            width: '100%'
-        });
-        $modal.find('.select2-branch').select2({
-            dropdownParent: $modal,
-            width: '100%'
-        });
+    $('#editModal').on('show.bs.modal', function (e) {
+        const $modal = $(this);
+        const maintenanceRequestId = $(e.relatedTarget).data('id');
+        const $editForm = $('#editForm');
+        const baseAction = $editForm.data('base-action') || '/maintenance-requests/{id}';
 
-        // Lấy id từ data-id của nút hoặc từ modal (phải đảm bảo truyền data-id vào trigger hoặc modal khi mở)
-        let maintenanceRequestId = $(e.relatedTarget).data('id');
-        if (!maintenanceRequestId) {
-            // thử lấy từ chính modal nếu đã được set vào modal
-            maintenanceRequestId = $(this).data('id');
-        }
-
-        let $editForm = $('#editForm');
-        let baseAction = $editForm.data('base-action');
-
-        if (!baseAction) {
-            // Nếu chưa có baseAction, set luôn chuẩn Laravel update route ('maintenance-requests.update')
-            // Ví dụ: /maintenance-requests/{id}
-            baseAction = '/maintenance-requests/{id}';
+        // Lưu base-action nếu chưa lưu trước đó
+        if (!$editForm.data('base-action')) {
             $editForm.data('base-action', baseAction);
         }
 
-        // Tự động route action về chuẩn Laravel route('maintenance-requests.update', [id]) dạng /maintenance-requests/{id}
-        // Nếu baseAction KHÔNG chứa {id} thì bắt buộc phải join lại chuẩn
-        if (typeof baseAction === "string" && maintenanceRequestId) {
-            // Xử lý baseAction là route update chuẩn của Laravel
-            // Ví dụ: /maintenance-requests/{id}
-            let newUrl = baseAction;
-            if (baseAction.includes('{id}')) {
-                newUrl = baseAction.replace('{id}', maintenanceRequestId);
-            } else {
-                // fallback: cố tìm đoạn số cuối cùng để thay, hoặc thêm mới id vào cuối
-                if (baseAction.match(/\/\d+$/)) {
-                    newUrl = baseAction.replace(/\/\d+$/, '/' + maintenanceRequestId);
-                } else if (baseAction.endsWith('/')) {
-                    newUrl = baseAction + maintenanceRequestId;
-                } else {
-                    newUrl = baseAction + '/' + maintenanceRequestId;
-                }
-            }
-            $editForm.attr('action', newUrl);
-        }
+        $editForm.attr('action', baseAction.replace('{id}', maintenanceRequestId));
+
+        $modal.find('.modal-body').html(`
+            <div class="text-center py-5">
+                <div class="spinner-border"></div>
+            </div>
+        `);
+
+        $.get(`/maintenance-requests/${maintenanceRequestId}/edit`, function (html) {
+            $modal.find('.modal-body').html(html);
+
+            // Gộp các select cần select2
+            $modal.find('.select2-category, .select2-branch').each(function () {
+                $(this).select2({
+                    dropdownParent: $modal,
+                    width: '100%'
+                });
+            });
+        });
     });
 
     $('#editModal').on('hidden.bs.modal', function () {

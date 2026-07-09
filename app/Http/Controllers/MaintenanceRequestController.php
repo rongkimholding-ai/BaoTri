@@ -311,15 +311,13 @@ class MaintenanceRequestController extends Controller
      */
     public function edit(MaintenanceRequest $maintenanceRequest)
     {
-        $data = [
-            'stores'     => $this->getData(),
-            'checks'     => $this->getChecksData(),
-            'techs'      => $this->getTechnicianData(),
+        return view('maintenance.partials._form_edit', [
+            'maintenanceRequest' => $maintenanceRequest,
+            'stores' => $this->getData(),
+            'checks' => $this->getChecksData(),
+            'techs' => $this->getTechnicianData(),
             'severities' => $this->getSeveritiesData(),
-            'maintenanceRequest' => $maintenanceRequest->id,
-        ];
-
-        return view('maintenance.modals.edit', $data);
+        ]);
     }
 
     /**

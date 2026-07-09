@@ -146,6 +146,7 @@
                                             </a>
                                         </li>
                                         @can('change-maintenance')
+                                        @if(in_array($item->sla_status, [$slaStatusCode['NEW'], $slaStatusCode['PROCESSING'], $slaStatusCode['CONTINUE_PROCESSING']]))
                                         <li>
                                             <a href="#" 
                                                class="dropdown-item edit-btn"
@@ -155,6 +156,7 @@
                                                 Sửa
                                             </a>
                                         </li>
+                                        @endif
                                         @endcan
                                    
                                         @can('change-maintenance-status')
