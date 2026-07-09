@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\ProcessSlaFinalizationJob;
 use App\Jobs\ProcessSlaFinalizationSystemJob;
 use App\Queries\SlaDueQuery;
+use App\Services\LogService;
 use Illuminate\Console\Command;
 
 class AutoSlaFinalizeCommand extends Command
@@ -13,6 +14,7 @@ class AutoSlaFinalizeCommand extends Command
 
     public function handle(SlaDueQuery $query)
     {
+        $time = microtime(true);
         $items = $query->get();
 
         if ($items->isEmpty()) {
@@ -22,6 +24,11 @@ class AutoSlaFinalizeCommand extends Command
                 logger('Dispatch Maintenances Job', ['id' => $item->id]);
                 ProcessSlaFinalizationJob::dispatch($item->id);
             }
+
+            LogService::queue('AUTO ACCPECTANCE MAINTENANCE DONE', [
+                'request_id' => $item->id,
+                'duration'   => microtime(true) - $time
+            ]);
 
             $this->info("Queued Maintenances: " . $items->count());
         }
@@ -36,7 +43,10 @@ class AutoSlaFinalizeCommand extends Command
 
                 ProcessSlaFinalizationSystemJob::dispatch($item->id);
             }
-
+            LogService::queue('AUTO ACCPECTANCE SYSTEM DONE', [
+                'request_id' => $item->id,
+                'duration'   => microtime(true) - $time
+            ]);
             $this->info("Queued System: " . $systemItems->count());
         }
 
