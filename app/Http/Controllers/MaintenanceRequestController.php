@@ -11,6 +11,8 @@ use App\Mail\MaintenanceCompletedMail;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestImage;
 use App\Models\MaintenanceRequestLog;
+use App\Models\MtUpdateLog;
+use App\Models\MtUpdateLogDetail;
 use App\Services\MaintenanceImageService;
 use App\Services\MaintenanceRequestService;
 use App\Services\MaintenanceStatusService;
@@ -276,6 +278,8 @@ class MaintenanceRequestController extends Controller
         $maintenanceRequest->load([
             'images',
             'logs.user',
+            'updateLogs.user',
+            'updateLogs.details',
         ]);
 
         $title = 'Chi tiết yêu cầu #' . $maintenanceRequest->id;
@@ -322,17 +326,94 @@ class MaintenanceRequestController extends Controller
      * Update the specified resource in storage.
      */
     public function update(
-        Request $request,
-        MaintenanceRequest $maintenanceRequest
+    Request $request,
+    MaintenanceRequest $maintenanceRequest
     ) {
-        $maintenanceRequest->update(
-            $request->all()
-        );
+        DB::transaction(function () use ($request, $maintenanceRequest) {
+
+            // Dữ liệu cập nhật
+            $data = $request->all();
+
+            // Chuẩn hóa checkbox
+            foreach ([
+                'include_saturday',
+                'include_sunday',
+                'include_holiday',
+            ] as $field) {
+                $data[$field] = $request->boolean($field);
+            }
+
+            // Dữ liệu trước khi update
+            $oldData = $maintenanceRequest->getOriginal();
+
+            // Update
+            $maintenanceRequest->update($data);
+
+            // Chỉ lấy các field thay đổi
+            $changes = $maintenanceRequest->getChanges();
+
+            // Danh sách field cần log
+            $fields = config('maintenance_log.fields', []);
+
+            $details = [];
+
+            foreach ($changes as $field => $newValue) {
+
+                // Không log field ngoài config
+                if (!isset($fields[$field])) {
+                    continue;
+                }
+
+                $details[] = new MtUpdateLogDetail([
+                    'field'      => $field,
+                    'field_name' => $fields[$field],
+                    'old_value'  => $this->formatLogValue($field, $oldData[$field] ?? null),
+                    'new_value'  => $this->formatLogValue($field, $newValue),
+                ]);
+            }
+
+            // Không có gì thay đổi thì không tạo log
+            if (empty($details)) {
+                return;
+            }
+
+            $log = MtUpdateLog::create([
+                'maintenance_request_id' => $maintenanceRequest->id,
+                'user_id' => auth()->id(),
+                'note' => 'Cập nhật yêu cầu bảo trì',
+            ]);
+
+            foreach ($details as $detail) {
+                $log->details()->save($detail);
+            }
+        });
 
         return back()->with(
             'success',
             'Cập nhật thành công'
         );
+    }
+
+    /**
+     * Format dữ liệu trước khi lưu log
+     */
+    private function formatLogValue(string $field, $value): string
+    {
+        // Các field boolean
+        if (in_array($field, [
+            'include_saturday',
+            'include_sunday',
+            'include_holiday',
+        ], true)) {
+            return $value ? 'Có' : 'Không';
+        }
+
+        // Null hoặc rỗng
+        if ($value === null || $value === '') {
+            return '(Trống)';
+        }
+
+        return (string) $value;
     }
 
     /**
