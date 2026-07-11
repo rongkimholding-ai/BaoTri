@@ -776,10 +776,58 @@ $(function () {
         toggleImageUpload($(this).val());
     });
 
+    // Gửi log client (POST, timeout 3s), thêm token mặc định
+    function sendClientLog(data) {
+        const token = $('meta[name="csrf-token"]').attr('content');
+        $.post({
+            url: '/client-log',
+            timeout: 3000,
+            data: { _token: token, ...data }
+        });
+    }
+
+    // Gửi log mạng với các thông tin chi tiết truy cập
+    function logNetworkInfo(step) {
+        const nav = performance.getEntriesByType('navigation')[0] || {};
+        sendClientLog({
+            type: 'network',
+            step,
+            time: new Date().toISOString(),
+            online: navigator.onLine,
+            connectionType: navigator.connection?.effectiveType || null,
+            downlink: navigator.connection?.downlink || null,
+            rtt: navigator.connection?.rtt || null,
+            pageLoad: nav.duration || null,
+            userAgent: navigator.userAgent
+        });
+    }
+
+    let selectingImages = false, upload100Logged = false;
+
+    // Khi bắt đầu chọn ảnh: disable các nút
+    $(document).on('click', '#completionImages', function () {
+        selectingImages = true;
+        $('#confirmChangeStatus, #statusSelect').prop('disabled', true);
+    });
+
+    // Khi đã chọn xong ảnh: enable nút, log số lượng/size ảnh
+    $(document).on('change', '#completionImages', function () {
+        selectingImages = false;
+        $('#confirmChangeStatus, #statusSelect').prop('disabled', false);
+        const files = this.files;
+        sendClientLog({
+            type: 'image_selected',
+            image_count: files.length,
+            total_size: Array.from(files).reduce((t, f) => t + f.size, 0)
+        });
+    });
+
+    // Đóng modal: reset lại trường ảnh và trạng thái
     $('#changeStatusModal').on('hidden.bs.modal', function () {
         $('#completionImages').val(null);
         $('#imageUploadWrapper').addClass('d-none');
-    
+        selectingImages = false;
+        upload100Logged = false;
     });
 
     $(document).on('click', '.change-status-btn', function (e) {
@@ -867,39 +915,35 @@ $(function () {
         .on('click', '#confirmChangeStatus', function () {
             const btn = $(this);
             if (btn.prop('disabled')) return;
+            if (selectingImages) return alert('Vui lòng chờ hoàn tất chọn ảnh.');
+            upload100Logged = false;
 
             const id = $('#statusRequestId').val();
             const note = $('#statusNote').val();
             const tech_mail = $('#technicianSelect').val();
-            const isStatusSelectHidden = $('#statusSelectWrapper').hasClass('d-none');
-            const status = isStatusSelectHidden ? $('#newStatus').val() : $('#statusSelect').val();
-            const imageInput = $('#completionImages')[0];
-            const images = imageInput.files;
+            const status = $('#statusSelectWrapper').hasClass('d-none')
+                ? $('#newStatus').val()
+                : $('#statusSelect').val();
+            const images = $('#completionImages')[0].files;
 
+            // Validate waiting confirm needs at least one image
             if (
                 status === window.slaStatusCodes.WAITING_CONFIRM &&
                 images.length === 0
-            ) {
-                alert('Vui lòng tải lên ít nhất 1 ảnh.');
-                return;
-            }
+            ) return alert('Vui lòng tải lên ít nhất 1 ảnh.');
 
             const MAX_FILE_SIZE = 10 * 1024 * 1024;
-            const MAX_TOTAL_SIZE = 40 * 1024 * 1024;
-            let total = 0;
+            const MAX_TOTAL_SIZE = 45 * 1024 * 1024;
+            let totalSize = 0;
 
             for (const file of images) {
-                if (file.size > MAX_FILE_SIZE) {
-                    alert(`${file.name} vượt quá 10MB`);
-                    return;
-                }
-                total += file.size;
+                if (file.size > MAX_FILE_SIZE)
+                    return alert(`${file.name} vượt quá 10MB`);
+                totalSize += file.size;
             }
 
-            if (total > MAX_TOTAL_SIZE) {
-                alert('Tổng dung lượng ảnh vượt quá 40MB.');
-                return;
-            }
+            if (totalSize > MAX_TOTAL_SIZE)
+                return alert('Tổng dung lượng ảnh vượt quá 45MB.');
 
             const formData = new FormData();
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
@@ -908,9 +952,7 @@ $(function () {
             formData.append('note', note);
             formData.append('tech_mail', tech_mail);
 
-            Array.from(images).forEach(file => {
-                formData.append('images[]', file);
-            });
+            for (const file of images) formData.append('images[]', file);
 
             btn.prop('disabled', true);
 
@@ -924,38 +966,81 @@ $(function () {
                 timeout: 600000,
 
                 beforeSend() {
-                    console.log('Change status start', { id, status, imageCount: images.length });
+                    btn.prop('disabled', true);
+                    $('#statusSelect, #completionImages').prop('disabled', true);
+                    sendClientLog({
+                        type: 'before_send',
+                        request_id: id,
+                        image_count: images.length
+                    });
+                    logNetworkInfo('beforeSend');
                 },
 
                 xhr() {
                     const xhr = $.ajaxSettings.xhr();
                     if (xhr.upload) {
-                        xhr.upload.addEventListener('progress', function (e) {
-                            if (e.lengthComputable) {
-                                const percent = Math.round(e.loaded / e.total * 100);
-                                console.log('Upload progress', `${percent}%`);
+                        xhr.upload.addEventListener('progress', (e) => {
+                            if (!e.lengthComputable) return;
+                            const percent = Math.round((e.loaded * 100) / e.total);
+                            console.log('Upload progress', percent + '%');
+                            if (percent === 100 && !upload100Logged) {
+                                upload100Logged = true;
+                                sendClientLog({
+                                    type: 'upload_100',
+                                    request_id: id,
+                                    total: e.total,
+                                    loaded: e.loaded
+                                });
                             }
-                        }, false);
+                        });
                     }
                     return xhr;
                 },
 
-                success() {
-                    location.reload();
+                success(res) {
+                    console.log('=== SUCCESS ===', res);
+                    sendClientLog({
+                        type: 'success',
+                        request_id: id,
+                        response: JSON.stringify(res)
+                    });
+                    logNetworkInfo('success');
+                    if (!res.success)
+                        return alert('Máy chủ trả về dữ liệu không hợp lệ.');
+                    sendClientLog({
+                        type: 'success',
+                        request_id: id,
+                        status: res.sla_status
+                    });
+                    setTimeout(() => location.reload(), 1000);
                 },
 
                 error(xhr, textStatus, errorThrown) {
-                    console.error('Change status error', {
+                    console.group('===== CHANGE STATUS ERROR =====');
+                    console.log('HTTP Status:', xhr.status);
+                    console.log('Ready State:', xhr.readyState);
+                    console.log('Text Status:', textStatus);
+                    console.log('Error:', errorThrown);
+                    console.log('Online:', navigator.onLine);
+                    console.log('Response:', xhr.responseText);
+                    console.log('Response JSON:', xhr.responseJSON);
+                    console.groupEnd();
+
+                    sendClientLog({
+                        type: 'error',
+                        request_id: id,
                         status: xhr.status,
+                        readyState: xhr.readyState,
                         textStatus,
                         error: errorThrown,
-                        response: xhr.responseText
+                        response: xhr.responseText,
+                        online: navigator.onLine
                     });
 
-                    if (textStatus === 'timeout') {
-                        alert('Hệ thống xử lý quá lâu hoặc kết nối mạng không ổn định. Vui lòng kiểm tra lại sau.');
-                        return;
-                    }
+                    logNetworkInfo('error');
+
+                    if (textStatus === 'timeout')
+                        return alert('Hệ thống xử lý quá lâu hoặc kết nối mạng không ổn định. Vui lòng kiểm tra lại sau.');
 
                     if (xhr.status === 422) {
                         try {
@@ -967,18 +1052,46 @@ $(function () {
                         }
                         return;
                     }
+                    if (xhr.status === 419)
+                        return alert('Phiên đăng nhập đã hết hạn. Vui lòng tải lại trang.');
 
-                    if (xhr.status === 419) {
-                        alert('Phiên đăng nhập đã hết hạn. Vui lòng tải lại trang.');
+                    if (xhr.status === 0) {
+                        if (navigator.onLine) {
+                            alert(
+                                'Kết nối tới máy chủ bị gián đoạn.\n' +
+                                'Yêu cầu có thể đã được xử lý thành công.\n' +
+                                'Vui lòng chờ vài giây rồi tải lại trang để kiểm tra.'
+                            );
+                        } else {
+                            alert(
+                                'Thiết bị đang mất kết nối Internet.\n' +
+                                'Vui lòng kiểm tra mạng rồi thử lại.'
+                            );
+                        }
                         return;
                     }
 
-                    alert('Có lỗi xảy ra khi chuyển trạng thái.');
+                    if (xhr.status >= 500)
+                        return alert('Máy chủ đang gặp lỗi. Vui lòng thử lại sau.');
+
+                    alert(
+                        `Có lỗi xảy ra.\n\n` +
+                        `HTTP: ${xhr.status}\n` +
+                        `Text: ${textStatus}`
+                    );
                 },
 
-                complete() {
+                complete(xhr, textStatus) {
+                    sendClientLog({
+                        type: 'complete',
+                        request_id: id,
+                        status: xhr.status,
+                        readyState: xhr.readyState,
+                        textStatus
+                    });
                     btn.prop('disabled', false);
-                    console.log('Change status complete');
+                    $('#statusSelect, #completionImages').prop('disabled', false);
+                    selectingImages = false;
                 }
             });
         });

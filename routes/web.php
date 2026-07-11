@@ -48,7 +48,17 @@ Route::middleware('auth')->group(function () {
         [MaintenanceRequestController::class, 'destroyImage']
     )->name('maintenance-request-images.destroy');
     Route::get('/maintenance-requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])->name('maintenance-requests.show');
+    Route::post('/client-log', function (\Illuminate\Http\Request $request) {
 
+        \App\Services\LogService::maintenance(
+            'CLIENT LOG',
+            $request->all()
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
+    });
     Route::prefix('maintenance-system')
         ->name('maintenance-system.')
         ->group(function () {
