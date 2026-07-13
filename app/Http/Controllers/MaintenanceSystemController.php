@@ -388,7 +388,7 @@ class MaintenanceSystemController extends Controller
         switch ($validated['status']) {
             case config('sla_status.code_ht.WAITING_CONFIRM'):
                 $completedAt = $now;
-                $data['actual_completion_date'] = $completedAt;
+                // $data['actual_completion_date'] = $completedAt;
                 $data['delay_reason'] = '';
 
                 $data['actual_duration'] = app(SlaCalculatorService::class)
@@ -636,18 +636,18 @@ class MaintenanceSystemController extends Controller
 
     private function autoConfirm(MaintenanceSystem $maintenanceSystem): void
     {
-        $newStatus = config('sla_status.code_ht.CONFIRMED');
+        $maintenanceSystem->refresh();
+        $slaService = app(SlaCalculatorService::class);
+        $oldStatus = $maintenanceSystem->status;
+        $newStatus = $slaService->determineSystemSlaStatus($maintenanceSystem);
+        if ($maintenanceSystem->status === $newStatus) return;
 
-        DB::transaction(function () use ($maintenanceSystem, $newStatus) {
-
-            $maintenanceSystem->update([
-                'status' => $newStatus,
-            ]);
-            $oldStatus = config('sla_status.code_ht.WAITING_CONFIRM');
-
+        DB::transaction(function () use ($maintenanceSystem, $newStatus, $oldStatus) {
+            $maintenanceSystem->update(['status' => $newStatus]);
+           
             $maintenanceSystem->writeLog(
                 id: $maintenanceSystem->id,
-                action: 'CHANGE_STATUS',
+                action: 'AUTO_CONFIRM',
                 oldStatus: $oldStatus,
                 newStatus: $newStatus,
                 note: 'Auto duyệt yêu cầu'

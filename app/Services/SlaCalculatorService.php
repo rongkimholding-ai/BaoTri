@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\BusinessTimeHelper;
 use App\Models\MaintenanceRequest;
+use App\Models\MaintenanceSystem;
 use Carbon\Carbon;
 
 class SlaCalculatorService
@@ -52,5 +53,28 @@ class SlaCalculatorService
         return $actualSeconds <= $maxSeconds
             ? config('sla_status.code.COMPLETED')
             : config('sla_status.code.LATED');
+    }
+
+    public function determineSystemSlaStatus(MaintenanceSystem $item): string
+    {
+        if (!$item->actual_duration) return config('sla_status.code_ht.LATED');
+
+        [$h, $i, $s] = array_pad(explode(':', $item->actual_duration), 3, 0);
+        $actualSeconds = ($h * 3600) + ($i * 60) + $s;
+
+        $realTimeList = config('real_time_ht');
+        $realTimeMap = collect($realTimeList)->keyBy('key');
+        $stdKey = $item->standard_completion_time;
+
+        // Nếu không lấy được max_seconds (null), giữ nguyên status hiện tại
+        if (!$stdKey || !isset($realTimeMap[$stdKey]) || !isset($realTimeMap[$stdKey]['max_seconds']) || is_null($realTimeMap[$stdKey]['max_seconds'])) {
+            return $item->status ?? config('sla_status.code_ht.LATED');
+        }
+
+        $maxSeconds = $realTimeMap[$stdKey]['max_seconds'];
+
+        return $actualSeconds <= $maxSeconds
+            ? config('sla_status.code_ht.COMPLETED')
+            : config('sla_status.code_ht.LATED');
     }
 }
