@@ -36,7 +36,7 @@ class AutoPendingSystemSlaCommand extends Command
             'duration'   => microtime(true) - $time
         ]);
 
-        $this->info("Queued LATED: {$items->count()} request(s).");
+        $this->info("Queued System LATED: {$items->count()} request(s).");
 
         return;
     }
