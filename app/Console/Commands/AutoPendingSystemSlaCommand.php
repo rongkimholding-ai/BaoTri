@@ -2,35 +2,35 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessPendingSlaJob;
-use App\Queries\PendingSlaQuery;
+use App\Jobs\ProcessPendingSystemSlaJob;
+use App\Queries\PendingSystemSlaQuery;
 use App\Services\LogService;
 use Illuminate\Console\Command;
 
-class AutoPendingSlaCommand extends Command
+class AutoPendingSystemSlaCommand extends Command
 {
-    protected $signature = 'sla:auto-lated';
+    protected $signature = 'sla:auto-system-lated';
 
-    protected $description = 'Auto Cở sở chuyển sang Trễ hạn';
+    protected $description = 'Auto Hạ tầng chuyển sang Trễ hạn';
 
-    public function handle(PendingSlaQuery $query)
+    public function handle(PendingSystemSlaQuery $query)
     {
         $time = microtime(true);
         $items = $query->getPendingExpired();
 
         if ($items->isEmpty()) {
-            $this->info('Không có MaintenanceRequest quá SLA.');
+            $this->info('Không có MaintenanceSystem quá SLA.');
             return;
         }
 
         foreach ($items as $item) {
-            logger('Dispatch Pending SLA Job', [
+            logger('Dispatch Pending System SLA Job', [
                 'id' => $item->id,
             ]);
 
-            ProcessPendingSlaJob::dispatch($item->id);
+            ProcessPendingSystemSlaJob::dispatch($item->id);
         }
-        LogService::queue('AUTO LADTED DONE', [
+        LogService::queue('AUTO SYSTEM LADTED DONE', [
             'request_id' => $item->id,
             'message' => $this->description,
             'duration'   => microtime(true) - $time
