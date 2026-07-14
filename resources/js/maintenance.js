@@ -1679,43 +1679,57 @@ $(function () {
         }
     );
 
-    $(document).on(
-        'change',
-        '#include_saturday, #include_sunday, #include_holiday',
-        function () {
-            let modal = $(this).closest('.modal');
-            let technicianSelect = modal.find('.form-technician-name');
     
-            let hasSpecialDay =
-                modal.find('#include_saturday').is(':checked') ||
-                modal.find('#include_sunday').is(':checked') ||
-                modal.find('#include_holiday').is(':checked');
-    
-            if (hasSpecialDay) {
-                 // Chỉ lưu 1 lần trước khi override
-                if (!technicianSelect.data('previous-value')) {
-                    technicianSelect.data(
-                        'previous-value',
-                        technicianSelect.val()
-                    );
-                }
+    // Tối ưu xử lý lấy calendar info và chọn kỹ thuật viên đặc biệt nếu cần
+    window.calendarInfo = null;
 
-                technicianSelect
-                    .val(window.techNgoaiGio)
-                    .trigger('change');
-            } else {
-                let previousValue = technicianSelect.data('previous-value');
+    function fetchCalendarInfo() {
+        return $.get('/system/calendar-info').done(function(res) {
+            window.calendarInfo = res;
+        });
+    }
 
-                if (previousValue) {
-                    technicianSelect
-                        .val(previousValue)
-                        .trigger('change');
+    // Đảm bảo là đã có dữ liệu calendarInfo trước khi thao tác
+    fetchCalendarInfo();
 
-                    technicianSelect.removeData('previous-value');
-                }
+    $(document).on('change', '#include_saturday, #include_sunday, #include_holiday', function () {
+        const modal = $(this).closest('.modal');
+        const technicianSelect = modal.find('.form-technician-name');
+        const checkedStates = {
+            saturday: modal.find('#include_saturday').is(':checked'),
+            sunday: modal.find('#include_sunday').is(':checked'),
+            holiday: modal.find('#include_holiday').is(':checked')
+        };
+        const c = window.calendarInfo;
+
+        if (!c) {
+            // Nếu chưa có calendarInfo, thử fetch lại và chờ cho lần sau
+            fetchCalendarInfo();
+            return;
+        }
+
+        const shouldUseSpecialTech =
+            (checkedStates.saturday && c.is_saturday) ||
+            (checkedStates.sunday && c.is_sunday) ||
+            (checkedStates.holiday && c.is_holiday);
+
+        if (shouldUseSpecialTech) {
+            // Chỉ lưu giá trị trước khi đổi để có thể khôi phục về sau
+            if (!technicianSelect.data('previous-value')) {
+                technicianSelect.data('previous-value', technicianSelect.val());
+            }
+
+            if (window.techNgoaiGio !== undefined) {
+                technicianSelect.val(window.techNgoaiGio).trigger('change');
+            }
+        } else {
+            const previousValue = technicianSelect.data('previous-value');
+            if (previousValue !== undefined) {
+                technicianSelect.val(previousValue).trigger('change');
+                technicianSelect.removeData('previous-value');
             }
         }
-    );
+    });
 
     // Tự động cập nhật thông tin kỹ thuật viên khi chọn mới
     $('#maintenanceModal').on('change', '.form-technician-name', function () {

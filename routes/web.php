@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\SystemController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
         [MaintenanceRequestController::class, 'destroyImage']
     )->name('maintenance-request-images.destroy');
     Route::get('/maintenance-requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])->name('maintenance-requests.show');
+    Route::get('/system/calendar-info', [SystemController::class, 'calendarInfo'])->name('system.calendar-info');
     Route::post('/client-log', function (\Illuminate\Http\Request $request) {
 
         \App\Services\LogService::maintenance(
