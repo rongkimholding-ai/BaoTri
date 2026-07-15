@@ -31,30 +31,45 @@ class MaintenanceStatusService
         MaintenanceRequest $maintenanceRequest,
         ChangeMaintenanceStatusRequest $request
     ): array {
-        $log = fn($msg, $extra = []) => $this->logService::maintenance($msg, ['request_id' => $maintenanceRequest->id] + $extra);
+        try {
+            $log = fn($msg, $extra = []) => $this->logService::maintenance($msg, ['request_id' => $maintenanceRequest->id] + $extra);
 
-        $log('ENTER changeStatus', ['time' => microtime(true)]);
-        $validated = $request->validated();
-        $status = $validated['status'];
-        $oldStatus = $maintenanceRequest->sla_status;
-        $now = now();
-        $start = microtime(true);
+            $log('ENTER changeStatus', ['time' => microtime(true)]);
+            $validated = $request->validated();
+            $status = $validated['status'];
+            $oldStatus = $maintenanceRequest->sla_status;
+            $now = now();
+            $start = microtime(true);
 
-        $data = $this->buildUpdateData($maintenanceRequest, $request, $status, $now);
+            $data = $this->buildUpdateData($maintenanceRequest, $request, $status, $now);
 
-        $this->updateMaintenance($maintenanceRequest, $data, $oldStatus, $status, $request, $start);
+            $this->updateMaintenance($maintenanceRequest, $data, $oldStatus, $status, $request, $start);
 
-        $maintenanceRequest->refresh();
+            $maintenanceRequest->refresh();
 
-        $this->afterStatusChanged($maintenanceRequest, $status, $request);
+            $this->afterStatusChanged($maintenanceRequest, $status, $request);
 
-        $log('AFTER STATUS DONE', ['duration' => microtime(true) - $start]);
-        $log('LEAVE changeStatus', ['time' => microtime(true)]);
+            $log('AFTER STATUS DONE', ['duration' => microtime(true) - $start]);
+            $log('LEAVE changeStatus', ['time' => microtime(true)]);
 
-        return [
-            'success' => true,
-            'sla_status' => $maintenanceRequest->sla_status,
-        ];
+            return [
+                'success' => true,
+                'sla_status' => $maintenanceRequest->sla_status,
+            ];
+        } catch (\Throwable $e) {
+            LogService::error(
+                'maintenance',
+                'CHANGE STATUS EXCEPTION',
+                [
+                    'request_id' => $maintenanceRequest->id ?? null,
+                    'message'    => $e->getMessage(),
+                    'file'       => $e->getFile(),
+                    'line'       => $e->getLine(),
+                    'trace'      => $e->getTraceAsString(),
+                ]
+            );
+            throw $e;
+        }
     }
 
     /**
