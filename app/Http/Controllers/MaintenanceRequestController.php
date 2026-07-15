@@ -249,7 +249,7 @@ class MaintenanceRequestController extends Controller
                 \Mail::to($sendMail)->queue(new MaintenanceReminderMail($created));
                 $created->increment('reminder_count', 1, ['last_reminded_at' => now()]);
             } catch (\Throwable $e) {
-                \App\Services\LogService::error('maintenance',"AUTO SLA SYSTEM", [
+                \App\Services\LogService::error('maintenance',"Failed to send maintenance reminder email", [
                     'time' => microtime(true),
                     'request_id' => $created->id,
                     'email' => $created->technician_email,
