@@ -33,6 +33,8 @@
                                 <th scope="col">SLA</th>
                                 <th scope="col">Thời gian</th>
                                 <th scope="col" class="text-center">Trạng thái</th>
+                                <th scope="col" class="text-center">Nghiệm thu</th>
+                                <th scope="col" class="text-center">Người xác nhận</th>
                                 <th scope="col" class="text-center">Thao tác</th>
                             </tr>
                         </thead>
@@ -106,6 +108,8 @@
                                             {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
                                         </span>
                                     </td>
+                                    <td class="text-center">{{ $acceptanceList[$item->acceptance_result] ?? $item->acceptance_result }}</td>
+                                    <td class="confirmer-name">{{ $item->acceptance_confirmed_by }}</td>
                                     <td class="action-column action-cell">
                                         <div class="dropdown">
                                             <button class="btn btn-primary dropdown-toggle action-btn" type="button"
