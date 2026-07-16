@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
             Route::get(
                 '/{maintenanceSystem}/change-status/{status}',
                 [MaintenanceSystemController::class, 'changeStatusForm']
-            )->name('change-status');
+            )->name('change-status.forms');
 
             Route::post(
                 '/{maintenanceSystem}/change-status',
@@ -113,7 +113,7 @@ Route::middleware('auth')->group(function () {
 
         });
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
-    Route::resource('maintenance-system', MaintenanceSystemController::class);
+    // Route::resource('maintenance-system', MaintenanceSystemController::class);
     Route::resource('stores', StoreController::class);
 });
 
