@@ -64,7 +64,7 @@ class TechSystemReportExport implements
             ->map(function ($item) {
 
                 return [
-                    $item->technician_code,
+                    $item->technician_email,
                     $item->technician_name,
                     $item->technician_position,
 
@@ -97,7 +97,7 @@ class TechSystemReportExport implements
     public function headings(): array
     {
         return [
-            'Mã KTV',
+            'Email KTV',
             'Kỹ thuật viên',
             'Vị trí chức danh',
             'Số CH phụ trách',

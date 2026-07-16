@@ -14,7 +14,11 @@ class MaintenanceRequestService
         $data['include_saturday'] = isset($data['include_saturday']) ? (bool)$data['include_saturday'] : false;
         $data['include_sunday'] = isset($data['include_sunday']) ? (bool)$data['include_sunday'] : false;
         $data['include_holiday'] = isset($data['include_holiday']) ? (bool)$data['include_holiday'] : false;
-
+        
+        // Check if current time is outside working hours using BusinessTimeHelper
+        if (!\App\Helpers\BusinessTimeHelper::isBusinessTime($data['request_date'])) {
+            $data['is_off_worktime'] = true;
+        }
         // dd($data);
 
         return MaintenanceRequest::create($data);

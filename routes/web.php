@@ -48,6 +48,10 @@ Route::middleware('auth')->group(function () {
         '/maintenance-requests/export-kpi',
         [MaintenanceController::class, 'exportKpi']
     )->name('maintenance-requests.export-kpi');
+    Route::get(
+        '/maintenance-system/export-kpi',
+        [MaintenanceController::class, 'exportKpiSystem']
+    )->name('maintenance-system.export-kpi');
     Route::delete(
         '/maintenance-request-images/{image}',
         [MaintenanceRequestController::class, 'destroyImage']

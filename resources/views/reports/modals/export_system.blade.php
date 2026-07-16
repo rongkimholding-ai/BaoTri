@@ -15,7 +15,7 @@
                                 <option value="{{ route('maintenance-system.export') }}" data-type="summary">Tổng hợp yêu cầu hạ tầng</option>
                                 <option value="{{ route('reports.technician-system-export') }}" data-type="tech">Báo cáo kỹ thuật viên</option>
                                 <!-- <option value="{{ route('maintenance.export-fromto') }}" data-type="branch">Báo cáo thông kê</option> -->
-                                <!-- <option value="{{ route('maintenance-requests.export-kpi') }}" data-type="tech">KPI Kỹ thuật viên</option> -->
+                                <option value="{{ route('maintenance-system.export-kpi') }}" data-type="tech">KPI Kỹ thuật viên</option>
                             </select>
                         </div>
                         <div class="col-md-3">

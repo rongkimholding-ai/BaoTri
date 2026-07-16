@@ -229,19 +229,27 @@ class TechSystemReportService
         $totalCompleted = $items->count();
 
         $onTimeCount = $items
-            ->where(
-                'sla_status',
-                config('sla_status.code.COMPLETED')
-            )
+            ->where('status', config('sla_status.code_ht.COMPLETED'))
+            ->filter(function ($item) {
+                // Chỉ tính những yêu cầu trong giờ hành chính (is_off_worktime = false hoặc null)
+                return ($item->is_off_worktime === false || is_null($item->is_off_worktime))
+                    && $item->acceptance_result === 'accepted';
+            })
             ->count();
-
-        $lateCount = $totalCompleted - $onTimeCount;
 
         $lateAcceptedCount = $items
             ->filter(function ($item) {
                 return
-                    $item->sla_status === config('sla_status.code.LATED')
+                    $item->status === config('sla_status.code_ht.LATED')
                     && $item->acceptance_result === 'accepted';
+            })
+            ->count();
+
+        $onTimeOffWorkCount = $items
+            ->where('status', config('sla_status.code_ht.COMPLETED'))
+            ->filter(function ($item) {
+                // Chỉ tính những yêu cầu trong giờ hành chính (is_off_worktime = false hoặc null)
+                return $item->is_off_worktime === true && $item->acceptance_result === 'accepted';
             })
             ->count();
 
@@ -259,10 +267,18 @@ class TechSystemReportService
                     || is_null($item->acceptance_result);
             })
             ->count();
+            
+        $lateCount = $totalCompleted - $onTimeCount;
 
         $offWorkCount = $items
             ->where('is_off_worktime', true)
             ->count();
+
+        $inWorkCount = $totalCompleted - $offWorkCount;
+
+        $quyDoi = ($onTimeCount 
+        + ($lateAcceptedCount * 50 / 100) 
+        + ($onTimeOffWorkCount * 30 / 100));
 
         return (object) [
 
@@ -278,9 +294,12 @@ class TechSystemReportService
             'total_completed' => $totalCompleted,
 
             'ngoai_gio_count' => $offWorkCount,
+            'trong_gio_count' => $inWorkCount,
 
             'dung_han_count' => $onTimeCount,
             'khong_dung_han_count' => $lateCount,
+            'dung_han_ngoai_gio_count' => $onTimeOffWorkCount,
+            'quy_doi_count' => $quyDoi,
 
             'late_accepted_count' => $lateAcceptedCount,
 
@@ -301,7 +320,7 @@ class TechSystemReportService
 
             'dung_han_total_percent' =>
                 $this->percent(
-                    $onTimeCount,
+                    $quyDoi,
                     $totalCompleted
                 ),
 

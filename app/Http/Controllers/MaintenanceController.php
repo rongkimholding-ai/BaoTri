@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\MaintenanceByBranchExport;
 use App\Exports\TechnicianKpiExport;
 use App\Exports\TechnicianReportExport;
+use App\Exports\TechSystemKpiExport;
 use App\Exports\TechSystemReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\MaintenanceRequest;
@@ -362,6 +363,35 @@ class MaintenanceController extends Controller
                 $techEmails
             ),
             $exportName
+        );
+    }
+
+    public function exportKpiSystem()
+    {
+        $fromDate = request(
+            'from_date',
+            now()->startOfMonth()->format('Y-m-d')
+        );
+
+        $toDate = request(
+            'to_date',
+            now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $techEmails = request(
+            'tech_emails',
+            []
+        );
+
+        return Excel::download(
+            new TechSystemKpiExport(
+                $fromDate,
+                $toDate,
+                $techEmails
+            ),
+            'KPI_Technician_System_'
+            . now()->format('Ymd_His')
+            . '.xlsx'
         );
     }
 }

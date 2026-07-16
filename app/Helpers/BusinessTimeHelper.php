@@ -111,4 +111,26 @@ class BusinessTimeHelper
             $remainingSeconds
         );
     }
+
+    /**
+     * Kiểm tra xem thời điểm hiện tại (hoặc chỉ định) có nằm trong giờ hành chính không.
+     *
+     * @param Carbon|null $time
+     * @return bool
+     */
+    public static function isBusinessTime(Carbon $time = null): bool
+    {
+        $time = $time ? $time->copy() : Carbon::now();
+
+        // Nếu không trong t2-t6 thì không phải giờ hành chính
+        if ($time->isSaturday() || $time->isSunday()) {
+            return false;
+        }
+
+        $start = $time->copy()->setTime(self::WORK_START_HOUR, 0, 0);
+        $end   = $time->copy()->setTime(self::WORK_END_HOUR, 0, 0);
+
+        // Kiểm tra có trong khoảng giờ hành chính hay không
+        return $time->between($start, $end, false);
+    }
 }

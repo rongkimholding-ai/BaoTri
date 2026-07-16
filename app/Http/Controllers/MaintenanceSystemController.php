@@ -219,19 +219,24 @@ class MaintenanceSystemController extends Controller
     public function store(StoreMaintenanceSystemRequest $request)
     {
         $data = $request->validated();
+        $requestDate = now();
 
         // Theo migration: created_by, request_date, status thuộc trường; không có created_at custom
         $data['created_by'] = auth()->user()->email ?? null;
-        $data['request_date'] = now();
+        $data['request_date'] = $requestDate;
         $data['status'] = 'NEW';
         // Nếu ngày request_date là thứ 7 hoặc Chủ Nhật (cuối tuần) thì bật các flag tương ứng
-        $requestDate = now();
         $weekday = Carbon::parse($requestDate)->dayOfWeekIso; // 6: Thứ 7, 7: CN
         if ($weekday == 6) {
             $data['include_saturday'] = true;
         }
         if ($weekday == 7) {
             $data['include_sunday'] = true;
+        }
+
+        // Check if current time is outside working hours using BusinessTimeHelper
+        if (!\App\Helpers\BusinessTimeHelper::isBusinessTime($requestDate)) {
+            $data['is_off_worktime'] = true;
         }
 
         $maintenanceSystem = MaintenanceSystem::create($data);
