@@ -33,6 +33,13 @@
                                 Bảo trì hạ tầng
                             </a>
                         @endcan
+                        @can('view report')
+                            {{-- Báo cáo hạ tầng--}}
+                            <a href="{{ route('reports.technicians_system') }}"
+                                class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                                Báo cáo Công việc
+                            </a>
+                        @endcan
                     @endif
 
                     @can('view-stores')

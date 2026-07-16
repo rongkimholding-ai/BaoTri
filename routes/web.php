@@ -40,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/technician-update', [MaintenanceController::class, 'updateTarget'])->name('reports.technician-update');
     Route::get('/reports/technician-export', [MaintenanceController::class, 'exportTechs'])->name('reports.technician-export');
     Route::get('/maintenance/export', [MaintenanceController::class, 'exportFromTo'])->name('maintenance.export-fromto');
+    Route::get('/reports/technicians-system', [MaintenanceController::class, 'reportSystem'])->name('reports.technicians_system');
+    Route::get('/maintenance-system/export', [MaintenanceController::class, 'exportSystem'])->name('maintenance-system.export');
+    Route::get('/reports/technician-system-export', [MaintenanceController::class, 'exportTechsSystem'])->name('reports.technician-system-export');
+    Route::post('/reports/technician-system-update', [MaintenanceController::class, 'updateTargetSystem'])->name('reports.technician-system-update');
     Route::get(
         '/maintenance-requests/export-kpi',
         [MaintenanceController::class, 'exportKpi']

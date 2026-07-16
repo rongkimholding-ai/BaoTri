@@ -1252,6 +1252,35 @@ $(function () {
         });
     });
 
+    $(document).on('change', '.inline-target-system', function () {
+
+        let row = $(this).closest('tr');
+
+        $.ajax({
+            url: '/reports/technician-system-update',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+
+                technician_name:
+                    $(this).data('tech'),
+
+                store_count:
+                    row.find('[data-field="store_count"]').val(),
+
+                daily_target:
+                    row.find('[data-field="daily_target"]').val(),
+
+                monthly_target:
+                    row.find('[data-field="monthly_target"]').val()
+            },
+
+            success: function () {
+                console.log('saved');
+            }
+        });
+    });
+
     $(document).on('input', '[data-field="monthly_target"]', function () {
 
         let row = $(this).closest('tr');
@@ -1587,6 +1616,53 @@ $(function () {
     });
 
     $('#report_type').on('change', toggleTechFilter);
+
+    $('#exportsSystemModal').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
+
+    $(document).on('submit', '#exportSystemForm', function () {
+        $(this).attr(
+            'action',
+            $('#report_type_system').val()
+        );
+    
+        bootstrap.Modal
+        .getOrCreateInstance(
+            document.getElementById('exportsSystemModal')
+        )
+        .hide();
+    
+        Loading.show('Đang xuất báo cáo...');
+    
+        setTimeout(function () {
+            Loading.hide();
+        }, 3000);
+    });
+
+    function toggleTechSystemFilter() {
+        const type = $('#report_type_system option:selected').data('type');
+        const showTechFilter = [
+            'summary',
+            'tech'
+        ].includes(type);
+    
+        $('#tech-filter-system-section').toggleClass('d-none', !showTechFilter);
+    
+        if (!showTechFilter) {
+            $('#tech-filter-system-section').find(':checkbox').prop('checked', false);
+        }
+    }
+    
+    $('#exportsSystemModal').on('shown.bs.modal', function () {
+        toggleTechSystemFilter();
+        $(this).find('.select2-branch').select2({
+            dropdownParent: $(this),
+            width: '100%'
+        });
+    });
+
+    $('#report_type_system').on('change', toggleTechSystemFilter);
 
     $(document).on(
         'click',

@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('tech_system_targets', function (Blueprint $table) {
+            $table->id();
+            $table->string('technician_name');
+            $table->string('technician_email');
+            $table->unique(['technician_name', 'technician_email']);
+            $table->integer('store_count')->nullable();
+            $table->integer('daily_target')->nullable();
+            $table->integer('monthly_target')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('tech_system_targets');
+    }
+};

@@ -1,6 +1,6 @@
-<div class="modal fade" id="exportsModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="exportsSystemModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form method="GET" id="exportForm" autocomplete="off">
+        <form method="GET" id="exportSystemForm" autocomplete="off">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Xuất báo cáo</h5>
@@ -10,11 +10,11 @@
                 <div class="modal-body">
                     <div class="row g-2 mb-3">
                         <div class="col-md-12 d-flex align-items-center gap-3">
-                            <label for="report_type" class="form-label mb-0" style="white-space:nowrap;">Loại báo cáo</label>
-                            <select class="form-select select2-branch w-auto flex-grow-1" id="report_type" name="report_type" style="min-width:220px;">
-                                <option value="{{ route('maintenance-requests.export') }}" data-type="summary">Tổng hợp yêu cầu</option>
-                                <option value="{{ route('reports.technician-export') }}" data-type="tech">Báo cáo kỹ thuật viên</option>
-                                <option value="{{ route('maintenance.export-fromto') }}" data-type="branch">Báo cáo thông kê</option>
+                            <label for="report_type_system" class="form-label mb-0" style="white-space:nowrap;">Loại báo cáo</label>
+                            <select class="form-select select2-branch w-auto flex-grow-1" id="report_type_system" name="report_type_system" style="min-width:220px;">
+                                <option value="{{ route('maintenance-system.export') }}" data-type="summary">Tổng hợp yêu cầu hạ tầng</option>
+                                <option value="{{ route('reports.technician-system-export') }}" data-type="tech">Báo cáo kỹ thuật viên</option>
+                                <!-- <option value="{{ route('maintenance.export-fromto') }}" data-type="branch">Báo cáo thông kê</option> -->
                                 <!-- <option value="{{ route('maintenance-requests.export-kpi') }}" data-type="tech">KPI Kỹ thuật viên</option> -->
                             </select>
                         </div>
@@ -38,13 +38,13 @@
 
                     @php
                         $notExportEmail = 'liemhoang.support.hcm@tocotocotea.com';
-                        $technicians = config('technician');
+                        $technicians = config('technician_ht');
                         // Lọc kỹ thuật viên có key là số và không bị loại trừ bởi email đặc biệt
                         $techList = array_filter($technicians, function ($tech, $key) use ($notExportEmail) {
                             return (is_int($key) || ctype_digit((string) $key)) && (!isset($tech['email']) || $tech['email'] !== $notExportEmail);
                         }, ARRAY_FILTER_USE_BOTH);
                     @endphp
-                    <div class="mb-3" id="tech-filter-section">
+                    <div class="mb-3" id="tech-filter-system-section">
                         <label class="form-label">Kỹ thuật viên</label>
                         <input type="text" id="system-tech-search" class="form-control mb-2" placeholder="Tìm kỹ thuật viên">
                         <div class="border rounded p-2" style="max-height:250px;overflow:auto">

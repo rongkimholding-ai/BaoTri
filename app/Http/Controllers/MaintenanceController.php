@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Exports\MaintenanceByBranchExport;
 use App\Exports\TechnicianKpiExport;
 use App\Exports\TechnicianReportExport;
+use App\Exports\TechSystemReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceRequestsExport;
+use App\Models\MaintenanceSystemRequestsExport;
 use App\Models\TechnicianTarget;
+use App\Models\TechSystemTarget;
 use App\Services\TechnicianReportService;
+use App\Services\TechSystemReportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -222,6 +226,142 @@ class MaintenanceController extends Controller
             'KPI_Technician_'
             . now()->format('Ymd_His')
             . '.xlsx'
+        );
+    }
+
+    public function reportSystem(
+        TechSystemReportService $service
+    )
+    {
+        $startDate = request(
+            'from-date',
+            Carbon::now()->startOfMonth()->format('Y-m-d')
+        );
+
+        $endDate = request(
+            'to-date',
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from-date-completed',
+        );
+
+        $endDateCompleted = request(
+            'to-date-completed',
+        );
+    
+        $techEmails = request(
+            'tech_emails',
+            []
+        );
+    
+        $requests = $service->getReport(
+            $startDate,
+            $endDate,
+            $startDateCompleted,
+            $endDateCompleted,
+            $techEmails
+        );
+    
+        return view(
+            'reports.technicians_system',
+            compact('requests')
+        );
+    }
+
+    public function updateTargetSystem(Request $request)
+    {
+        TechSystemTarget::updateOrCreate(
+            [
+                'technician_name' => $request->technician_name,
+            ],
+            [
+                'store_count'     => $request->store_count,
+                'daily_target'    => $request->daily_target,
+                'monthly_target'  => $request->monthly_target,
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function exportSystem()
+    {
+        $startDate = request(
+            'from_date',
+            Carbon::now()->startOfMonth()->format('Y-m-d')
+        );
+
+        $endDate = request(
+            'to_date',
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from_date_completed',
+        );
+
+        $endDateCompleted = request(
+            'to_date_completed',
+        );
+
+        $techEmails = request('tech_emails', []);
+
+        $exportName =
+            'Báo cáo tổng hợp yêu cầu hạ tầng ' .
+            now()->format('d_m_Y') .
+            '.xlsx';
+
+        return Excel::download(
+            new MaintenanceSystemRequestsExport(
+                $startDate,
+                $endDate,
+                $startDateCompleted,
+                $endDateCompleted,
+                $techEmails
+            ),
+            $exportName
+        );
+    }
+
+    public function exportTechsSystem()
+    {
+        $startDate = request(
+            'from_date',
+            Carbon::now()->startOfMonth()->format('Y-m-d')
+        );
+
+        $endDate = request(
+            'to_date',
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
+        $startDateCompleted = request(
+            'from_date_completed',
+        );
+
+        $endDateCompleted = request(
+            'to_date_completed',
+        );
+
+        $techEmails = request('tech_emails', []);
+
+        $exportName = 'Báo cáo KTV '.
+            now()->format('d_m_Y')
+            . '.xlsx';
+
+        return Excel::download(
+            new TechSystemReportExport(
+                $startDate,
+                $endDate,
+                $startDateCompleted,
+                $endDateCompleted,
+                $techEmails
+            ),
+            $exportName
         );
     }
 }
