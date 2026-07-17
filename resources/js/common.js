@@ -11,7 +11,7 @@ window.upload100Logged = false;
 export function initCommon() {
     if (initialized) return;
     initialized = true;
-    typeof initSelect2 === 'function' && initSelect2();
+    initSelect2();
     initLoading();
     initSelect2Focus();
 }
@@ -55,6 +55,13 @@ export function initSelect2Focus() {
         });
 }
 
+export function initSelect2() {
+    $('.select2-branch, .select2-category , .select2-status')
+    .not('#createModal .select2-branch, #createModal .select2-category')
+    .select2({
+        width: '100%'
+    });
+}
 // ==========================
 // Button
 // ==========================

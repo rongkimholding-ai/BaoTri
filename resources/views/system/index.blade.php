@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-md-3">
                             <label for="status" class="form-label mb-1">Trạng thái</label>
-                            <select name="status" id="status" class="form-control">
+                            <select name="status" id="status" class="form-control select2-status">
                                 <option value="">-- Trạng thái --</option>
                                 @foreach($statusOptions as $key => $value)
                                     <option value="{{ $key }}" @selected(request('status') == $key)>

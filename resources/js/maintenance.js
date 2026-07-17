@@ -8,6 +8,7 @@ import {
 
 $(function () {
 
+    initSelect2();
     initCommon();
 
     let typingTimer;
