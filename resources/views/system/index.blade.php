@@ -209,59 +209,35 @@
                         document.getElementById('maintenanceModalContent').innerHTML = html;
 
                         if (action === 'status') {
-                            setTimeout(function () {
-                                var form = document.querySelector('#maintenanceModalContent form');
-                                if (form) {
-                                    form.addEventListener('submit', function (e) {
-                                        e.preventDefault();
+                            if (status == window.slaStatusCodes.WAITING_CONFIRM) {
+                                $('#imageSystemUploadWrapper').removeClass('d-none');
+                            } else {
+                                $('#imageSystemUploadWrapper').addClass('d-none');
+                                $('#completionSystemImages').val('');
+                            }
 
-                                        var formData = new FormData(form);
-                                        var actionUrl = form.getAttribute('action');
+                            // maintenance.js (807-823) logic:
+                            // Khi bắt đầu chọn ảnh: disable nút submit
+                            $(document).off('click.systemImage').on('click.systemImage', '#completionSystemImages', function () {
+                                window.selectingImages = true;
+                                $('#confirmSystemChangeStatus').prop('disabled', true);
+                            });
 
-                                        var errorBox = document.getElementById('system-form-errors');
-                                        if (errorBox) {
-                                            errorBox.classList.add('d-none');
-                                            errorBox.innerHTML = '';
-                                        }
-
-                                        fetch(actionUrl, {
-                                            method: 'POST',
-                                            headers: {
-                                                'X-Requested-With': 'XMLHttpRequest',
-                                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                                            },
-                                            body: formData
-                                        })
-                                            .then(async res => {
-                                                if (res.ok) {
-                                                    location.reload();
-                                                } else if (res.status === 422) {
-                                                    const json = await res.json();
-                                                    if (errorBox) {
-                                                        errorBox.classList.remove('d-none');
-                                                        errorBox.innerHTML = Object.values(json.errors).map(x => x.join(', ')).join('<br>');
-                                                    }
-                                                } else if (res.status === 403) {
-                                                    if (errorBox) {
-                                                        errorBox.classList.remove('d-none');
-                                                        errorBox.innerHTML = 'Bạn không có quyền thực hiện!';
-                                                    }
-                                                } else {
-                                                    if (errorBox) {
-                                                        errorBox.classList.remove('d-none');
-                                                        errorBox.innerHTML = 'Lỗi không xác định!';
-                                                    }
-                                                }
-                                            })
-                                            .catch(function () {
-                                                if (errorBox) {
-                                                    errorBox.classList.remove('d-none');
-                                                    errorBox.innerHTML = 'Không thể gửi yêu cầu. Vui lòng thử lại!';
-                                                }
-                                            });
+                            // Khi đã chọn xong ảnh: enable nút submit, log số lượng/size ảnh
+                            $(document).off('change.systemImage').on('change.systemImage', '#completionSystemImages', function () {
+                                window.selectingImages = false;
+                                $('#confirmSystemChangeStatus').prop('disabled', false);
+                                const files = this.files;
+                                if (typeof window.sendClientLog === 'function') {
+                                    window.sendClientLog({
+                                        type: 'image_selected',
+                                        image_count: files.length,
+                                        total_size: Array.from(files).reduce((t, f) => t + f.size, 0)
                                     });
                                 }
-                            }, 20);
+                            });
+
+                            window.initSystemStatusModal();
                         }
 
                         bootstrap.Modal

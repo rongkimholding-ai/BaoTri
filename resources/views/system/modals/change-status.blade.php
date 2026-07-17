@@ -16,6 +16,12 @@
         <textarea class="form-control" rows="3" name="delay_reason"></textarea>
     </div>
 
+    <div class="mb-3 d-none" id="imageSystemUploadWrapper">
+        <label for="completionSystemImages" class="form-label">Ảnh hoàn thành</label>
+        <input type="file" id="completionSystemImages" class="form-control" multiple accept="image/*">
+        <small class="text-muted">Có thể chọn nhiều ảnh</small>
+    </div>
+
     <div class="mb-3">
         <label>Ghi chú</label>
         <textarea class="form-control" rows="3" name="note"></textarea>
@@ -23,7 +29,7 @@
 
     <div class="mt-6 flex justify-end gap-2 border-t pt-4">
         <!-- <button type="button" onclick="closeMaintenanceModal()" class="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">Hủy</button> -->
-        <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Lưu</button>
+        <button type="submit" id="confirmSystemChangeStatus" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Lưu</button>
     </div>
 </form>
 

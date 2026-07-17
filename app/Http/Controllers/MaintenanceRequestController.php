@@ -697,17 +697,17 @@ class MaintenanceRequestController extends Controller
     // }
 
     public function changeStatus(
-    ChangeMaintenanceStatusRequest $request,
-    MaintenanceRequest $maintenanceRequest,
-    MaintenanceStatusService $service
-) {
-    return response()->json(
-        $service->changeStatus(
-            $maintenanceRequest,
-            $request
-        )
-    );
-}
+        ChangeMaintenanceStatusRequest $request,
+        MaintenanceRequest $maintenanceRequest,
+        MaintenanceStatusService $service
+    ) {
+        return response()->json(
+            $service->changeStatus(
+                $maintenanceRequest,
+                $request
+            )
+        );
+    }
 
     // private function afterStatusChanged(
     //     MaintenanceRequest $maintenanceRequest,

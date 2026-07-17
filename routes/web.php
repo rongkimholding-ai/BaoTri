@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/system/calendar-info', [SystemController::class, 'calendarInfo'])->name('system.calendar-info');
     Route::post('/client-log', function (\Illuminate\Http\Request $request) {
 
-        \App\Services\LogService::maintenance(
+        \App\Services\LogService::client(
             'CLIENT LOG',
             $request->all()
         );

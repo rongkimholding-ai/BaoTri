@@ -14,7 +14,8 @@
 <ul class="nav nav-tabs mb-2" id="maintenanceTab" role="tablist">
     @foreach([
         ['id' => 'info', 'label' => 'Thông tin chung', 'active' => true],
-        ['id' => 'history', 'label' => 'Lịch sử'],
+        ['id' => 'images', 'label' => 'Hình ảnh'],
+        ['id' => 'history', 'label' => 'Lịch sử trạng thái'],
     ] as $tab)
         <li class="nav-item" role="presentation">
             <button class="nav-link{{ !empty($tab['active']) ? ' active' : '' }}"
@@ -155,6 +156,40 @@
                             {{ $maintenanceSystem->{$tech['field']} }}
                         </div>
                     @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Hình ảnh --}}
+    <div class="tab-pane fade" id="images-tab-pane" role="tabpanel" aria-labelledby="images-tab">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header fw-semibold py-2">
+                Hình ảnh ({{ $maintenanceSystem->images->count() }})
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    @forelse($maintenanceSystem->images as $image)
+                        <div class="col-6 col-md-4 col-lg-3 img-item">
+                            <div class="card h-100 border shadow-sm image-card">
+                                <div class="position-relative">
+                                    <a href="{{ Storage::url($image->path) }}" target="_blank">
+                                        <img src="{{ Storage::url($image->path) }}" class="card-img-top" style="height:180px; object-fit:cover;">
+                                    </a>
+                                    @role('admin')
+                                        <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0 m-2 delete-image" data-id="{{ $image->id }}" title="Xóa ảnh">X</button>
+                                    @endrole
+                                </div>
+                                <div class="card-footer bg-white py-2 text-center">
+                                    <a href="{{ Storage::url($image->path) }}" target="_blank" class="btn btn-sm btn-outline-primary w-100">Xem ảnh</a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-light border text-center mb-0">Chưa có hình ảnh đính kèm</div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

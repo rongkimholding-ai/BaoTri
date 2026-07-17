@@ -105,7 +105,6 @@
              */
             function openMaintenanceModal(action, id = null, status = null) {
                 if (typeof window.openMaintenanceModalBase === "function") {
-                    // Nếu JS gốc đã khai báo, gọi hàm chuẩn dùng chung ở maintenance.js
                     window.openMaintenanceModalBase({
                         urlCreate: "{{ route('maintenance-system.create') }}",
                         urlEdit: id ? `/maintenance-system/${id}/edit` : null,
@@ -117,7 +116,6 @@
                         modalContentId: 'maintenanceModalContent'
                     });
                 } else {
-                    // Tạm fallback: logic tự động fetch và hiển thị modal trong trường hợp JS base chưa được include
                     let url = '';
                     let title = '';
 
@@ -143,66 +141,35 @@
                             document.getElementById('maintenanceModalTitle').innerText = title;
                             document.getElementById('maintenanceModalContent').innerHTML = html;
 
-                            // Lắng nghe submit của form đổi trạng thái nếu là hành động status
                             if (action === 'status') {
-                                // Gắn lại sau khi innerHTML thay đổi
-                                setTimeout(function () {
-                                    var form = document.querySelector('#maintenanceModalContent form');
-                                    if (form) {
-                                        form.addEventListener('submit', function (e) {
-                                            e.preventDefault();
+                                if (status == window.slaStatusCodes.WAITING_CONFIRM) {
+                                    $('#imageSystemUploadWrapper').removeClass('d-none');
+                                } else {
+                                    $('#imageSystemUploadWrapper').addClass('d-none');
+                                    $('#completionSystemImages').val('');
+                                }
 
-                                            // Xử lý submit qua ajax:
-                                            var formData = new FormData(form);
-                                            var actionUrl = form.getAttribute('action');
+                                // maintenance.js (807-823) logic:
+                                // Khi bắt đầu chọn ảnh: disable nút submit
+                                $(document).off('click.systemImage').on('click.systemImage', '#completionSystemImages', function () {
+                                    window.selectingImages = true;
+                                    $('#confirmSystemChangeStatus').prop('disabled', true);
+                                });
 
-                                            // Reset lỗi cũ
-                                            var errorBox = document.getElementById('system-form-errors');
-                                            if (errorBox) {
-                                                errorBox.classList.add('d-none');
-                                                errorBox.innerHTML = '';
-                                            }
-
-                                            fetch(actionUrl, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'X-Requested-With': 'XMLHttpRequest',
-                                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                                                },
-                                                body: formData
-                                            })
-                                                .then(async res => {
-                                                    if (res.ok) {
-                                                        // Đã đổi trạng thái thành công
-                                                        location.reload();
-                                                    } else if (res.status === 422) {
-                                                        // Xử lý lỗi validate
-                                                        const json = await res.json();
-                                                        if (errorBox) {
-                                                            errorBox.classList.remove('d-none');
-                                                            errorBox.innerHTML = Object.values(json.errors).map(x => x.join(', ')).join('<br>');
-                                                        }
-                                                    } else if (res.status === 403) {
-                                                        if (errorBox) {
-                                                            errorBox.classList.remove('d-none');
-                                                            errorBox.innerHTML = 'Bạn không có quyền thực hiện!';
-                                                        }
-                                                    } else {
-                                                        if (errorBox) {
-                                                            errorBox.classList.remove('d-none');
-                                                            errorBox.innerHTML = 'Lỗi không xác định!';
-                                                        }
-                                                    }
-                                                })
-                                                .catch(function () {
-                                                    if (errorBox) {
-                                                        errorBox.classList.remove('d-none');
-                                                        errorBox.innerHTML = 'Không thể gửi yêu cầu. Vui lòng thử lại!';
-                                                    }
-                                                });
+                                // Khi đã chọn xong ảnh: enable nút submit, log số lượng/size ảnh
+                                $(document).off('change.systemImage').on('change.systemImage', '#completionSystemImages', function () {
+                                    window.selectingImages = false;
+                                    $('#confirmSystemChangeStatus').prop('disabled', false);
+                                    const files = this.files;
+                                    if (typeof window.sendClientLog === 'function') {
+                                        window.sendClientLog({
+                                            type: 'image_selected',
+                                            image_count: files.length,
+                                            total_size: Array.from(files).reduce((t, f) => t + f.size, 0)
                                         });
                                     }
-                                }, 20);
+                                });
+                                window.initSystemStatusModal();   
                             }
 
                             bootstrap.Modal
@@ -213,7 +180,6 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
-
                 const topScroll = document.querySelector('.table-scroll-top-system');
                 const topScrollInner = topScroll ? topScroll.querySelector('div') : null;
                 const tableResponsive = document.querySelector('.table-responsive');
@@ -252,9 +218,7 @@
                         topScroll.scrollLeft = tableResponsive.scrollLeft;
                     }
                 });
-
             });
-
         </script>
     </div>
 </x-app-layout>

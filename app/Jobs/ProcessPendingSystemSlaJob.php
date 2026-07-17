@@ -55,7 +55,7 @@ class ProcessPendingSystemSlaJob implements ShouldQueue
 
             $item->writeLog(
                 id: $item->id,
-                action: 'AUTO LATED',
+                action: 'CHANGE_STATUS',
                 newStatus: $newStatus,
                 note: 'Tự động chuyển sang Trễ hạn do quá thời gian xử lý'
             );

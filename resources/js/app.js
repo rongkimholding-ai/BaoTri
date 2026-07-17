@@ -15,5 +15,6 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 
 import './maintenance';
+import './system';
 
 Alpine.start();

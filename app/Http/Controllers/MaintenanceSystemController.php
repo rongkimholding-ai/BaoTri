@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangeMaintenanceSystemStatusRequest;
 use App\Http\Requests\StoreMaintenanceSystemRequest;
 use App\Http\Requests\UpdateMaintenanceSystemRequest;
 use App\Mail\MaintenanceSystemAcceptanceMail;
@@ -10,6 +11,7 @@ use App\Mail\MaintenanceSystemCompletedMail;
 use App\Mail\MaintenanceSystemReminderMail;
 use App\Models\MaintenanceSystem;
 use App\Models\MaintenanceSystemLog;
+use App\Services\MaintenanceSystemStatusService;
 use App\Services\SlaCalculatorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -248,6 +250,20 @@ class MaintenanceSystemController extends Controller
             note: 'Khởi tạo yêu cầu'
         );
 
+        // Tự động cập nhật sla_status thành PROCESSING sau khi tạo xong và lưu vào logs trạng thái với note là "auto tiếp nhận thực hiện"
+        $created = MaintenanceSystem::latest()->first();
+        if ($created) {
+            $created->status = config('sla_status.code.PROCESSING');
+            $created->save();
+
+            $created->writeLog(
+                id: $created->id,
+                action: 'CHANGE_STATUS',
+                newStatus: config('sla_status.code_ht.PROCESSING'),
+                note: 'auto tiếp nhận thực hiện'
+            );
+        }
+
         // Tự động gửi mail nhắc việc cho kỹ thuật viên khi tạo mới
         if (!empty($maintenanceSystem->technician_email)) {
             try {
@@ -276,6 +292,7 @@ class MaintenanceSystemController extends Controller
     public function show(MaintenanceSystem $maintenanceSystem)
     {
         $maintenanceSystem->load([
+            'images',
             'logs' => function ($query) {
                 $query->latest();
             }
@@ -359,100 +376,109 @@ class MaintenanceSystemController extends Controller
     }
 
     public function changeStatus(
-        Request $request,
-        MaintenanceSystem $maintenanceSystem
+        ChangeMaintenanceSystemStatusRequest $request,
+        MaintenanceSystem $maintenanceSystem,
+        MaintenanceSystemStatusService $service
     )
     {
-        $workflow = config('maintenance_system.workflow');
-        $oldStatus = $maintenanceSystem->status;
+        return response()->json(
+            $service->changeStatus(
+                $maintenanceSystem,
+                $request
+            )
+        );
 
-        $validated = $request->validate([
-            'status' => ['required'],
-            'delay_reason' => ['nullable', 'string'],
-            'note' => ['nullable', 'string']
-        ]);
-        // dd($validated['status']);
+        // cũ
+        // $workflow = config('maintenance_system.workflow');
+        // $oldStatus = $maintenanceSystem->status;
 
-        if (!in_array(
-            $validated['status'],
-            $workflow[$maintenanceSystem->status] ?? []
-        )) {
-            abort(403);
-        }
+        // $validated = $request->validate([
+        //     'status' => ['required'],
+        //     'delay_reason' => ['nullable', 'string'],
+        //     'note' => ['nullable', 'string']
+        // ]);
+        // // dd($validated['status']);
 
-        $data = [
-            'status' => $validated['status'],
-            // Theo migration, delay_reason lưu lý do, không phải note
-            'delay_reason' => $validated['delay_reason'] ?? null,
-            'updated_by' => auth()->user()->email ?? null,
-        ];
+        // if (!in_array(
+        //     $validated['status'],
+        //     $workflow[$maintenanceSystem->status] ?? []
+        // )) {
+        //     abort(403);
+        // }
 
-        // Logic tính toán thời gian, xử lý tương tự Request controller
-        $now = now();
+        // $data = [
+        //     'status' => $validated['status'],
+        //     // Theo migration, delay_reason lưu lý do, không phải note
+        //     'delay_reason' => $validated['delay_reason'] ?? null,
+        //     'updated_by' => auth()->user()->email ?? null,
+        // ];
 
-        switch ($validated['status']) {
-            case config('sla_status.code_ht.WAITING_CONFIRM'):
-                $completedAt = $now;
-                // $data['actual_completion_date'] = $completedAt;
-                $data['delay_reason'] = '';
+        // // Logic tính toán thời gian, xử lý tương tự Request controller
+        // $now = now();
 
-                $data['actual_duration'] = app(SlaCalculatorService::class)
-                ->calculate(
-                    $maintenanceSystem,
-                    $completedAt
-                );
-                break;
-            case 'COMPLETED':
-                if (!$maintenanceSystem->completed_at) {
-                    $data['completed_at'] = $now;
-                    $data['completed_by'] = auth()->user()->email ?? null;
-                }
+        // switch ($validated['status']) {
+        //     case config('sla_status.code_ht.WAITING_CONFIRM'):
+        //         $completedAt = $now;
+        //         // $data['actual_completion_date'] = $completedAt;
+        //         $data['delay_reason'] = '';
+
+        //         $data['actual_duration'] = app(SlaCalculatorService::class)
+        //         ->calculate(
+        //             $maintenanceSystem,
+        //             $completedAt
+        //         );
+        //         break;
+        //     case 'COMPLETED':
+        //         if (!$maintenanceSystem->completed_at) {
+        //             $data['completed_at'] = $now;
+        //             $data['completed_by'] = auth()->user()->email ?? null;
+        //         }
                
-                // Khi hoàn thành thì lý do trễ để rỗng
-                $data['delay_reason'] = '';
-                break;
-            case 'PENDING':
-            case 'PENDING_CONTRACTOR':
-                $data['pending_at'] = $now;
-                break;
-            case 'CONTINUE_PROCESSING':
-                $data['processing_at'] = $now;
-                break;
-            case 'REOPEN':
-                // Reset thông tin xác nhận khi reopen, tương tự request controller
-                $data = array_merge($data, [
-                    'acceptance_result' => null,
-                    'acceptance_note' => null,
-                    'acceptance_confirmed_by' => null,
-                    'completed_at' => null,
-                    'completed_by' => null,
-                ]);
-                break;
-            // Add cases if needed, ví dụ các trạng thái khác
-            default:
-                // No extra logic
-                break;
-        }
+        //         // Khi hoàn thành thì lý do trễ để rỗng
+        //         $data['delay_reason'] = '';
+        //         break;
+        //     case 'PENDING':
+        //     case 'PENDING_CONTRACTOR':
+        //         $data['pending_at'] = $now;
+        //         break;
+        //     case 'CONTINUE_PROCESSING':
+        //         $data['processing_at'] = $now;
+        //         break;
+        //     case 'REOPEN':
+        //         // Reset thông tin xác nhận khi reopen, tương tự request controller
+        //         $data = array_merge($data, [
+        //             'acceptance_result' => null,
+        //             'acceptance_note' => null,
+        //             'acceptance_confirmed_by' => null,
+        //             'completed_at' => null,
+        //             'completed_by' => null,
+        //         ]);
+        //         break;
+        //     // Add cases if needed, ví dụ các trạng thái khác
+        //     default:
+        //         // No extra logic
+        //         break;
+        // }
 
-        $maintenanceSystem->update($data);
+        // $maintenanceSystem->update($data);
 
-        $maintenanceSystem->writeLog(
-            id: $maintenanceSystem->id,
-            action: 'CHANGE_STATUS',
-            oldStatus: $oldStatus,
-            newStatus: $maintenanceSystem->status,
-            note: $validated['note'] ?? null
-        );
+        // $maintenanceSystem->writeLog(
+        //     id: $maintenanceSystem->id,
+        //     action: 'CHANGE_STATUS',
+        //     oldStatus: $oldStatus,
+        //     newStatus: $maintenanceSystem->status,
+        //     note: $validated['note'] ?? null
+        // );
         
-        $this->afterStatusChanged(
-            $maintenanceSystem,
-            $validated['status']
-        );
+        // $this->afterStatusChanged(
+        //     $maintenanceSystem,
+        //     $validated['status']
+        // );
 
-        return response()->json([
-            'success'    => true,
-            'status' => $maintenanceSystem->status,
-        ]);
+        // return response()->json([
+        //     'success'    => true,
+        //     'status' => $maintenanceSystem->status,
+        // ]);
     }
 
     private function afterStatusChanged(
@@ -652,7 +678,7 @@ class MaintenanceSystemController extends Controller
            
             $maintenanceSystem->writeLog(
                 id: $maintenanceSystem->id,
-                action: 'AUTO_CONFIRM',
+                action: 'CHANGE_STATUS',
                 oldStatus: $oldStatus,
                 newStatus: $newStatus,
                 note: 'Auto duyệt yêu cầu'

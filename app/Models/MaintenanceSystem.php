@@ -71,6 +71,11 @@ class MaintenanceSystem extends Model
         'is_confirmed' => 'boolean',
     ];
 
+    public function images()
+    {
+        return $this->hasMany(MaintenanceSystemImage::class);
+    }
+
     public function logs()
     {
         return $this->hasMany(MaintenanceSystemLog::class)

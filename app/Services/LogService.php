@@ -196,4 +196,17 @@ class LogService
         );
 
     }
+
+    public static function client(
+        string $message,
+        array $context = []
+    ): void {
+
+        self::info(
+            'client',
+            $message,
+            $context
+        );
+
+    }
 }
