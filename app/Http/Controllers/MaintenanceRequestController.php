@@ -226,10 +226,14 @@ class MaintenanceRequestController extends Controller
         $service->create(
             $request->validated()
         );
-
+        $requestDate = now();
         // Tự động cập nhật sla_status thành PROCESSING sau khi tạo xong và lưu vào logs trạng thái với note là "auto tiếp nhận thực hiện"
         $created = MaintenanceRequest::latest()->first();
         if ($created) {
+            // Check if current time is outside working hours using BusinessTimeHelper
+            if (!\App\Helpers\BusinessTimeHelper::isBusinessTime($requestDate)) {
+                $data['is_off_worktime'] = true;
+            }
             $created->sla_status = config('sla_status.code.PROCESSING');
             $created->save();
 
