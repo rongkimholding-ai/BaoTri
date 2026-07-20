@@ -37,10 +37,18 @@ return [
         "email" => "phongvu.it@tocotocotea.com"
     ],
     [
-        "key" => "",
+        "key" => "VP1425",
         "name" => "Trần Ngọc Lâm",
         "position" => "Hạ tầng và tích hợp hệ thống CNTT MN",
-        "mobile" => "0945654486",
+        "phone" => "0945654486",
+        "mobile" => "0822002412",
         "email" => "lamtran.it.hcm@tocotocotea.com"
+    ],
+    [
+        "key" => "VP1514",
+        "name" => "Phan Anh Duy",
+        "position" => " hệ thống CNTT MN",
+        "mobile" => "0387322090",
+        "email" => "duyphan.it.hcm@tocotocotea.com"
     ],
 ];
