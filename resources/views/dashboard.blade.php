@@ -23,7 +23,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 17l4 4 4-4m0-5V3m-8 14V3" />
                                     </svg>
-                                    Bảo trì cơ sở
+                                    Bảo trì xây dựng
                                 </button>
                             </form>
                         </div>
@@ -41,7 +41,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9.75 17L16 12.25V19M19 13V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2h7" />
                                     </svg>
-                                    Bảo trì hạ tầng
+                                    Bảo trì CNTT
                                 </button>
                             </form>
                         </div>
