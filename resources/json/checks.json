@@ -409,7 +409,7 @@
   },
   {
     "key": "QUAT_TREO_QUAT_TRAN_QUAT_QUI",
-    "name": "Quạt treo, quạt trần, quạt quì",
+    "name": "Quạt treo, quạt trần, quạt quỳ",
     "issues": [
       {
         "key": "MOTOR_KHONG_HOAT_DONG_CANH_QUAT_GAY",
@@ -418,6 +418,14 @@
         "handler": "BTBT/ Mua hàng",
         "processing_time": "3_5_DAYS",
         "solution": "BP.BT kiểm tra nguyên nhân hư hỏng và xử lý lỗi. Trong trường hợp không xử lý được. BP.BT lập báo cáo đánh giá và đề xuất sửa chữa/thay mới trên luồng 1.office và được phê duyệt trên luồng công việc."
+      },
+      {
+        "key": "VE_SINH_QUAT",
+        "name": "Vệ sinh quạt công nghiệp treo tường, quạt quỳ",
+        "severity": "3B",
+        "handler": "BTBT",
+        "processing_time": "7_15_DAYS",
+        "solution": "BP.BT kiểm tra và xứ lý lỗi."
       },
       {
         "key": "OTHER",
