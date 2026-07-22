@@ -13,7 +13,7 @@
                         @can('view data')
                             <a href="{{ route('maintenance-requests.index') }}"
                                 class="nav-item {{ request()->routeIs('maintenance-requests.*') ? 'active' : '' }}">
-                                Bảo trì cơ sở
+                                Bảo trì xây dựng
                             </a>
                         @endcan
                         @can('view report')
@@ -30,7 +30,7 @@
                         @can('view-system-task')
                             <a href="{{ route('maintenance-system.index') }}"
                                 class="nav-item {{ request()->routeIs('maintenance-system.*') ? 'active' : '' }}">
-                                Bảo trì hạ tầng
+                                Bảo trì CNTT
                             </a>
                         @endcan
                         @can('view report')

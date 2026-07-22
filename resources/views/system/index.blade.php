@@ -1,5 +1,5 @@
 @php
-    $title = 'Danh sách bảo trì hạ tầng';
+    $title = 'Danh sách công việc bảo trì';
     $statuses = config('sla_status.names_ht');
     $statusOptions = config('sla_status.code_ht');
     $fromDate = request('from_date', now()->startOfMonth()->format('Y-m-d'));
