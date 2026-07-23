@@ -64,8 +64,8 @@ class TechSystemKpiExport implements
                     $item->late_accepted_count,                      // CV chậm TG + đạt CL (số lượng KHÔNG đúng hạn)
                     $item->dung_han_ngoai_gio_count,                 // CV đạt TG + CL (số lượng đúng hạn ngoài giờ hành chính)
                     $item->quality_fail_count,                       // CV không đạt (fail quality)
-                    $item->quy_doi_count,                           // Số công việc quy đổi (giống tổng số vụ sửa chữa)
-                    $item->dung_han_total_percent . '%',             // Tỷ lệ hoàn thành KPI (tỷ lệ đúng hạn / tổng hoàn thành)
+                    $item->quy_doi_count,                            // Số công việc quy đổi (giống tổng số vụ sửa chữa)
+                    $item->dung_han_quydoi_percent . '%',            // Tỷ lệ hoàn thành KPI (tỷ lệ đúng hạn / tổng hoàn thành)
                 ];
             });
     }
