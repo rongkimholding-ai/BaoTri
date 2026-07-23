@@ -324,10 +324,10 @@ class TechSystemReportService
                     $totalCompleted
                 ),
 
-            'dung_han_quydoi_percent' => round(
+            'dung_han_quydoi_percent' => $quyDoi > 0 ? round(
                 $quyDoi / $monthlyTarget * 100,
                  2
-            ),
+            ) : 0,
 
             'khong_dung_han_percent' =>
                 $this->percent(
