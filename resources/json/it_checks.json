@@ -95,6 +95,22 @@
         "max_second": 14400
       },
       {
+        "key": "POS_KHONG_VAO_DUOC_HE_THONG_BAN_HANG",
+        "name": "POS không vào được hệ thống bán hàng",
+        "description": "Máy pos truy cập được mạng nhưng không vào được hệ thống bán hàng",
+        "processing_time": "2_HOURS",
+        "processing_time_word": "Dưới 2 Tiếng",
+        "max_second": 7200
+      },
+      {
+        "key": "DIEN_THOAI_KHONG_VAO_DUOC_PNS",
+        "name": "Điện thoại không vào được hệ thống nhận đơn PNS",
+        "description": "Điện thoại vào được mạng, không vào được app PNS",
+        "processing_time": "2_HOURS",
+        "processing_time_word": "Dưới 2 Tiếng",
+        "max_second": 7200
+      },
+      {
         "key": "V_SINH_KI_M_K_POS",
         "name": "Vệ sinh & Kiểm kê POS",
         "processing_time": "OTHER",

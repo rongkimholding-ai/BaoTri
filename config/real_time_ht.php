@@ -8,6 +8,12 @@ return [
         "max_seconds" => 3600
     ],
     [
+        "key" => "2_HOURS",
+        "name" => "2 giờ",
+        "min_seconds" => 0,
+        "max_seconds" => 7200
+    ],
+    [
         "key" => "4_HOURS",
         "name" => "Dưới 4 tiếng",
         "min_seconds" => 0,
