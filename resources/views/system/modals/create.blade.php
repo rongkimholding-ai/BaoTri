@@ -1,4 +1,4 @@
-<form action="{{ route('maintenance-system.store') }}" method="POST" id="maintenanceSystemCreateForm">
+<form action="{{ route('maintenance-system.store') }}" method="POST" enctype="multipart/form-data" id="maintenanceSystemCreateForm">
     @csrf
     @include('system.partials._form')
     <div class="mt-6 flex justify-end gap-2 border-t pt-4">

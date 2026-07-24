@@ -1,6 +1,6 @@
 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <form id="createForm" action="{{ route('maintenance-requests.store') }}" method="POST" autocomplete="off">
+        <form id="createForm" action="{{ route('maintenance-requests.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">

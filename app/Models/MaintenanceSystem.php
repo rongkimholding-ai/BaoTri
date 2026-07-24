@@ -76,6 +76,11 @@ class MaintenanceSystem extends Model
         return $this->hasMany(MaintenanceSystemImage::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(MaintenanceSystemAttachment::class);
+    }
+
     public function logs()
     {
         return $this->hasMany(MaintenanceSystemLog::class)

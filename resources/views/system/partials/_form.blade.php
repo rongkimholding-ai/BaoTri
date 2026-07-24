@@ -166,6 +166,22 @@
         <input class="form-control" name="delay_reason" value="{{ old('delay_reason', $maintenanceSystem->delay_reason ?? '') }}">
     </div>
 
+    {{-- File đính kèm --}}
+    <div class="col-md-12 mb-3">
+        <label>Tài liệu đính kèm</label>
+
+        <input
+            type="file"
+            name="attachments[]"
+            class="form-control"
+            multiple
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.jpg,.jpeg,.png,.mp4"
+        >
+
+        <small class="text-muted">
+            Có thể chọn nhiều file.
+        </small>
+    </div>
     {{-- Các trường đã ẩn khác giữ lại dưới dạng comment để sau dùng lại --}}
     {{-- 
     <div class="col-md-4 mb-3">

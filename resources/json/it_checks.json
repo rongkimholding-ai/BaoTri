@@ -443,6 +443,12 @@
         "max_second": 14400
       },
       {
+        "key": "CREATE_EMAIL",
+        "name": "Tạo email cho nhân sự",
+        "processing_time": "8_HOURS",
+        "solution": "Hỗ trợ tạo tài khoản email công ty cho nhân sự."
+      },
+      {
         "key": "OTHER",
         "name": "Các lỗi khác",
         "processing_time": "8_HOURS",

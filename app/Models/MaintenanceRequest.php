@@ -54,6 +54,11 @@ class MaintenanceRequest extends Model
         return $this->hasMany(MaintenanceRequestImage::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(MaintenanceRequestAttachment::class);
+    }
+
     public function updateLogs()
     {
         return $this->hasMany(MtUpdateLog::class, 'maintenance_request_id')->latest();

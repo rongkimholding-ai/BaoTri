@@ -223,12 +223,9 @@ class MaintenanceRequestController extends Controller
         StoreMaintenanceRequest $request,
         MaintenanceRequestService $service
     ) {
-        $service->create(
-            $request->validated()
-        );
+        $created = $service->create($request);
         $requestDate = now();
         // Tự động cập nhật sla_status thành PROCESSING sau khi tạo xong và lưu vào logs trạng thái với note là "auto tiếp nhận thực hiện"
-        $created = MaintenanceRequest::latest()->first();
         if ($created) {
             // Check if current time is outside working hours using BusinessTimeHelper
             if (!\App\Helpers\BusinessTimeHelper::isBusinessTime($requestDate)) {

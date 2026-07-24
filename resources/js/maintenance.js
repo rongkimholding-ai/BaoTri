@@ -547,10 +547,14 @@ $(function () {
             $(this).find('input.hidden-other-branch').remove();
         }
 
+        let formData = new FormData(this);
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
-            data: $(this).serialize(),
+            data: formData,
+            processData: false,
+            contentType: false,
         
             success: function () {
         
@@ -612,10 +616,14 @@ $(function () {
 
         $('#editForm select:disabled').prop('disabled', false);
         console.log($(this).attr('action'));
+        let formData = new FormData(this);
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
-            data: $(this).serialize(),
+            data: formData,
+            processData: false,
+            contentType: false,
         
             success: function () {
         

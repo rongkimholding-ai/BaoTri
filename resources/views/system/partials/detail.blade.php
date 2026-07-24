@@ -168,7 +168,8 @@
                 Hình ảnh ({{ $maintenanceSystem->images->count() }})
             </div>
             <div class="card-body">
-                <div class="row g-3">
+                {{-- Images --}}
+                <div class="row g-3 mb-3">
                     @forelse($maintenanceSystem->images as $image)
                         <div class="col-6 col-md-4 col-lg-3 img-item">
                             <div class="card h-100 border shadow-sm image-card">
@@ -190,6 +191,51 @@
                             <div class="alert alert-light border text-center mb-0">Chưa có hình ảnh đính kèm</div>
                         </div>
                     @endforelse
+                </div>
+
+                {{-- Attachments --}}
+                <div class="mt-4">
+                    <div class="card-header fw-semibold py-2 bg-white px-0" style="border-bottom:1px solid #eee;">
+                        File/Tài liệu đính kèm ({{ $maintenanceSystem->attachments->count() ?? 0 }})
+                    </div>
+                    <div class="row g-3 mt-2">
+                        @forelse($maintenanceSystem->attachments as $file)
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="card h-100 border shadow-sm">
+                                    <div class="card-body text-center d-flex flex-column justify-content-center align-items-center p-3">
+                                        @php
+                                            $ext = strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION));
+                                            $icon = 'bi-file-earmark';
+                                            if (in_array($ext, ['pdf'])) $icon = 'bi-file-earmark-pdf text-danger';
+                                            elseif (in_array($ext, ['doc','docx'])) $icon = 'bi-file-earmark-word text-primary';
+                                            elseif (in_array($ext, ['xls','xlsx'])) $icon = 'bi-file-earmark-excel text-success';
+                                            elseif (in_array($ext, ['ppt','pptx'])) $icon = 'bi-file-earmark-ppt text-warning';
+                                            elseif (in_array($ext, ['jpg','jpeg','png'])) $icon = 'bi-file-earmark-image text-info';
+                                            elseif (in_array($ext, ['mp4'])) $icon = 'bi-file-earmark-play text-secondary';
+                                            elseif (in_array($ext, ['zip','rar'])) $icon = 'bi-file-earmark-zip text-muted';
+                                        @endphp
+                                        <i class="bi {{ $icon }} fs-1 mb-2"></i>
+                                        <div class="fw-semibold small text-break mb-2">
+                                            @php
+                                                $imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                                                $ext = strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION));
+                                            @endphp
+                                            @if(in_array($ext, $imageExts))
+                                                <img src="{{ Storage::url($file->file_path) }}" class="card-img-top" style="height:180px; object-fit:cover;">
+                                            @else
+                                                {{ $file->file_name }}
+                                            @endif
+                                        </div>
+                                        <a href="{{ Storage::url($file->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary w-100">Xem / Tải xuống</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <div class="alert alert-light border text-center mb-0">Chưa có tài liệu đính kèm</div>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

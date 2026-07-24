@@ -1,4 +1,4 @@
-<form action="{{ route('maintenance-system.update', $maintenanceSystem) }}" method="POST" id="maintenanceSystemEditForm">
+<form action="{{ route('maintenance-system.update', $maintenanceSystem) }}" method="POST" enctype="multipart/form-data" id="maintenanceSystemEditForm">
     @csrf
     @method('PUT')
     @include('system.partials._form')

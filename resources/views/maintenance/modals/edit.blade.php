@@ -1,6 +1,6 @@
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <form id="editForm" method="POST" autocomplete="off">
+        <form id="editForm" method="POST" enctype="multipart/form-data" autocomplete="off">
             @csrf
             @method('PUT')
             <div class="modal-content">

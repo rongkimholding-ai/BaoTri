@@ -220,6 +220,7 @@ class MaintenanceSystemController extends Controller
 
     public function store(StoreMaintenanceSystemRequest $request)
     {
+        // dd($request->all());
         $data = $request->validated();
         $requestDate = now();
 
@@ -242,6 +243,26 @@ class MaintenanceSystemController extends Controller
         }
 
         $maintenanceSystem = MaintenanceSystem::create($data);
+
+        // Upload file đính kèm
+        if ($request->hasFile('attachments')) {
+
+            foreach ($request->file('attachments') as $file) {
+
+                $path = $file->store(
+                    'maintenance-system/attachments',
+                    'public'
+                );
+
+                $maintenanceSystem->attachments()->create([
+                    'file_name'  => $file->getClientOriginalName(),
+                    'file_path'  => $path,
+                    'file_type'  => $file->getMimeType(),
+                    'file_size'  => $file->getSize(),
+                    'created_by' => auth()->user()->email,
+                ]);
+            }
+        }
 
         $maintenanceSystem->writeLog(
             id: $maintenanceSystem->id,

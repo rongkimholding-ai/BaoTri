@@ -48,6 +48,13 @@ class StoreMaintenanceRequest extends FormRequest
             'include_sunday' => 'boolean',
             'include_holiday' => 'boolean',
        
+            'attachments' => ['nullable','array'],
+
+            'attachments.*' => [
+                'file',
+                'max:20480',
+                'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,mp4,zip,rar'
+            ],
         ];
     }
 
