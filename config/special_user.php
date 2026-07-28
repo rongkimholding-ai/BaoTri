@@ -8,5 +8,6 @@ return [
         "ktnb2@tocotocotea.com",
         "loantran@tocotocotea.com",
         "hanhho@tocotocotea.com",
+        'manager@tea.com',
     ]
 ];
