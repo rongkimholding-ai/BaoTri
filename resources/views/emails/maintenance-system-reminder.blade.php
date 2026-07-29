@@ -19,7 +19,7 @@
 </ul>
 
 <p>
-    <a href="{{ route('maintenance-system.index', $maintenanceRequest->id) }}">
+    <a href="{{ route('maintenance-system.show', $maintenanceRequest->id) }}">
         Xem chi tiết yêu cầu bảo trì hạ tầng
     </a>
 </p>
