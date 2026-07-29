@@ -24,56 +24,51 @@ class MaintenanceSystemController extends Controller
     {
         session(['current_module' => 'system']);
         $user = auth()->user();
-        $role = $user->getRoleNames()->first();
+        $roles = $user->getRoleNames()->map(fn($r) => strtolower($r))->toArray();
         $email = strtolower($user->email);
 
-        // Base query for data access control (copy logic from MaintenanceRequestController)
+        // Base query for data access control: handle by order of matched role, first match wins
         $baseQuery = MaintenanceSystem::query();
-        switch ($role) {
-            case 'technician_system':
-                $baseQuery->where(function ($query) use ($email) {
-                    $query->where('technician_email', $email)
-                          ->orWhere('created_by', $email);
-                });
-                break;
-            case 'user':
-                $baseQuery->where(function ($query) use ($email) {
-                    $query->where('branch_email', $email)
-                          ->orWhere('created_by', $email);
-                });
-                break;
-            case 'manager':
-            case 'am':
-            case 'om':
-            case 'viewer':
-                if (!in_array($email, config('special_user.full_view'))) {
-                    // lấy theo Store từ DB
-                    $stores = \App\Models\Store::all()->toArray();
-                    $branchEmails = collect($stores)
-                        ->filter(function ($store) use ($email) {
-                            return (
-                                (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
-                                (isset($store['am_email']) && strtolower($store['am_email']) == $email)
-                            ) && !empty($store['email']);
-                        })
-                        ->pluck('email')
-                        ->unique()
-                        ->values()
-                        ->all();
 
-                    $baseQuery->where(function($q) use ($branchEmails, $email) {
-                        if (!empty($branchEmails)) {
-                            $q->whereIn('branch_email', $branchEmails);
-                        } else {
-                            $q->whereRaw('1=0');
-                        }
-                        // OR created_by current user
-                        $q->orWhere('created_by', $email);
-                    });
-                }
-                // else: allow all
-                break;
-            // admin, etc: unrestricted
+        if (in_array('technician_system', $roles)) {
+            // technician_system: xem theo các yêu cầu mình phụ trách hoặc mình tạo
+            $baseQuery->where(function ($query) use ($email) {
+                $query->where('technician_email', $email)
+                      ->orWhere('created_by', $email);
+            });
+        } elseif (in_array('user', $roles)) {
+            // user: xem theo các yêu cầu của chi nhánh mình hoặc mình tạo
+            $baseQuery->where(function ($query) use ($email) {
+                $query->where('branch_email', $email)
+                      ->orWhere('created_by', $email);
+            });
+        } elseif (array_intersect($roles, ['manager', 'am', 'om', 'viewer'])) {
+            // manager, am, om, viewer: xem theo các store mình phụ trách hoặc được tạo ra bởi mình, trừ khi có quyền full_view
+            if (!in_array($email, config('special_user.full_view'))) {
+                $stores = \App\Models\Store::all()->toArray();
+                $branchEmails = collect($stores)
+                    ->filter(function ($store) use ($email) {
+                        return (
+                            (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
+                            (isset($store['am_email']) && strtolower($store['am_email']) == $email)
+                        ) && !empty($store['email']);
+                    })
+                    ->pluck('email')
+                    ->unique()
+                    ->values()
+                    ->all();
+
+                $baseQuery->where(function($q) use ($branchEmails, $email) {
+                    if (!empty($branchEmails)) {
+                        $q->whereIn('branch_email', $branchEmails);
+                    } else {
+                        $q->whereRaw('1=0');
+                    }
+                    // OR created_by current user
+                    $q->orWhere('created_by', $email);
+                });
+            }
+            // else: allow all
         }
 
         // Filters

@@ -37,64 +37,56 @@ class MaintenanceRequestController extends Controller
     {
         session(['current_module' => 'facility']);
         $user = auth()->user();
-        $role = $user->getRoleNames()->first();
+        $roles = $user->getRoleNames()->map(fn($r) => strtolower($r))->toArray();
         $email = strtolower($user->email);
         $baseQuery = MaintenanceRequest::query();
 
         // ----------------------------------------
-        // Data access control
+        // Data access control - Nhiều role (nhiều quyền)
         // ----------------------------------------
-        switch ($role) {
-            case 'technician':
+        // Nếu có role 'admin' hoặc nằm trong danh sách 'full_view' thì không lọc gì cả
+        if (!(in_array('admin', $roles) || in_array($email, config('special_user.full_view')))) {
+            // Ưu tiên kiểm tra thứ tự role quan trọng nhất để áp quyền, nếu user có nhiều role
+            if (in_array('technician', $roles)) {
                 $baseQuery->where(function ($q) use ($user) {
                     $q->where('technician_email', $user->email)
                         ->orWhere('created_by', $user->email);
                 });
-                break;
-            case 'user':
+            } elseif (in_array('user', $roles)) {
                 $baseQuery->where(function ($q) use ($user) {
                     $q->where('branch_email', $user->email)
                         ->orWhere('created_by', $user->email);
                 });
-                break;
-            case 'manager':
-            case 'am':
-            case 'om':
-            case 'viewer':
-                // Allow special user to see all (for managers, am, om roles)
-                if (!in_array($email, config('special_user.full_view'))) {
-                    // lấy theo Store từ DB
-                    $stores = \App\Models\Store::all()->toArray();
+            } elseif (array_intersect($roles, ['manager', 'am', 'om', 'viewer'])) {
+                // Allow special user to see all (for managers, am, om roles) đã xử lý trên
+                // lấy theo Store từ DB
+                $stores = \App\Models\Store::all()->toArray();
 
-                    $emails = collect($stores)
-                        ->filter(function ($store) use ($email) {
-                            return (
-                                (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
-                                (isset($store['am_email']) && strtolower($store['am_email']) == $email)
-                            ) && isset($store['email']);
-                        })
-                        ->pluck('email')
-                        ->unique()
-                        ->values()
-                        ->all();
+                $emails = collect($stores)
+                    ->filter(function ($store) use ($email) {
+                        return (
+                            (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
+                            (isset($store['am_email']) && strtolower($store['am_email']) == $email)
+                        ) && isset($store['email']);
+                    })
+                    ->pluck('email')
+                    ->unique()
+                    ->values()
+                    ->all();
 
-                    $baseQuery->where(function ($q) use ($emails, $user) {
-                        if (!empty($emails)) {
-                            $q->whereIn('branch_email', $emails);
-                        } else {
-                            $q->whereRaw('1=0');
-                        }
-                        // OR created_by current user
-                        $q->orWhere('created_by', $user->email);
-                    });
-                }
-                // else: allow all
-                break;
-
-            case 'muasam':
+                $baseQuery->where(function ($q) use ($emails, $user) {
+                    if (!empty($emails)) {
+                        $q->whereIn('branch_email', $emails);
+                    } else {
+                        $q->whereRaw('1=0');
+                    }
+                    // OR created_by current user
+                    $q->orWhere('created_by', $user->email);
+                });
+            } elseif (in_array('muasam', $roles)) {
                 $baseQuery->where('sla_status', config('sla_status.code.PENDING'));
-                break;
-            // admin and others: no restriction
+            }
+            // ngược lại (không một role nào match, hoặc role không liệt kê: không filter)
         }
 
         // ----------------------------------------
