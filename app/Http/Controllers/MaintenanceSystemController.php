@@ -29,22 +29,21 @@ class MaintenanceSystemController extends Controller
 
         // Base query for data access control: handle by order of matched role, first match wins
         $baseQuery = MaintenanceSystem::query();
-
-        if (in_array('technician_system', $roles)) {
-            // technician_system: xem theo các yêu cầu mình phụ trách hoặc mình tạo
-            $baseQuery->where(function ($query) use ($email) {
-                $query->where('technician_email', $email)
-                      ->orWhere('created_by', $email);
-            });
-        } elseif (in_array('user', $roles)) {
-            // user: xem theo các yêu cầu của chi nhánh mình hoặc mình tạo
-            $baseQuery->where(function ($query) use ($email) {
-                $query->where('branch_email', $email)
-                      ->orWhere('created_by', $email);
-            });
-        } elseif (array_intersect($roles, ['manager', 'am', 'om', 'viewer'])) {
-            // manager, am, om, viewer: xem theo các store mình phụ trách hoặc được tạo ra bởi mình, trừ khi có quyền full_view
-            if (!in_array($email, config('special_user.full_view'))) {
+        if (!(in_array('admin', $roles) || in_array($email, config('special_user.full_view')))) {
+            if (in_array('technician_system', $roles)) {
+                // technician_system: xem theo các yêu cầu mình phụ trách hoặc mình tạo
+                $baseQuery->where(function ($query) use ($email) {
+                    $query->where('technician_email', $email)
+                        ->orWhere('created_by', $email);
+                });
+            } elseif (in_array('user', $roles)) {
+                // user: xem theo các yêu cầu của chi nhánh mình hoặc mình tạo
+                $baseQuery->where(function ($query) use ($email) {
+                    $query->where('branch_email', $email)
+                        ->orWhere('created_by', $email);
+                });
+            } elseif (array_intersect($roles, ['manager', 'am', 'om', 'viewer'])) {
+                // manager, am, om, viewer: xem theo các store mình phụ trách hoặc được tạo ra bởi mình, trừ khi có quyền full_view
                 $stores = \App\Models\Store::all()->toArray();
                 $branchEmails = collect($stores)
                     ->filter(function ($store) use ($email) {
@@ -68,7 +67,6 @@ class MaintenanceSystemController extends Controller
                     $q->orWhere('created_by', $email);
                 });
             }
-            // else: allow all
         }
 
         // Filters
