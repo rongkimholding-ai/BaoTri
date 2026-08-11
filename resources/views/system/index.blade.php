@@ -7,6 +7,7 @@
     $acceptanceList = collect(config('acceptance'))->pluck('name', 'key');
     $StatusBadgeList = config('sla_status.badge');
     $slaStatusCode = config('sla_status.code_ht');
+    // dd($techs); die;
 @endphp
 
 <x-app-layout :title="$title">
@@ -102,6 +103,20 @@
                                 @endforeach
                             </select>
                         </div>
+                        @role('admin')
+                        <div class="col-md-3">
+                            <label for="technician_email" class="form-label mb-1">Kỹ thuật viên</label>
+                            <select name="technician_email" id="technician_email" class="form-control select2-ktv">
+                                <option value="">-- Chọn KTV --</option>
+                                @foreach($techs ?? [] as $tech)
+                                    <option value="{{ $tech['email'] ?? $tech->email }}" @selected(request('technician_email') == ($tech['email'] ?? $tech->email))>
+                                        {{ ($tech['name'] ?? $tech->name) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endrole
+                   
                         <div class="col-md-3 d-flex gap-2 pt-md-3">
                             <button type="submit" class="btn btn-primary flex-fill mt-2 mt-md-0">Tìm kiếm</button>
                             <a href="{{ route('maintenance-system.index') }}"

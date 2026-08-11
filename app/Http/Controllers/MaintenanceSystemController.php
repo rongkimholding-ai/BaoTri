@@ -90,10 +90,11 @@ class MaintenanceSystemController extends Controller
             'to_date_completed' => function ($q, $v) {
                 if ($v) $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay());
             },
-            'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
-            'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
-            'status'      => fn($q, $v) => $q->where('status', $v),
-            'id'          => fn($q, $v) => $q->where('id', $v),
+            'branch_code'      => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
+            'branch_name'      => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
+            'technician_email' => fn($q, $v) => $q->where('technician_email', 'like', "%$v%"),
+            'status'           => fn($q, $v) => $q->where('status', $v),
+            'id'               => fn($q, $v) => $q->where('id', $v),
         ];
         foreach ($filters as $field => $filter) {
             // from_date & to_date: chèn mặc định nếu không search
