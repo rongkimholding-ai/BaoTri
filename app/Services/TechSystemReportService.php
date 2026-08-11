@@ -226,9 +226,14 @@ class TechSystemReportService
 
         $monthlyTarget = (int) $tech->monthly_target;
 
-        $totalCompleted = $items->count();
+        // Bỏ qua các trạng thái REJECTED
+        $filteredItems = $items->filter(function ($item) {
+            return isset($item->status) && $item->status !== config('sla_status.code_ht.REJECTED');
+        });
 
-        $onTimeCount = $items
+        $totalCompleted = $filteredItems->count();
+
+        $onTimeCount = $filteredItems
             ->where('status', config('sla_status.code_ht.COMPLETED'))
             ->filter(function ($item) {
                 // Chỉ tính những yêu cầu trong giờ hành chính (is_off_worktime = false hoặc null)
@@ -237,7 +242,7 @@ class TechSystemReportService
             })
             ->count();
 
-        $lateAcceptedCount = $items
+        $lateAcceptedCount = $filteredItems
             ->filter(function ($item) {
                 return
                     $item->status === config('sla_status.code_ht.LATED')
@@ -245,22 +250,22 @@ class TechSystemReportService
             })
             ->count();
 
-        $onTimeOffWorkCount = $items
+        $onTimeOffWorkCount = $filteredItems
             ->where('status', config('sla_status.code_ht.COMPLETED'))
             ->filter(function ($item) {
-                // Chỉ tính những yêu cầu trong giờ hành chính (is_off_worktime = false hoặc null)
+                // Chỉ tính những yêu cầu ngoài giờ hành chính (is_off_worktime = true)
                 return $item->is_off_worktime === true && $item->acceptance_result === 'accepted';
             })
             ->count();
 
-        $qualityPassCount = $items
+        $qualityPassCount = $filteredItems
             ->where(
                 'acceptance_result',
                 'accepted'
             )
             ->count();
 
-        $qualityFailCount = $items
+        $qualityFailCount = $filteredItems
             ->filter(function ($item) {
                 return
                     $item->acceptance_result === 'rejected'
@@ -270,7 +275,7 @@ class TechSystemReportService
             
         $lateCount = $totalCompleted - $onTimeCount;
 
-        $offWorkCount = $items
+        $offWorkCount = $filteredItems
             ->where('is_off_worktime', true)
             ->count();
 
