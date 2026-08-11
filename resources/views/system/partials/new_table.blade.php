@@ -48,6 +48,7 @@
                                     $workflow = config('maintenance_system.workflow');
                                     $statusNamesHt = config('sla_status.names_ht_func');
                                     $nextStatuses = $workflow[$currentStatus] ?? [];
+                                    $workType = config('work_type.name');
                                 @endphp
                                 <tr data-id="{{ $item->id }}" class="tr-row-link" data-detail-url="{{ $detailRoute }}">
                                     <td class="text-center">
@@ -106,6 +107,9 @@
                                         </span><br>
                                         <span class="badge {{ $item->is_confirmed ? 'bg-success' : 'bg-secondary' }}">
                                             {{ $item->is_confirmed ? 'Xác nhận nghiệm thu' : 'Chưa xác nhận nghiệm thu' }}
+                                        </span><br>
+                                        <span class="badge {{ $item->work_type == 1 ? 'bg-dark' : 'bg-primary' }}">
+                                            {{ $workType[$item->work_type] }}
                                         </span>
                                     </td>
                                     <td class="text-center">{{ $acceptanceList[$item->acceptance_result] ?? $item->acceptance_result }}</td>

@@ -31,6 +31,23 @@ class ChangeMaintenanceSystemStatusRequest extends FormRequest
                 Rule::in(config('sla_status.code_ht'))
             ],
             'technician_email' => ['string'],
+            'latitude' => [
+                'nullable',
+                'numeric',
+                'between:-90,90',
+            ],
+
+            'longitude' => [
+                'nullable',
+                'numeric',
+                'between:-180,180',
+            ],
+
+            'accuracy' => [
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
         ];
 
         if (
@@ -48,6 +65,14 @@ class ChangeMaintenanceSystemStatusRequest extends FormRequest
                 'mimes:jpg,jpeg,png,webp',
                 'max:10240'
             ];
+        }
+
+        if ((int) $this->work_type === (int) config('work_type.code.OFFLINE')) {
+
+            $rules['latitude'][] = 'required';
+            $rules['longitude'][] = 'required';
+            $rules['accuracy'][] = 'required';
+
         }
 
         return $rules;

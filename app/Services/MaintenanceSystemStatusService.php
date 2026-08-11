@@ -87,7 +87,17 @@ class MaintenanceSystemStatusService
         $data = [
             'status'    => $status,
             'delay_reason'  => $request->note,
+            'work_type' =>$request->work_type,
         ];
+
+        if ((int) $request->work_type === (int) config('work_type.code.OFFLINE')) {
+
+            $data['complete_latitude'] = $request->latitude;
+            $data['complete_longitude'] = $request->longitude;
+            $data['gps_accuracy'] = $request->accuracy;
+            $data['gps_at'] = $now;
+
+        }
 
         if ($request->tech_mail) {
             $tech = collect(config('technician_ht', []))

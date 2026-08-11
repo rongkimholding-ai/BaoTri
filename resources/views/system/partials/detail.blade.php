@@ -9,6 +9,7 @@
     $timeName = $maintenanceSystem->standard_completion_time
         ? ($realTimeMap[$maintenanceSystem->standard_completion_time]['name'] ?? $maintenanceSystem->standard_completion_time)
         : '';
+    $workType = config('work_type.name');
 @endphp
 
 <ul class="nav nav-tabs mb-2" id="maintenanceTab" role="tablist">
@@ -64,6 +65,24 @@
                     <div>
                         <span class="fw-bold">Người xác nhận: </span>{{ $maintenanceSystem->acceptance_confirmed_by }}
                     </div>
+                    <div>
+                        <span class="fw-bold">Hình thức: </span>
+                        <span class="badge {{ $maintenanceSystem->work_type == 1 ? 'bg-dark' : 'bg-primary' }}">
+                                            {{ $workType[$maintenanceSystem->work_type] ?? '-' }}
+                                        </span>
+                    </div>
+                    @if ($maintenanceSystem->gps_at && $maintenanceSystem->distance)
+                    <hr>
+                    <div>
+                        <span class="fw-bold">Thời gian lấy GPS: </span>
+                        {{ $maintenanceSystem->gps_at ? \Carbon\Carbon::parse($maintenanceSystem->gps_at)->format('d/m/Y H:i') : '-'  }}
+                    </div>
+                    <div>
+                        <span class="fw-bold">{{ $maintenanceSystem->branch_name }}: </span> 
+                        (Khoảng cách {{ number_format($maintenanceSystem->distance, 2) }} m)
+                        
+                    </div>
+                    @endif
                 </div>
             </div>
 

@@ -210,8 +210,10 @@
 
                         if (action === 'status') {
                             if (status == window.slaStatusCodes.WAITING_CONFIRM) {
+                                $('#workType').removeClass('d-none');
                                 $('#imageSystemUploadWrapper').removeClass('d-none');
                             } else {
+                                $('#workType').addClass('d-none');
                                 $('#imageSystemUploadWrapper').addClass('d-none');
                                 $('#completionSystemImages').val('');
                             }
