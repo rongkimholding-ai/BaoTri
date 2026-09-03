@@ -5,6 +5,9 @@
     <div class="mb-3">
         <label class="form-label">Trạng thái</label>
         <input type="hidden" name="status" value="{{ $status }}">
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="accuracy" id="accuracy">
         <div class="alert alert-info">
             {{ config('sla_status.names_ht')[$maintenanceSystem->status] }} →
             {{ config('sla_status.names_ht')[$status] }}
@@ -14,6 +17,20 @@
     <div class="mb-3 d-none" id="delayReasonGroup">
         <label>Lý do trễ</label>
         <textarea class="form-control" rows="3" name="delay_reason"></textarea>
+    </div>
+
+    <div class="mb-3 d-none" id="workType">
+        <label>Loại công việc</label>
+        <select class="form-control" name="work_type">
+            <option value="">-- Chọn loại công việc --</option>
+            @php
+                $workTypeNames = config('work_type.name');
+                $selectedWorkType = old('work_type', $maintenanceSystem->work_type ?? '');
+            @endphp
+            @foreach($workTypeNames as $code => $name)
+                <option value="{{ $code }}" @if($selectedWorkType == $code) selected @endif>{{ $name }}</option>
+            @endforeach
+        </select>
     </div>
 
     <div class="mb-3 d-none" id="imageSystemUploadWrapper">

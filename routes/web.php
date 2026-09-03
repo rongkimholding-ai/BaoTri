@@ -123,6 +123,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('maintenance-requests', MaintenanceRequestController::class)->except(['show']);
     // Route::resource('maintenance-system', MaintenanceSystemController::class);
     Route::resource('stores', StoreController::class);
+    Route::get('/tool/import-store-location', [StoreController::class, 'importLocation']);
 });
 
 

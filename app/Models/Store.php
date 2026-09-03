@@ -12,6 +12,8 @@ class Store extends Model
         'email',
         'area',
         'region',
+        'latitude',
+        'longitude',
     
         'am_name',
         'am_email',

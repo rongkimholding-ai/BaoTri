@@ -268,6 +268,41 @@ export function ajaxJson(options) {
     });
 }
 
+function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+
+        if (!navigator.geolocation) {
+            reject('Trình duyệt không hỗ trợ định vị.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+
+            (position) => {
+
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                });
+
+            },
+
+            (error) => {
+                reject(`${error.code} - ${error.message}`);
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0,
+            }
+
+        );
+
+    });
+}
+
 // Xử lý ảnh khi change-status
 export function initStatusSubmit(options) {
     const defaultConfig = {
@@ -311,6 +346,52 @@ export function initStatusSubmit(options) {
             unlockButton($(submitBtn));
             if (window.Loading?.hide) window.Loading.hide();
             return;
+        }
+
+        const status = formData.get('status');
+        const workType = formData.get('work_type');
+
+        console.log('status', status);
+        console.log('waitingStatus', config.waitingStatus);
+
+        console.log(
+            status === config.waitingStatus,
+            Number(workType) === Number(window.workTypeCodes.OFFLINE)
+        );
+
+        if (
+            status === config.waitingStatus &&
+            Number(workType) === Number(window.workTypeCodes.OFFLINE)
+        ) {
+            try {
+
+                console.log('before gps');
+            
+                const gps = await getCurrentLocation();
+            
+                console.log('after gps', gps);
+            
+                formData.set('latitude', gps.latitude);
+                formData.set('longitude', gps.longitude);
+                formData.set('accuracy', gps.accuracy);
+            
+            } catch (e) {
+            
+                console.error(e);
+            
+            }
+        }
+
+        console.log([...formData.entries()]);
+
+        console.log(workType);
+        console.log(typeof workType);
+        console.log(workType instanceof File);
+        console.log(window.workTypeCodes.OFFLINE);
+        console.log(typeof window.workTypeCodes.OFFLINE);
+
+        for (const [key, value] of formData.entries()) {
+            console.log(key, value);
         }
 
         try {

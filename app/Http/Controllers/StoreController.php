@@ -6,6 +6,7 @@ use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\StoreUpdateRequest;
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StoreController extends Controller
 {
@@ -87,5 +88,71 @@ class StoreController extends Controller
         return redirect()
             ->route('stores.index')
             ->with('success', 'Xóa cửa hàng thành công.');
+    }
+
+    public function importLocation()
+    {
+        $file = storage_path('app/import/GPS.xlsx');
+
+        if (!file_exists($file)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy file: '.$file,
+            ], 404);
+        }
+
+        $rows = Excel::toArray([], $file)[0];
+
+        $total = 0;
+        $updated = 0;
+        $notFound = [];
+        $errors = [];
+
+        foreach ($rows as $index => $row) {
+
+            // Bỏ dòng tiêu đề
+            if ($index === 0) {
+                continue;
+            }
+
+            $total++;
+
+            $storeCode = trim($row[0] ?? '');
+
+            if (empty($storeCode)) {
+                continue;
+            }
+
+            $store = Store::where('code', $storeCode)->first();
+
+            if (!$store) {
+                $notFound[] = $storeCode;
+                continue;
+            }
+
+            try {
+
+                $store->update([
+                    'longitude' => (float) str_replace(',', '.', trim($row[3] ?? '')),
+                    'latitude' => (float) str_replace(',', '.', trim($row[4] ?? '')),
+                ]);
+
+                $updated++;
+
+            } catch (\Throwable $e) {
+
+                $errors[] = [
+                    'code' => $storeCode,
+                    'error' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return response()->json([
+            'total_excel' => $total,
+            'updated' => $updated,
+            'not_found' => $notFound,
+            'errors' => $errors,
+        ]);
     }
 }

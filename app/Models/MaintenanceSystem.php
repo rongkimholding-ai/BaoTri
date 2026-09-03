@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Store;
+use App\Helpers\LocationHelper;
 use Illuminate\Database\Eloquent\Model;
 
 class MaintenanceSystem extends Model
@@ -35,9 +36,14 @@ class MaintenanceSystem extends Model
         'actual_duration',
         'sla_status',
 
-        // Trạng thái, lý do trễ, nhà thầu ngoài
+        // Trạng thái, lý do trễ, nhà thầu ngoài, loại công việc
         'status',
         'delay_reason',
+        'work_type',
+        'complete_latitude',
+        'complete_longitude',
+        'gps_accuracy',
+        'gps_at',
 
         // Nghiệm thu
         'acceptance_result',
@@ -79,6 +85,36 @@ class MaintenanceSystem extends Model
     public function attachments()
     {
         return $this->hasMany(MaintenanceSystemAttachment::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(
+            Store::class,
+            'branch_code',
+            'code'
+        );
+   
+    }
+
+    public function getDistanceAttribute(): ?float
+    {
+        if (
+            !$this->store ||
+            !$this->store->latitude ||
+            !$this->store->longitude ||
+            !$this->complete_latitude ||
+            !$this->complete_longitude
+        ) {
+            return null;
+        }
+
+        return LocationHelper::distance(
+            $this->store->latitude,
+            $this->store->longitude,
+            $this->complete_latitude,
+            $this->complete_longitude
+        );
     }
 
     public function logs()

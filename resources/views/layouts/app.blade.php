@@ -22,6 +22,7 @@
         window.slaStatusBadges = @json(config('sla_status.badge'));
         window.techNgoaiGio = @json(config('technician.ngoai_gio.name'));
         window.slaStatusCodes = @json(config('sla_status.code'));
+        window.workTypeCodes = @json(config('work_type.code'));
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
