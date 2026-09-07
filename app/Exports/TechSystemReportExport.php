@@ -5,10 +5,9 @@ namespace App\Exports;
 use App\Services\TechSystemReportService;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -18,35 +17,39 @@ class TechSystemReportExport implements
     FromCollection,
     WithHeadings,
     WithStyles,
-    ShouldAutoSize,
     WithStrictNullComparison
 {
     protected Carbon $fromDate;
     protected Carbon $toDate;
-    protected ?Carbon $fromDateCompleted = null;
-    protected ?Carbon $toDateCompleted = null;
+    protected ?Carbon $fromDateCompleted;
+    protected ?Carbon $toDateCompleted;
     protected array $techEmails;
-    protected $service;
+    protected TechSystemReportService $service;
 
     public function __construct(
         string $fromDate,
         string $toDate,
-        ?string $from_date_completed = null, 
-        ?string $to_date_completed = null,
+        ?string $fromDateCompleted = null,
+        ?string $toDateCompleted = null,
         array $techEmails = []
     ) {
         $this->fromDate = Carbon::parse($fromDate)->startOfDay();
         $this->toDate = Carbon::parse($toDate)->endOfDay();
 
-        // Only parse from_date_completed and to_date_completed if they are not null or empty
-        $this->fromDateCompleted = !empty($from_date_completed) ? Carbon::parse($from_date_completed)->startOfDay() : null;
-        $this->toDateCompleted = !empty($to_date_completed) ? Carbon::parse($to_date_completed)->endOfDay() : null;
+        $this->fromDateCompleted = $fromDateCompleted
+            ? Carbon::parse($fromDateCompleted)->startOfDay()
+            : null;
 
-        $this->techEmails = collect($techEmails)
-            ->filter()
-            ->map(fn ($email) => strtolower(trim($email)))
-            ->values()
-            ->toArray();
+        $this->toDateCompleted = $toDateCompleted
+            ? Carbon::parse($toDateCompleted)->endOfDay()
+            : null;
+
+        $this->techEmails = array_values(
+            array_map(
+                fn ($email) => strtolower(trim($email)),
+                array_filter($techEmails)
+            )
+        );
 
         $this->service = app(TechSystemReportService::class);
     }
@@ -55,73 +58,207 @@ class TechSystemReportExport implements
     {
         return $this->service
             ->getReport(
-                $this->fromDate,
-                $this->toDate,
-                $this->fromDateCompleted,
-                $this->toDateCompleted,
+                $this->fromDate->toDateString(),
+                $this->toDate->toDateString(),
+                $this->fromDateCompleted?->toDateString(),
+                $this->toDateCompleted?->toDateString(),
                 $this->techEmails
             )
-            ->map(function ($item) {
+            ->map(fn ($item) => [
 
-                return [
-                    $item->technician_email,
-                    $item->technician_name,
-                    $item->technician_position,
+                /*
+                |--------------------------------------------------------------------------
+                | 1 - 7: Thông tin kỹ thuật viên
+                |--------------------------------------------------------------------------
+                */
 
-                    $item->store_count,
-                    $item->daily_target,
-                    $item->monthly_target,
+                $item->technician_code,
+                $item->technician_name,
+                $item->technician_position,
+                $item->store_count,
+                $item->daily_target,
+                $item->monthly_target,
+                $item->total_completed,
 
-                    $item->total_completed,
-                    $item->completion_percent,
+                /*
+                |--------------------------------------------------------------------------
+                | 8 - 11: Phân loại công việc
+                |--------------------------------------------------------------------------
+                */
 
-                    // $item->ngoai_gio_count,
+                $item->onsite_in_work_count,
+                $item->onsite_off_work_count,
+                $item->online_in_work_count,
+                $item->online_off_work_count,
 
-                    $item->dung_han_count,
-                    $item->dung_han_dm_percent,
-                    $item->dung_han_total_percent,
+                /*
+                |--------------------------------------------------------------------------
+                | 12 - 14: Tỷ lệ + quy đổi
+                |--------------------------------------------------------------------------
+                */
 
-                    $item->khong_dung_han_count,
-                    $item->khong_dung_han_percent,
+                $item->completion_percent,
+                $item->quy_doi_count,
+                $item->completion_quy_doi_percent,
 
-                    $item->quality_pass_count,
-                    $item->quality_pass_dm_percent,
-                    $item->quality_pass_total_percent,
+                /*
+                |--------------------------------------------------------------------------
+                | 15 - 26:
+                |
+                | Mỗi nhóm:
+                | - Đúng hạn + CL
+                | - Trễ
+                | - Chưa đáp ứng
+                |--------------------------------------------------------------------------
+                */
 
-                    $item->quality_fail_count,
-                    $item->quality_fail_total_percent,
-                ];
-            });
+                // Onsite trong giờ
+                $item->onsite_in_work_on_time_quality_count,
+                $item->onsite_in_work_late_count,
+                $item->onsite_in_work_not_met_count,
+
+                // Onsite ngoài giờ
+                $item->onsite_off_work_on_time_quality_count,
+                $item->onsite_off_work_late_count,
+                $item->onsite_off_work_not_met_count,
+
+                // Online trong giờ
+                $item->online_in_work_on_time_quality_count,
+                $item->online_in_work_late_count,
+                $item->online_in_work_not_met_count,
+
+                // Online ngoài giờ
+                $item->online_off_work_on_time_quality_count,
+                $item->online_off_work_late_count,
+                $item->online_off_work_not_met_count,
+
+                /*
+                |--------------------------------------------------------------------------
+                | 27 - 28: Tổng LATED
+                |--------------------------------------------------------------------------
+                */
+
+                $item->total_late_count,
+                $item->late_percent,
+
+                /*
+                |--------------------------------------------------------------------------
+                | 29 - 34: Chất lượng
+                |--------------------------------------------------------------------------
+                */
+
+                $item->onsite_quality_pass_count,
+                $item->onsite_quality_fail_count,
+
+                $item->online_in_work_quality_pass_count,
+                $item->online_in_work_quality_fail_count,
+
+                $item->online_off_work_quality_pass_count,
+                $item->online_off_work_quality_fail_count,
+
+                /*
+                |--------------------------------------------------------------------------
+                | 35 - 36: Tổng chất lượng
+                |--------------------------------------------------------------------------
+                */
+
+                $item->quality_fail_count,
+                $item->quality_fail_percent,
+            ]);
     }
 
     public function headings(): array
     {
         return [
-            'Email KTV',
-            'Kỹ thuật viên',
-            'Vị trí chức danh',
-            'Số CH phụ trách',
+            /*
+            |--------------------------------------------------------------------------
+            | 1 - 7
+            |--------------------------------------------------------------------------
+            */
+
+            'Mã NV',
+            'Họ và tên',
+            'Vị trí',
+            'Số cửa hàng',
             'Định mức/ngày',
             'Định mức/tháng',
+            'Tổng số vụ',
 
-            'Tổng sự vụ',
-            'Tỷ lệ sự vụ/ĐM (%)',
+            /*
+            |--------------------------------------------------------------------------
+            | 8 - 11
+            |--------------------------------------------------------------------------
+            */
 
-            // 'SL ngoài giờ',
+            'Onsite trong giờ',
+            'Onsite ngoài giờ',
+            'Online trong giờ',
+            'Online ngoài giờ',
 
-            'Đúng hạn',
-            'Tỷ lệ Đúng hạn/ĐM tháng (%)',
-            'Tỷ lệ Đúng hạn/Tổng TH (%)',
+            /*
+            |--------------------------------------------------------------------------
+            | 12 - 14
+            |--------------------------------------------------------------------------
+            */
 
-            'Trễ hạn',
-            'Tỷ lệ Trễ hạn/Tổng TH (%)',
+            'HT/ĐM (%)',
+            'Số công việc quy đổi',
+            'HT/ĐM quy đổi (%)',
 
-            'Đạt nghiệm thu',
-            'Tỷ lệ đạt CL/ĐM tháng (%)',
-            'Tỷ lệ đạt CL/Tổng TH (%)',
+            /*
+            |--------------------------------------------------------------------------
+            | 15 - 26
+            |--------------------------------------------------------------------------
+            */
 
-            'Không đạt nghiệm thu',
-            'Tỷ lệ không đạt CL/Tổng TH (%)',
+            'Onsite trong giờ đạt TG + CL',
+            'Onsite trong giờ trễ',
+            'Onsite trong giờ chưa đáp ứng',
+
+            'Onsite ngoài giờ đạt TG + CL',
+            'Onsite ngoài giờ trễ',
+            'Onsite ngoài giờ chưa đáp ứng',
+
+            'Online trong giờ đạt TG + CL',
+            'Online trong giờ trễ',
+            'Online trong giờ chưa đáp ứng',
+
+            'Online ngoài giờ đạt TG + CL',
+            'Online ngoài giờ trễ',
+            'Online ngoài giờ chưa đáp ứng',
+
+            /*
+            |--------------------------------------------------------------------------
+            | 27 - 28
+            |--------------------------------------------------------------------------
+            */
+
+            'Tổng không đạt TG',
+            'Quá hạn (%)',
+
+            /*
+            |--------------------------------------------------------------------------
+            | 29 - 34
+            |--------------------------------------------------------------------------
+            */
+
+            'Onsite đạt CL',
+            'Onsite không đạt CL',
+
+            'Online trong giờ đạt CL',
+            'Online trong giờ không đạt CL',
+
+            'Online ngoài giờ đạt CL',
+            'Online ngoài giờ không đạt CL',
+
+            /*
+            |--------------------------------------------------------------------------
+            | 35 - 36
+            |--------------------------------------------------------------------------
+            */
+
+            'Tổng không đạt CL',
+            'Không đạt CL (%)',
         ];
     }
 
@@ -130,42 +267,255 @@ class TechSystemReportExport implements
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
 
-        $sheet->freezePane('A2');
+        /*
+        |--------------------------------------------------------------------------
+        | Freeze
+        |--------------------------------------------------------------------------
+        */
 
-        // Header
-        $sheet->getStyle("A1:{$highestColumn}1")
+        $sheet->freezePane('H2');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Auto filter
+        |--------------------------------------------------------------------------
+        */
+
+        $sheet->setAutoFilter(
+            "A1:{$highestColumn}{$highestRow}"
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Column width
+        |--------------------------------------------------------------------------
+        */
+
+        $widths = [
+            // 1 - 7
+            'A' => 12,
+            'B' => 22,
+            'C' => 20,
+            'D' => 12,
+            'E' => 14,
+            'F' => 15,
+            'G' => 13,
+
+            // 8 - 11
+            'H' => 15,
+            'I' => 15,
+            'J' => 15,
+            'K' => 15,
+
+            // 12 - 14
+            'L' => 13,
+            'M' => 16,
+            'N' => 18,
+
+            // 15 - 26
+            'O' => 20,
+            'P' => 18,
+            'Q' => 20,
+
+            'R' => 20,
+            'S' => 18,
+            'T' => 20,
+
+            'U' => 20,
+            'V' => 18,
+            'W' => 20,
+
+            'X' => 20,
+            'Y' => 18,
+            'Z' => 20,
+
+            // 27 - 28
+            'AA' => 15,
+            'AB' => 13,
+
+            // 29 - 34
+            'AC' => 15,
+            'AD' => 18,
+
+            'AE' => 20,
+            'AF' => 20,
+
+            'AG' => 20,
+            'AH' => 20,
+
+            // 35 - 36
+            'AI' => 15,
+            'AJ' => 15,
+        ];
+
+        foreach ($widths as $col => $width) {
+            $sheet
+                ->getColumnDimension($col)
+                ->setWidth($width);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Header
+        |--------------------------------------------------------------------------
+        */
+
+        $sheet
+            ->getStyle("A1:{$highestColumn}1")
             ->applyFromArray([
                 'font' => [
                     'bold' => true,
-                    'size' => 13,
+                    'size' => 11,
                 ],
+
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => [
                         'rgb' => 'FFD700',
                     ],
                 ],
+
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                    'wrapText' => true,
+                ],
+
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => [
+                            'rgb' => 'D9D9D9',
+                        ],
+                    ],
+                ],
             ]);
 
-        // Căn giữa toàn bộ dữ liệu từ cột B trở đi
-        $sheet->getStyle("B2:{$highestColumn}{$highestRow}")
-            ->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
-            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet
+            ->getRowDimension(1)
+            ->setRowHeight(65);
 
-        // Cột tên kỹ thuật viên căn trái
-        $sheet->getStyle("A2:A{$highestRow}")
-            ->getAlignment()
-            ->setVertical(Alignment::VERTICAL_CENTER);
+        if ($highestRow >= 2) {
 
-        // Header căn giữa
-        $sheet->getStyle("A1:{$highestColumn}1")
-            ->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
-            ->setVertical(Alignment::VERTICAL_CENTER);
+            /*
+            |--------------------------------------------------------------------------
+            | Text
+            |--------------------------------------------------------------------------
+            */
 
-        // Border
-        $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
+            $sheet
+                ->getStyle("A2:C{$highestRow}")
+                ->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_LEFT)
+                ->setVertical(Alignment::VERTICAL_CENTER);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Numeric
+            |--------------------------------------------------------------------------
+            */
+
+            $sheet
+                ->getStyle("D2:AJ{$highestRow}")
+                ->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                ->setVertical(Alignment::VERTICAL_CENTER);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Percentage
+            |--------------------------------------------------------------------------
+            |
+            | percent() đang trả về dạng:
+            |
+            | 116.67
+            |
+            | chứ không phải:
+            |
+            | 1.1667
+            |
+            | Vì vậy KHÔNG dùng format Excel 0.00%.
+            |
+            */
+
+            foreach (['L', 'N', 'AB', 'AJ'] as $col) {
+                $sheet
+                    ->getStyle("{$col}2:{$col}{$highestRow}")
+                    ->getNumberFormat()
+                    ->setFormatCode('0.00');
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Integer
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ([
+                'D',
+                'E',
+                'F',
+                'G',
+
+                'H',
+                'I',
+                'J',
+                'K',
+
+                'M',
+
+                'O',
+                'P',
+                'Q',
+
+                'R',
+                'S',
+                'T',
+
+                'U',
+                'V',
+                'W',
+
+                'X',
+                'Y',
+                'Z',
+
+                'AA',
+
+                'AC',
+                'AD',
+                'AE',
+                'AF',
+                'AG',
+                'AH',
+
+                'AI',
+            ] as $col) {
+                $sheet
+                    ->getStyle("{$col}2:{$col}{$highestRow}")
+                    ->getNumberFormat()
+                    ->setFormatCode('0');
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Default row height
+            |--------------------------------------------------------------------------
+            */
+
+            $sheet
+                ->getDefaultRowDimension()
+                ->setRowHeight(20);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Border
+        |--------------------------------------------------------------------------
+        */
+
+        $sheet
+            ->getStyle("A1:{$highestColumn}{$highestRow}")
             ->applyFromArray([
                 'borders' => [
                     'allBorders' => [
@@ -177,9 +527,17 @@ class TechSystemReportExport implements
                 ],
             ]);
 
-        $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
+        /*
+        |--------------------------------------------------------------------------
+        | Wrap
+        |--------------------------------------------------------------------------
+        */
+
+        $sheet
+            ->getStyle("A1:{$highestColumn}{$highestRow}")
             ->getAlignment()
-            ->setWrapText(true);
+            ->setWrapText(true)
+            ->setVertical(Alignment::VERTICAL_CENTER);
 
         return [];
     }
