@@ -150,7 +150,7 @@ class MaintenanceSystemRequestsExport implements
             'Loại CV',
             'Diễn giải sự cố',
             'Thời gian QC',
-            'Khoảng cách',
+            'Xác nhận địa điểm Offline',
             'Kỹ thuật viên',
             'Khắc phục',
             'Ngày hoàn thành',
