@@ -22,12 +22,19 @@ return [
     //     "mobile" => "0357822338",
     //     "email" => "hoangnguyen.support@tocotocotea.com"
     // ],
+    // [
+    //     "key" => "VP1528",
+    //     "name" => "Ngô Long Vũ",
+    //     "position" => "NV Bảo Trì",
+    //     "mobile" => "0397163732",
+    //     "email" => "vungo.support@tocotocotea.com"
+    // ],
     [
-        "key" => "VP1528",
-        "name" => "Ngô Long Vũ",
+        "key" => "VP1773",
+        "name" => "Phan Đức Quyền",
         "position" => "NV Bảo Trì",
-        "mobile" => "0397163732",
-        "email" => "vungo.support@tocotocotea.com"
+        "mobile" => "0379577858",
+        "email" => "quyenphan.support@tocotocotea.com"
     ],
     [
         "key" => "VP1714",
