@@ -37,146 +37,105 @@ class MaintenanceRequestController extends Controller
     {
         session(['current_module' => 'facility']);
         $user = auth()->user();
-        $roles = $user->getRoleNames()->map(fn($r) => strtolower($r))->toArray();
+        $roles = array_map('strtolower', $user->getRoleNames()->toArray());
         $email = strtolower($user->email);
         $baseQuery = MaintenanceRequest::query();
 
-        // ----------------------------------------
-        // Data access control - Nhiều role (nhiều quyền)
-        // ----------------------------------------
-        // Nếu có role 'admin' hoặc nằm trong danh sách 'full_view' thì không lọc gì cả
-        if (!(in_array('admin', $roles) || in_array($email, config('special_user.full_view')))) {
-            // Ưu tiên kiểm tra thứ tự role quan trọng nhất để áp quyền, nếu user có nhiều role
-            if (in_array('technician', $roles)) {
-                $baseQuery->where(function ($q) use ($user) {
-                    $q->where('technician_email', $user->email)
-                        ->orWhere('created_by', $user->email);
+        // Kiểm soát quyền truy cập theo vai trò
+        $fullViewUsers = array_map('strtolower', config('special_user.full_view', []));
+        switch (true) {
+            case in_array('admin', $roles):
+            case in_array($email, $fullViewUsers):
+            case in_array('manager', $roles):
+                // ADMIN / FULL VIEW / MANAGER: Xem toàn bộ, không lọc
+                break;
+            case in_array('technician', $roles):
+                // TECHNICIAN: Được phân công hoặc do mình tạo
+                $baseQuery->where(static function ($q) use ($email) {
+                    $q->whereRaw('LOWER(TRIM(technician_email)) = ?', [$email])
+                      ->orWhereRaw('LOWER(TRIM(created_by)) = ?', [$email]);
                 });
-            } elseif (in_array('user', $roles)) {
-                $baseQuery->where(function ($q) use ($user) {
-                    $q->where('branch_email', $user->email)
-                        ->orWhere('created_by', $user->email);
+                break;
+            case in_array('user', $roles):
+                // USER: Thuộc store mình hoặc do mình tạo
+                $baseQuery->where(static function ($q) use ($email) {
+                    $q->whereRaw('LOWER(TRIM(branch_email)) = ?', [$email])
+                      ->orWhereRaw('LOWER(TRIM(created_by)) = ?', [$email]);
                 });
-            } elseif (array_intersect($roles, ['manager', 'am', 'om', 'viewer'])) {
-                // Allow special user to see all (for managers, am, om roles) đã xử lý trên
-                // lấy theo Store từ DB
-                $stores = \App\Models\Store::all()->toArray();
-
-                $emails = collect($stores)
-                    ->filter(function ($store) use ($email) {
-                        return (
-                            (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
-                            (isset($store['am_email']) && strtolower($store['am_email']) == $email)
-                        ) && isset($store['email']);
-                    })
-                    ->pluck('email')
-                    ->unique()
-                    ->values()
-                    ->all();
-
-                $baseQuery->where(function ($q) use ($emails, $user) {
-                    if (!empty($emails)) {
-                        $q->whereIn('branch_email', $emails);
-                    } else {
-                        $q->whereRaw('1=0');
-                    }
-                    // OR created_by current user
-                    $q->orWhere('created_by', $user->email);
-                });
-            } elseif (in_array('muasam', $roles)) {
+                break;
+            case in_array('viewer', $roles):
+                // VIEWER: Chỉ xem request mình tạo
+                $baseQuery->whereRaw('LOWER(TRIM(created_by)) = ?', [$email]);
+                break;
+            case in_array('muasam', $roles):
+                // MUASAM: Chỉ các yêu cầu "PENDING"
                 $baseQuery->where('sla_status', config('sla_status.code.PENDING'));
-            }
-            // ngược lại (không một role nào match, hoặc role không liệt kê: không filter)
+                break;
         }
 
-        // ----------------------------------------
-        // Filter processing
-        // ----------------------------------------
-        // Xử lý nhận giá trị mặc định ban đầu cho from_date và to_date (đầu/cuối tháng nếu không truyền lên)
+        // Thiết lập giá trị mặc định cho ngày lọc
         $defaultFromDate = Carbon::now()->startOfMonth()->format('Y-m-d');
         $defaultToDate = Carbon::now()->endOfMonth()->format('Y-m-d');
 
+        // Các filter dùng callback để tránh lặp code
         $filters = [
-            'from_date' => function ($q, $v) use ($defaultFromDate) {
-                // Nếu không có giá trị (không search), dùng ngày đầu tháng
-                $date = $v ?: $defaultFromDate;
-                if ($date) $q->where('request_date', '>=', Carbon::parse($date)->startOfDay());
-            },
-            'to_date' => function ($q, $v) use ($defaultToDate) {
-                // Nếu không có giá trị (không search), dùng ngày cuối tháng
-                $date = $v ?: $defaultToDate;
-                if ($date) $q->where('request_date', '<=', Carbon::parse($date)->endOfDay());
-            },
-            'from_date_completed' => function ($q, $v) {
-                if ($v) $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay());
-            },
-            'to_date_completed' => function ($q, $v) {
-                if ($v) $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay());
-            },
+            'from_date' => fn($q, $v) => $q->where('request_date', '>=', Carbon::parse($v ?: $defaultFromDate)->startOfDay()),
+            'to_date' => fn($q, $v) => $q->where('request_date', '<=', Carbon::parse($v ?: $defaultToDate)->endOfDay()),
+            'from_date_completed' => fn($q, $v) => $v ? $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay()) : null,
+            'to_date_completed' => fn($q, $v) => $v ? $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay()) : null,
             'branch_code' => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
             'branch_name' => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
-            'severity'    => fn($q, $v) => $q->where('severity', $v),
-            'status'      => fn($q, $v) => $q->where('sla_status', $v),
-            'id'          => fn($q, $v) => $q->where('id', $v),
+            'severity' => fn($q, $v) => $q->where('severity', $v),
+            'status' => fn($q, $v) => $q->where('sla_status', $v),
+            'id' => fn($q, $v) => $q->where('id', $v),
         ];
         foreach ($filters as $field => $filter) {
-            // from_date & to_date: chèn mặc định nếu không search
-            if (in_array($field, ['from_date', 'to_date'])) {
-                $filter($baseQuery, $request->input($field));
-            } else {
-                if ($request->filled($field)) {
-                    $filter($baseQuery, $request->$field);
-                }
+            $value = in_array($field, ['from_date', 'to_date']) ? $request->input($field) : $request->get($field);
+            if (in_array($field, ['from_date', 'to_date']) || $request->filled($field)) {
+                $filter($baseQuery, $value);
             }
         }
 
+        // Lấy các hằng số trạng thái và mức độ ưu tiên cho order by
         $completedStatus = config('sla_status.code.COMPLETED');
         $latedStatus = config('sla_status.code.LATED');
         $newStatus = config('sla_status.code.NEW');
-        $severityOrder = collect(config('severities'))->pluck('key')->all();
-        $severityOrderStr = implode("','", $severityOrder);
+        $severityOrder = implode("','", collect(config('severities'))->pluck('key')->all());
 
-        // Order helper
+        // Helper sắp xếp
         $addOrderBySeverity = fn($query) =>
-            $query->orderByRaw("FIELD(severity, '$severityOrderStr')")->orderByDesc('id');
-
-        // ----------------------------------------
-        // Paginations and counts (only clone once per major query type)
-        // ----------------------------------------
+            $query->orderByRaw("FIELD(severity, '$severityOrder')")->orderByDesc('id');
         $baseQueryClone = fn() => clone $baseQuery;
 
+        // Các truy vấn phân trang (chỉ thực hiện clone một lần cho từng loại chính)
         $allRequests = $addOrderBySeverity($baseQueryClone())->paginate(20, ['*'], 'all_page')->withQueryString();
 
         $processingRequests = $addOrderBySeverity(
             tap($baseQueryClone(), function ($q) use ($completedStatus, $latedStatus, $newStatus) {
                 $q->whereNotIn('sla_status', [$completedStatus, $latedStatus, $newStatus])
-                    ->where('is_confirmed', '!=', true);
+                  ->where('is_confirmed', '!=', true);
             })
         )->paginate(20, ['*'], 'processing_page')->withQueryString();
 
         $completedRequests = $addOrderBySeverity(
-            tap($baseQueryClone(), function ($q) {
-                $q->where('is_confirmed', true);
-            })
+            tap($baseQueryClone(), fn($q) => $q->where('is_confirmed', true))
         )->paginate(20, ['*'], 'completed_page')->withQueryString();
 
-        // Use more efficient count queries (remove unnecessary withNotNull .etc)
+        // Đếm tổng số lượng các loại
         $totalCount = $baseQueryClone()->count();
-
         $processingCount = $baseQueryClone()
             ->whereNotNull('technician_name')
             ->whereNotIn('sla_status', [$completedStatus, $latedStatus, $newStatus])
             ->where('is_confirmed', '!=', true)
             ->count();
-
         $completedCount = $baseQueryClone()
             ->where('is_confirmed', true)
             ->count();
 
-        // Data for selects
-        $stores     = $this->getData();
-        $checks     = $this->getChecksData();
-        $techs      = $this->getTechnicianData();
+        // Dữ liệu cho bộ lọc và select
+        $stores = $this->getData();
+        $checks = $this->getChecksData();
+        $techs = $this->getTechnicianData();
         $severities = $this->getSeveritiesData();
 
         return view('maintenance.index', compact(

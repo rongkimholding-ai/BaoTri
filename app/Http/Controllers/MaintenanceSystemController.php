@@ -24,171 +24,110 @@ class MaintenanceSystemController extends Controller
     {
         session(['current_module' => 'system']);
         $user = auth()->user();
-        $roles = $user->getRoleNames()->map(fn($r) => strtolower($r))->toArray();
+        $roles = collect($user->getRoleNames())->map(fn($r) => strtolower($r))->toArray();
         $email = strtolower($user->email);
-
-        // Base query for data access control: handle by order of matched role, first match wins
+        $fullViewUsers = collect(config('special_user.full_view', []))->map(fn($u) => strtolower($u))->toArray();
         $baseQuery = MaintenanceSystem::query();
-        if (!(in_array('admin', $roles) || in_array($email, config('special_user.full_view')))) {
+
+        // Kiểm soát quyền truy cập theo vai trò
+        if (!in_array('admin', $roles) && !in_array($email, $fullViewUsers) && !in_array('manager', $roles)) {
             if (in_array('technician_system', $roles)) {
-                // technician_system: xem theo các yêu cầu mình phụ trách hoặc mình tạo
-                $baseQuery->where(function ($query) use ($email) {
-                    $query->where('technician_email', $email)
-                        ->orWhere('created_by', $email);
+                $baseQuery->where(function ($q) use ($email) {
+                    $q->whereRaw('LOWER(TRIM(technician_email)) = ?', [$email])
+                        ->orWhereRaw('LOWER(TRIM(created_by)) = ?', [$email]);
                 });
             } elseif (in_array('user', $roles)) {
-                // user: xem theo các yêu cầu của chi nhánh mình hoặc mình tạo
-                $baseQuery->where(function ($query) use ($email) {
-                    $query->where('branch_email', $email)
-                        ->orWhere('created_by', $email);
+                $baseQuery->where(function ($q) use ($email) {
+                    $q->whereRaw('LOWER(TRIM(branch_email)) = ?', [$email])
+                        ->orWhereRaw('LOWER(TRIM(created_by)) = ?', [$email]);
                 });
-            } elseif (array_intersect($roles, ['manager', 'am', 'om', 'viewer'])) {
-                // manager, am, om, viewer: xem theo các store mình phụ trách hoặc được tạo ra bởi mình, trừ khi có quyền full_view
-                $stores = \App\Models\Store::all()->toArray();
-                $branchEmails = collect($stores)
-                    ->filter(function ($store) use ($email) {
-                        return (
-                            (isset($store['om_email']) && strtolower($store['om_email']) == $email) ||
-                            (isset($store['am_email']) && strtolower($store['am_email']) == $email)
-                        ) && !empty($store['email']);
-                    })
-                    ->pluck('email')
-                    ->unique()
-                    ->values()
-                    ->all();
-
-                $baseQuery->where(function($q) use ($branchEmails, $email) {
-                    if (!empty($branchEmails)) {
-                        $q->whereIn('branch_email', $branchEmails);
-                    } else {
-                        $q->whereRaw('1=0');
-                    }
-                    // OR created_by current user
-                    $q->orWhere('created_by', $email);
-                });
+            } elseif (in_array('viewer', $roles)) {
+                $baseQuery->whereRaw('LOWER(TRIM(created_by)) = ?', [$email]);
             }
         }
 
-        // Filters
-        // Xử lý nhận giá trị mặc định ban đầu cho from_date và to_date (đầu/cuối tháng nếu không truyền lên)
+        // Default filter dates
         $defaultFromDate = Carbon::now()->startOfMonth()->format('Y-m-d');
         $defaultToDate = Carbon::now()->endOfMonth()->format('Y-m-d');
+
+        // Filter definition
         $filters = [
-            'from_date' => function ($q, $v) use ($defaultFromDate) {
-                // Nếu không có giá trị (không search), dùng ngày đầu tháng
-                $date = $v ?: $defaultFromDate;
-                if ($date) $q->where('request_date', '>=', Carbon::parse($date)->startOfDay());
-            },
-            'to_date' => function ($q, $v) use ($defaultToDate) {
-                // Nếu không có giá trị (không search), dùng ngày cuối tháng
-                $date = $v ?: $defaultToDate;
-                if ($date) $q->where('request_date', '<=', Carbon::parse($date)->endOfDay());
-            },
-            'from_date_completed' => function ($q, $v) {
-                if ($v) $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay());
-            },
-            'to_date_completed' => function ($q, $v) {
-                if ($v) $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay());
-            },
-            'branch_code'      => fn($q, $v) => $q->where('branch_code', 'like', "%$v%"),
-            'branch_name'      => fn($q, $v) => $q->where('branch_name', 'like', "%$v%"),
-            'technician_email' => fn($q, $v) => $q->where('technician_email', 'like', "%$v%"),
-            'status'           => fn($q, $v) => $q->where('status', $v),
-            'id'               => fn($q, $v) => $q->where('id', $v),
+            'from_date' => fn($q, $v) => $q->where('request_date', '>=', Carbon::parse($v ?: $defaultFromDate)->startOfDay()),
+            'to_date' => fn($q, $v) => $q->where('request_date', '<=', Carbon::parse($v ?: $defaultToDate)->endOfDay()),
+            'from_date_completed' => fn($q, $v) => $v ? $q->where('actual_completion_date', '>=', Carbon::parse($v)->startOfDay()) : $q,
+            'to_date_completed' => fn($q, $v) => $v ? $q->where('actual_completion_date', '<=', Carbon::parse($v)->endOfDay()) : $q,
+            'branch_code'      => fn($q, $v) => $v ? $q->where('branch_code', 'like', "%$v%") : $q,
+            'branch_name'      => fn($q, $v) => $v ? $q->where('branch_name', 'like', "%$v%") : $q,
+            'technician_email' => fn($q, $v) => $v ? $q->where('technician_email', 'like', "%$v%") : $q,
+            'status'           => fn($q, $v) => $v ? $q->where('status', $v) : $q,
+            'id'               => fn($q, $v) => $v ? $q->where('id', $v) : $q,
         ];
-        foreach ($filters as $field => $filter) {
-            // from_date & to_date: chèn mặc định nếu không search
-            if (in_array($field, ['from_date', 'to_date'])) {
-                $filter($baseQuery, $request->input($field));
-            } else {
-                if ($request->filled($field)) {
-                    $filter($baseQuery, $request->$field);
-                }
+
+        foreach ($filters as $field => $apply) {
+            $value = in_array($field, ['from_date', 'to_date']) ? $request->input($field) : $request->get($field);
+            if ((in_array($field, ['from_date', 'to_date'])) || $request->filled($field)) {
+                $apply($baseQuery, $value);
             }
         }
 
-        // Helper to get status codes for tab logic
-        $completedStatus = 'COMPLETED'; // or config if needed
-        $latedStatus = 'LATED'; // or config if needed
+        // Trạng thái/Status
+        $completedStatus = 'COMPLETED';
+        $latedStatus = 'LATED';
         $newStatus = 'NEW';
 
-        $tab = $request->get('tab', 'all');
-        $validTabs = ['all', 'processing', 'completed'];
-        if (!in_array($tab, $validTabs)) {
-            $tab = 'all';
-        }
+        // Chuẩn bị hàm clone query ngắn gọn
+        $cloneQuery = fn() => (clone $baseQuery);
 
-        // Only clone once per major query, like ref
-        $baseQueryClone = fn() => clone $baseQuery;
-
-        // allRequests tab (tất cả)
-        $allRequests = $baseQueryClone()
-            ->when($request->filled('keyword'), function ($query) use ($request) {
-                $keyword = trim($request->keyword);
-                $query->where(function ($q) use ($keyword) {
-                    $q->where('issue_code', 'like', "%{$keyword}%")
-                        ->orWhere('issue_name', 'like', "%{$keyword}%")
-                        ->orWhere('branch_code', 'like', "%{$keyword}%")
-                        ->orWhere('branch_name', 'like', "%{$keyword}%")
-                        ->orWhere('technician_name', 'like', "%{$keyword}%")
-                        ->orWhere('technician_email', 'like', "%{$keyword}%");
+        // Tìm kiếm theo keyword
+        $applyKeyword = function ($query) use ($request) {
+            if ($request->filled('keyword')) {
+                $kw = trim($request->keyword);
+                $query->where(function ($q) use ($kw) {
+                    $q->where('issue_code', 'like', "%{$kw}%")
+                        ->orWhere('issue_name', 'like', "%{$kw}%")
+                        ->orWhere('branch_code', 'like', "%{$kw}%")
+                        ->orWhere('branch_name', 'like', "%{$kw}%")
+                        ->orWhere('technician_name', 'like', "%{$kw}%")
+                        ->orWhere('technician_email', 'like', "%{$kw}%");
                 });
-            })
+            }
+            return $query;
+        };
+
+        // allRequests
+        $allRequests = $applyKeyword($cloneQuery())
             ->orderByDesc('request_date')
             ->paginate(20, ['*'], 'all_page')
             ->withQueryString();
 
-        // processingRequests tab (đang xử lý)
-        $processingRequests = tap($baseQueryClone(), function ($q) use ($completedStatus, $latedStatus, $newStatus) {
-                $q->whereNotIn('status', [$completedStatus, $latedStatus, $newStatus]);
-            })
-            ->when($request->filled('keyword'), function ($query) use ($request) {
-                $keyword = trim($request->keyword);
-                $query->where(function ($q) use ($keyword) {
-                    $q->where('issue_code', 'like', "%{$keyword}%")
-                        ->orWhere('issue_name', 'like', "%{$keyword}%")
-                        ->orWhere('branch_code', 'like', "%{$keyword}%")
-                        ->orWhere('branch_name', 'like', "%{$keyword}%")
-                        ->orWhere('technician_name', 'like', "%{$keyword}%")
-                        ->orWhere('technician_email', 'like', "%{$keyword}%");
-                });
-            })
+        // processingRequests
+        $processingRequests = $applyKeyword(
+            $cloneQuery()->whereNotIn('status', [$completedStatus, $latedStatus, $newStatus])
+        )
             ->orderByDesc('request_date')
             ->paginate(20, ['*'], 'processing_page')
             ->withQueryString();
 
-        // completedRequests tab (đã hoàn thành)
-        $completedRequests = tap($baseQueryClone(), function ($q) {
-                $q->where('is_confirmed', true);
-            })
-            ->when($request->filled('keyword'), function ($query) use ($request) {
-                $keyword = trim($request->keyword);
-                $query->where(function ($q) use ($keyword) {
-                    $q->where('issue_code', 'like', "%{$keyword}%")
-                        ->orWhere('issue_name', 'like', "%{$keyword}%")
-                        ->orWhere('branch_code', 'like', "%{$keyword}%")
-                        ->orWhere('branch_name', 'like', "%{$keyword}%")
-                        ->orWhere('technician_name', 'like', "%{$keyword}%")
-                        ->orWhere('technician_email', 'like', "%{$keyword}%");
-                });
-            })
+        // completedRequests
+        $completedRequests = $applyKeyword(
+            $cloneQuery()->where('is_confirmed', true)
+        )
             ->orderByDesc('request_date')
             ->paginate(20, ['*'], 'completed_page')
             ->withQueryString();
 
-        // Counts for tabs
-        $totalCount = $baseQueryClone()->count();
-
-        $processingCount = $baseQueryClone()
+        // Counts
+        $totalCount = $cloneQuery()->count();
+        $processingCount = $cloneQuery()
+            ->whereNotNull('technician_name')
             ->whereNotIn('status', [$completedStatus, $latedStatus, $newStatus])
             ->count();
-
-        $completedCount = $baseQueryClone()
+        $completedCount = $cloneQuery()
             ->where('is_confirmed', true)
             ->count();
 
         $stores = $this->getData();
-        $techs  = method_exists($this, 'getTechnicianData') ? $this->getTechnicianData() : [];
+        $techs = method_exists($this, 'getTechnicianData') ? $this->getTechnicianData() : [];
 
         return view('system.index', compact(
             'allRequests',
@@ -198,8 +137,7 @@ class MaintenanceSystemController extends Controller
             'techs',
             'totalCount',
             'processingCount',
-            'completedCount',
-            'tab'
+            'completedCount'
         ));
     }
 
