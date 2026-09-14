@@ -203,6 +203,7 @@ class MaintenanceController extends Controller
 
     public function exportKpi()
     {
+        dd(request()->all());
         $fromDate = request(
             'from_date',
             now()->startOfMonth()->format('Y-m-d')
