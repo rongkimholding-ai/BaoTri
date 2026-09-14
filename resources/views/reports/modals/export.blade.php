@@ -59,9 +59,6 @@
                             @endforeach
                         </div>
                     </div>
-
-                    <!-- Hidden input to default report type (if needed by JS) -->
-                    <input type="hidden" name="report_type" value="maintenance_request">
                 </div>
 
                 <div class="modal-footer">

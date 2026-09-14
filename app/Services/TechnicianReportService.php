@@ -120,13 +120,35 @@ class TechnicianReportService
     }
 
     public function getKpiReport(
-        string $fromDate,
-        string $toDate,
+        ?string $fromDate,
+        ?string $toDate,
+        ?string $fromDateCompleted = null,
+        ?string $toDateCompleted = null,
         array $techEmails = []
     ): Collection {
 
-        $fromDate = Carbon::parse($fromDate)->startOfDay();
-        $toDate = Carbon::parse($toDate)->endOfDay();
+        /*
+        |--------------------------------------------------------------------------
+        | Date
+        |--------------------------------------------------------------------------
+        */
+
+        $fromDate = Carbon::parse(
+            $fromDate ?? now()->startOfMonth()->format('Y-m-d')
+        )->startOfDay();
+
+        $toDate = Carbon::parse(
+            $toDate ?? now()->endOfMonth()->format('Y-m-d')
+        )->endOfDay();
+
+        $fromDateCompleted = !empty($fromDateCompleted)
+            ? Carbon::parse($fromDateCompleted)->startOfDay()
+            : null;
+
+        $toDateCompleted = !empty($toDateCompleted)
+            ? Carbon::parse($toDateCompleted)->endOfDay()
+            : null;
+
 
         /*
         |--------------------------------------------------------------------------
@@ -144,54 +166,98 @@ class TechnicianReportService
             )
             ->get();
 
+
         /*
         |--------------------------------------------------------------------------
         | Requests
         |--------------------------------------------------------------------------
         */
 
-        $requests = MaintenanceRequest::query()
+        $requestsQuery = MaintenanceRequest::query()
             ->whereBetween(
                 'request_date',
                 [$fromDate, $toDate]
             )
+
+            // Ngày hoàn thành - Từ
+            ->when(
+                $fromDateCompleted,
+                fn ($q) => $q->where(
+                    'actual_completion_date',
+                    '>=',
+                    $fromDateCompleted
+                )
+            )
+
+            // Ngày hoàn thành - Đến
+            ->when(
+                $toDateCompleted,
+                fn ($q) => $q->where(
+                    'actual_completion_date',
+                    '<=',
+                    $toDateCompleted
+                )
+            )
+
             ->whereNotNull('technician_email')
+
             ->where(
                 'technician_email',
                 '!=',
                 'liemhoang.support.hcm@tocotocotea.com'
             )
+
             ->when(
                 !empty($techEmails),
                 fn ($q) => $q->whereIn(
                     'technician_email',
                     $techEmails
                 )
-            )
-            ->get();
-
-        $requestsByEmail = $requests->groupBy(function ($item) {
-            return strtolower(
-                trim($item->technician_email)
-            );
-        });
-
-        return $technicians->map(function ($tech) use ($requestsByEmail) {
-
-            $email = strtolower(
-                trim($tech->technician_email)
             );
 
-            $items = $requestsByEmail->get(
-                $email,
-                collect()
-            );
 
-            return $this->buildRow(
-                $tech,
-                $items
-            );
-        });
+        $requests = $requestsQuery->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Group by technician email
+        |--------------------------------------------------------------------------
+        */
+
+        $requestsByEmail = $requests->groupBy(
+            function ($item) {
+                return strtolower(
+                    trim($item->technician_email)
+                );
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Build KPI rows
+        |--------------------------------------------------------------------------
+        */
+
+        return $technicians->map(
+            function ($tech) use ($requestsByEmail) {
+
+                $email = strtolower(
+                    trim($tech->technician_email)
+                );
+
+                $items = $requestsByEmail->get(
+                    $email,
+                    collect()
+                );
+
+                return $this->buildRow(
+                    $tech,
+                    $items
+                );
+            }
+        );
     }
 
     protected function buildRow(

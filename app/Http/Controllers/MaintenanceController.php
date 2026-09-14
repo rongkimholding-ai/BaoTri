@@ -213,6 +213,9 @@ class MaintenanceController extends Controller
             now()->endOfMonth()->format('Y-m-d')
         );
 
+        $fromDateCompleted = request('from_date_completed');
+        $toDateCompleted = request('to_date_completed');
+
         $techEmails = request(
             'tech_emails',
             []
@@ -222,11 +225,11 @@ class MaintenanceController extends Controller
             new TechnicianKpiExport(
                 $fromDate,
                 $toDate,
+                $fromDateCompleted,
+                $toDateCompleted,
                 $techEmails
             ),
-            'KPI_Technician_'
-            . now()->format('Ymd_His')
-            . '.xlsx'
+            'KPI_Technician_' . now()->format('Ymd_His') . '.xlsx'
         );
     }
 

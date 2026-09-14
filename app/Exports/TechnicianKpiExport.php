@@ -21,15 +21,22 @@ class TechnicianKpiExport implements
 {
     protected $fromDate;
     protected $toDate;
+    protected $fromDateCompleted;
+    protected $toDateCompleted;
     protected $techEmails;
 
     public function __construct(
-        $fromDate,
-        $toDate,
+        ?string $fromDate,
+        ?string $toDate,
+        ?string $fromDateCompleted = null,
+        ?string $toDateCompleted = null,
         array $techEmails = []
     ) {
         $this->fromDate = $fromDate;
         $this->toDate = $toDate;
+        $this->fromDateCompleted = $fromDateCompleted;
+        $this->toDateCompleted = $toDateCompleted;
+
         $this->techEmails = collect($techEmails)
             ->filter()
             ->map(fn ($email) => strtolower(trim($email)))
@@ -43,26 +50,25 @@ class TechnicianKpiExport implements
             ->getKpiReport(
                 $this->fromDate,
                 $this->toDate,
+                $this->fromDateCompleted,
+                $this->toDateCompleted,
                 $this->techEmails
             )
             ->map(function ($item) {
-                // Đúng theo thứ tự dữ liệu cung cấp trong buildRow của TechnicianReportService
-                // Phù hợp với headings bên dưới
-
                 return [
-                    $item->technician_email,                  // Email nhân viên
-                    $item->technician_name,                   // Họ và tên
-                    $item->technician_position,               // Vị trí chức danh
-                    $item->store_count,                       // Số lượng cửa hàng phụ trách
-                    $item->daily_target,                      // Định mức/ngày
-                    $item->monthly_target,                    // Định mức/tháng
-                    $item->total_completed,                   // Tổng số vụ sửa chữa
-                    $item->completion_percent . '%',          // Tỷ lệ hoàn thành/định mức
-                    $item->dung_han_count,                    // CV đạt TG + CL (số lượng đúng hạn)
-                    $item->late_accepted_count,               // CV chậm TG + đạt CL (số lượng KHÔNG đúng hạn)
-                    $item->quality_fail_count,                // CV không đạt (fail quality)
-                    $item->total_completed,                   // Số công việc quy đổi (giống tổng số vụ sửa chữa)
-                    $item->dung_han_total_percent . '%',      // Tỷ lệ hoàn thành KPI (tỷ lệ đúng hạn / tổng hoàn thành)
+                    $item->technician_email,
+                    $item->technician_name,
+                    $item->technician_position,
+                    $item->store_count,
+                    $item->daily_target,
+                    $item->monthly_target,
+                    $item->total_completed,
+                    $item->completion_percent . '%',
+                    $item->dung_han_count,
+                    $item->late_accepted_count,
+                    $item->quality_fail_count,
+                    $item->total_completed,
+                    $item->dung_han_total_percent . '%',
                 ];
             });
     }
@@ -113,8 +119,7 @@ class TechnicianKpiExport implements
         )->applyFromArray([
             'borders' => [
                 'allBorders' => [
-                    'borderStyle' =>
-                        Border::BORDER_THIN,
+                    'borderStyle' => Border::BORDER_THIN,
                 ],
             ],
         ]);
