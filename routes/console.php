@@ -12,9 +12,9 @@ Schedule::command('sla:auto-finalize')
     ->everyMinute()
     ->withoutOverlapping();
 
-Schedule::command('sla:auto-lated')
-    ->everyMinute()
-    ->withoutOverlapping();
+// Schedule::command('sla:auto-lated')
+//     ->everyMinute()
+//     ->withoutOverlapping();
 
 Schedule::command('sla:auto-system-lated')
 ->everyMinute()
