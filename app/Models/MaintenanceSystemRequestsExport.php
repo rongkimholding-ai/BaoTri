@@ -73,6 +73,7 @@ class MaintenanceSystemRequestsExport implements
                 'status',
                 'delay_reason',
                 'acceptance_result',
+                'confirmed_at',
                 'acceptance_confirmed_by',
                 'technician_email',
             ])
@@ -132,6 +133,7 @@ class MaintenanceSystemRequestsExport implements
             $slaStatus[$row->status] ?? $row->status,
             $row->delay_reason,
             $acceptance[$row->acceptance_result] ?? $row->acceptance_result,
+            $row->confirmed_at,
             $row->acceptance_confirmed_by,
         ];
     }
@@ -142,23 +144,24 @@ class MaintenanceSystemRequestsExport implements
     public function headings(): array
     {
         return [
-            'ID',
-            'Mã cơ sở',
-            'Tên cơ sở',
-            'Ngày yêu cầu',
-            'Tên sự cố',
-            'Loại CV',
-            'Diễn giải sự cố',
-            'Thời gian QC',
-            'Xác nhận địa điểm Offline',
-            'Kỹ thuật viên',
-            'Khắc phục',
-            'Ngày hoàn thành',
-            'Thời gian TT',
-            'SLA',
-            'Lý do trễ',
-            'Nghiệm thu',
-            'Người xác nhận',
+            'ID',                 // A
+            'Mã cơ sở',           // B
+            'Tên cơ sở',          // C
+            'Ngày yêu cầu',       // D
+            'Tên sự cố',          // E
+            'Loại CV',            // F
+            'Diễn giải sự cố',    // G
+            'Thời gian QC',       // H
+            'Xác nhận địa điểm Offline', // I
+            'Kỹ thuật viên',      // J
+            'Khắc phục',          // K
+            'Ngày hoàn thành',    // L
+            'Thời gian TT',       // M
+            'SLA',                // N
+            'Lý do trễ',          // O
+            'Nghiệm thu',         // P
+            'Ngày nghiệm thu',    // Q
+            'Người xác nhận',     // R
         ];
     }
 
@@ -171,10 +174,10 @@ class MaintenanceSystemRequestsExport implements
 
         // Freeze header & Autofilter
         $sheet->freezePane('A2');
-        if ($highestRow >= 1) $sheet->setAutoFilter("A1:Q{$highestRow}");
+        if ($highestRow >= 1) $sheet->setAutoFilter("A1:R{$highestRow}");
 
         // Header style
-        $sheet->getStyle('A1:Q1')->applyFromArray([
+        $sheet->getStyle('A1:R1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 11, 'color' => ['rgb' => '262626']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'D9EAF7']],
             'alignment' => [
@@ -193,7 +196,7 @@ class MaintenanceSystemRequestsExport implements
 
         // Body border
         if ($highestRow >= 2) {
-            $sheet->getStyle("A2:Q{$highestRow}")->applyFromArray([
+            $sheet->getStyle("A2:R{$highestRow}")->applyFromArray([
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => Border::BORDER_THIN,
@@ -208,7 +211,7 @@ class MaintenanceSystemRequestsExport implements
         $widths = [
             'A' => 8, 'B' => 14, 'C' => 25, 'D' => 18, 'E' => 28, 'F' => 12,
             'G' => 40, 'H' => 18, 'I' => 25, 'J' => 20, 'K' => 40,
-            'L' => 18, 'M' => 14, 'N' => 13, 'O' => 30, 'P' => 18, 'Q' => 22,
+            'L' => 18, 'M' => 14, 'N' => 13, 'O' => 30, 'P' => 18, 'Q' => 18, 'R' => 22,
         ];
         foreach ($widths as $column => $width) {
             $sheet->getColumnDimension($column)->setWidth($width);
@@ -242,7 +245,7 @@ class MaintenanceSystemRequestsExport implements
         }
 
         // Text trái - center
-        foreach (['J', 'Q'] as $column) {
+        foreach (['J', 'Q', 'R'] as $column) {
             $sheet->getStyle("{$column}2:{$column}{$highestRow}")
                 ->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)
                 ->setVertical(Alignment::VERTICAL_CENTER);

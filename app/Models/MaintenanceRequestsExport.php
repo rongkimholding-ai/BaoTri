@@ -51,6 +51,7 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             'delay_reason',
             'outsourced_provider',
             'acceptance_result',
+            'confirmed_at',
             'acceptance_confirmed_by',
         ])
         ->whereBetween(
@@ -114,6 +115,7 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             $row->delay_reason,
             $row->outsourced_provider,
             $acceptance[$row->acceptance_result] ?? $row->acceptance_result,
+            $row->confirmed_at,
             $row->acceptance_confirmed_by,
             // $row->created_at,
             // $row->updated_at,
@@ -139,6 +141,7 @@ class MaintenanceRequestsExport implements FromCollection, WithHeadings, WithSty
             'Lý do trễ',
             'Nhà cung cấp',
             'Nghiệm thu',
+            'Ngày nghiệm thu',
             'Người xác nhận',
             // 'Ngày tạo',
             // 'Ngày cập nhật',
