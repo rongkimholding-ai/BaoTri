@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -13,53 +12,54 @@ class ChangeMaintenanceSystemStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()
-            ->can('change-system-status');
+        return auth()->user()?->can('change-system-status') ?? false;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array
      */
     public function rules(): array
     {
+        $statusCodes = config('sla_status.code_ht');
+        $waitingConfirm = $statusCodes['WAITING_CONFIRM'] ?? null;
+        $offlineWorkType = config('work_type.code.OFFLINE');
+
         $rules = [
             'status' => [
                 'required',
                 'string',
-                Rule::in(config('sla_status.code_ht'))
+                Rule::in($statusCodes),
             ],
-            'technician_email' => ['string'],
+            'technician_email' => ['nullable', 'string'],
             'latitude' => [
                 'nullable',
                 'numeric',
                 'between:-90,90',
             ],
-
             'longitude' => [
                 'nullable',
                 'numeric',
                 'between:-180,180',
             ],
-
             'accuracy' => [
                 'nullable',
                 'numeric',
                 'min:0',
             ],
+            'work_type' => [
+                'nullable',
+            ]
         ];
 
-        if (
-            $this->status === config('sla_status.code_ht.WAITING_CONFIRM')
-        ) {
+        if ($this->status == $waitingConfirm) {
             $rules['images'] = [
                 'required',
                 'array',
                 'min:1',
                 'max:10'
             ];
-
             $rules['images.*'] = [
                 'image',
                 'mimes:jpg,jpeg,png,webp',
@@ -67,12 +67,13 @@ class ChangeMaintenanceSystemStatusRequest extends FormRequest
             ];
         }
 
-        if ((int) $this->work_type === (int) config('work_type.code.OFFLINE')) {
-
+        if (
+            (int) $this->work_type === (int) $offlineWorkType &&
+            $this->status == $waitingConfirm
+        ) {
             $rules['latitude'][] = 'required';
             $rules['longitude'][] = 'required';
             $rules['accuracy'][] = 'required';
-
         }
 
         return $rules;
