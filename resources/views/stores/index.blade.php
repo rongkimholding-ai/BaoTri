@@ -101,6 +101,8 @@
                                         data-email="{{ $store->email }}"
                                         data-area="{{ $store->area }}"
                                         data-region="{{ $store->region }}"
+                                        data-latitude="{{ $store->latitude }}"
+                                        data-longitude="{{ $store->longitude }}"
                                         data-am_name="{{ $store->am_name }}"
                                         data-am_email="{{ $store->am_email }}"
                                         data-om_name="{{ $store->om_name }}"
@@ -160,6 +162,8 @@
                         $(form).find('[name=area]').trigger('change');
                     }
                     form.querySelector('[name=region]').value = btn.dataset.region || '';
+                    form.querySelector('[name=latitude ]').value = btn.dataset.latitude  || '';
+                    form.querySelector('[name=longitude ]').value = btn.dataset.longitude  || '';
                     form.querySelector('[name=am_name]').value = btn.dataset.am_name || '';
                     form.querySelector('[name=am_email]').value = btn.dataset.am_email || '';
                     form.querySelector('[name=om_name]').value = btn.dataset.om_name || '';

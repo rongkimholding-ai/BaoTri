@@ -25,18 +25,31 @@
             'name' => 'region',
         ],
         [
-            'col' => 'col-md-12',
+            'col' => 'col-md-6',
             'type' => 'text',
             'label' => 'Tên cửa hàng <span class="text-danger">*</span>',
             'name' => 'name',
             'required' => true,
         ],
         [
-            'col' => 'col-md-12',
+            'col' => 'col-md-6',
             'type' => 'email',
             'label' => 'Email cửa hàng <span class="text-danger">*</span>',
             'name' => 'email',
             'required' => true,
+        ],
+        
+        [
+            'col' => 'col-md-6',
+            'type' => 'text',
+            'label' => 'Latitude',
+            'name' => 'latitude'
+        ],
+        [
+            'col' => 'col-md-6',
+            'type' => 'text',
+            'label' => 'longitude',
+            'name' => 'longitude'
         ],
         [
             'col' => 'col-md-6',
@@ -73,7 +86,7 @@
             'type' => 'email',
             'label' => 'Email mua sắm',
             'name' => 'muasam_email'
-        ]
+        ],
     ];
 @endphp
 
