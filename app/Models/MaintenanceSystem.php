@@ -99,21 +99,25 @@ class MaintenanceSystem extends Model
 
     public function getDistanceAttribute(): ?float
     {
+        $store = $this->store
+            ?? (filled($this->branch_email) ? Store::where('email', trim($this->branch_email))->first() : null)
+            ?? (filled($this->branch_name) ? Store::where('name', trim($this->branch_name))->first() : null);
+
         if (
-            !$this->store ||
-            !$this->store->latitude ||
-            !$this->store->longitude ||
-            !$this->complete_latitude ||
-            !$this->complete_longitude
+            !$store ||
+            !is_numeric($store->latitude) ||
+            !is_numeric($store->longitude) ||
+            !is_numeric($this->complete_latitude) ||
+            !is_numeric($this->complete_longitude)
         ) {
             return null;
         }
 
         return LocationHelper::distance(
-            $this->store->latitude,
-            $this->store->longitude,
-            $this->complete_latitude,
-            $this->complete_longitude
+            (float) $store->latitude,
+            (float) $store->longitude,
+            (float) $this->complete_latitude,
+            (float) $this->complete_longitude
         );
     }
 
