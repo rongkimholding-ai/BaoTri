@@ -608,6 +608,228 @@ class MaintenanceSystemController extends Controller
         ]);
     }
 
+    public function bulkAcceptance(Request $request)
+    {
+        $user = auth()->user();
+
+        if (
+            ! $user
+            || (
+                ! $user->hasRole('admin')
+                && ! $user->can('acceptance-system-task')
+                && ! $user->can('confirm maintenance')
+            )
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền nghiệm thu hàng loạt.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'month' => 'required|integer|min:1|max:12',
+            'year'  => 'required|integer|min:2000|max:' . now()->year,
+        ]);
+
+        $month = (int) $validated['month'];
+        $year  = (int) $validated['year'];
+        $start = Carbon::create($year, $month, 1)->startOfMonth();
+        $nextMonthStart = $start->copy()->addMonth();
+        $monthLabel = sprintf('%02d/%04d', $month, $year);
+        $statuses = array_values(array_filter([
+            config('sla_status.code_ht.COMPLETED', 'COMPLETED'),
+            config('sla_status.code_ht.LATED', 'LATED'),
+        ]));
+
+        $eligibleQuery = function () use ($statuses, $start, $nextMonthStart) {
+            return MaintenanceSystem::query()
+                ->whereIn('status', $statuses)
+                ->where(function ($query) {
+                    $query->whereNull('is_confirmed')
+                        ->orWhere('is_confirmed', 0)
+                        ->orWhere('is_confirmed', false);
+                })
+                ->where(function ($query) {
+                    $query->whereNull('acceptance_result')
+                        ->orWhere('acceptance_result', '');
+                })
+                ->where(function ($query) use ($start, $nextMonthStart) {
+                    $query->where(function ($completedAt) use ($start, $nextMonthStart) {
+                        $completedAt->whereNotNull('completed_at')
+                            ->where('completed_at', '>=', $start)
+                            ->where('completed_at', '<', $nextMonthStart);
+                    })->orWhere(function ($actualCompletion) use ($start, $nextMonthStart) {
+                        $actualCompletion->where(function ($missingCompletedAt) {
+                            $missingCompletedAt->whereNull('completed_at')
+                                ->orWhere('completed_at', '');
+                        })
+                            ->whereNotNull('actual_completion_date')
+                            ->where('actual_completion_date', '>=', $start)
+                            ->where('actual_completion_date', '<', $nextMonthStart);
+                    });
+                });
+        };
+
+        $totalCandidates = $eligibleQuery()->count();
+
+        if ($totalCandidates === 0) {
+            return response()->json([
+                'success' => true,
+                'message' => "Không có bản ghi đủ điều kiện nghiệm thu trong tháng {$monthLabel}.",
+                'data' => [
+                    'found' => 0,
+                    'accepted' => 0,
+                    'emails_queued' => 0,
+                    'emails_failed' => 0,
+                    'without_email' => 0,
+                ],
+            ]);
+        }
+
+        $confirmedAt = now();
+        $confirmedBy = $user->name;
+        $performedBy = $user->email ?? 'SYSTEM';
+        $acceptedCount = 0;
+        $emailQueuedCount = 0;
+        $emailFailedCount = 0;
+        $emailSkippedCount = 0;
+
+        try {
+            $eligibleQuery()
+                ->orderBy('id')
+                ->select([
+                    'id',
+                    'status',
+                    'technician_email',
+                    'branch_code',
+                    'branch_email',
+                ])
+                ->chunkById(200, function ($items) use (
+                    $monthLabel,
+                    $confirmedAt,
+                    $confirmedBy,
+                    $performedBy,
+                    &$acceptedCount,
+                    &$emailQueuedCount,
+                    &$emailFailedCount,
+                    &$emailSkippedCount
+                ) {
+                    $ids = $items->modelKeys();
+
+                    if ($ids === []) {
+                        return;
+                    }
+
+                    $updatedIds = DB::transaction(function () use (
+                        $ids,
+                        $items,
+                        $monthLabel,
+                        $confirmedAt,
+                        $confirmedBy,
+                        $performedBy
+                    ) {
+                        $stillEligibleIds = MaintenanceSystem::query()
+                            ->whereIn('id', $ids)
+                            ->where(function ($query) {
+                                $query->whereNull('is_confirmed')
+                                    ->orWhere('is_confirmed', 0)
+                                    ->orWhere('is_confirmed', false);
+                            })
+                            ->where(function ($query) {
+                                $query->whereNull('acceptance_result')
+                                    ->orWhere('acceptance_result', '');
+                            })
+                            ->lockForUpdate()
+                            ->pluck('id');
+
+                        if ($stillEligibleIds->isEmpty()) {
+                            return collect();
+                        }
+
+                        MaintenanceSystem::query()
+                            ->whereIn('id', $stillEligibleIds)
+                            ->update([
+                                'acceptance_result' => 'accepted',
+                                'acceptance_note' => null,
+                                'acceptance_confirmed_by' => $confirmedBy,
+                                'confirmed_at' => $confirmedAt,
+                                'is_confirmed' => true,
+                                'updated_at' => $confirmedAt,
+                            ]);
+
+                        $now = now();
+                        $logRows = $items
+                            ->whereIn('id', $stillEligibleIds)
+                            ->map(fn ($item) => [
+                                'maintenance_system_id' => $item->id,
+                                'action' => 'ACCEPTANCE',
+                                'old_status' => $item->status,
+                                'new_status' => $item->status,
+                                'note' => "Nghiệm thu đạt tháng {$monthLabel}",
+                                'performed_by' => $performedBy,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ])
+                            ->values()
+                            ->all();
+
+                        foreach (array_chunk($logRows, 200) as $logChunk) {
+                            MaintenanceSystemLog::insert($logChunk);
+                        }
+
+                        return $stillEligibleIds;
+                    });
+
+                    foreach ($items->whereIn('id', $updatedIds) as $item) {
+                        if (blank($item->technician_email)) {
+                            $emailSkippedCount++;
+                            continue;
+                        }
+
+                        try {
+                            Mail::to($item->technician_email)
+                                ->queue(new MaintenanceSystemAcceptanceMail($item));
+                            $emailQueuedCount++;
+                        } catch (\Throwable $e) {
+                            $emailFailedCount++;
+                            \Log::error('Failed to queue bulk acceptance email', [
+                                'id' => $item->id,
+                                'error' => $e->getMessage(),
+                            ]);
+                        }
+                    }
+
+                    $acceptedCount += $updatedIds->count();
+                });
+        } catch (\Throwable $e) {
+            \Log::error('Bulk maintenance system acceptance failed', [
+                'month' => $month,
+                'year' => $year,
+                'accepted' => $acceptedCount,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => "Quá trình bị gián đoạn. Đã nghiệm thu {$acceptedCount} bản ghi trước khi xảy ra lỗi. Các bản ghi đã nghiệm thu sẽ được bỏ qua khi chạy lại.",
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Đã nghiệm thu {$acceptedCount}/{$totalCandidates} bản ghi đủ điều kiện trong tháng {$monthLabel}.",
+            'data' => [
+                'month' => $month,
+                'year' => $year,
+                'found' => $totalCandidates,
+                'accepted' => $acceptedCount,
+                'emails_queued' => $emailQueuedCount,
+                'emails_failed' => $emailFailedCount,
+                'without_email' => $emailSkippedCount,
+            ],
+        ]);
+    }
+
     public function destroy(MaintenanceSystem $maintenanceSystem)
     {
         $maintenanceSystem->delete();

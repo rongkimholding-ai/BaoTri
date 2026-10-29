@@ -81,6 +81,8 @@ Route::middleware('auth')->group(function () {
 
             Route::post('/acceptance', [MaintenanceSystemController::class, 'acceptance'])->name('acceptance');
 
+            Route::post('/bulk-acceptance', [MaintenanceSystemController::class, 'bulkAcceptance'])->name('bulk-acceptance');
+
             Route::put('/update-actual-duration/{id}', [MaintenanceSystemController::class, 'updateActualDuration'])
                 ->name('update-actual-duration');
 

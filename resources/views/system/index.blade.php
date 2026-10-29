@@ -22,6 +22,12 @@
                         <i class="bi bi-plus-circle"></i> Thêm mới
                     </button>
                 @endcan
+                @role('admin')
+                <button type="button" class="btn btn-outline-secondary flex-fill mt-2 mt-md-0"
+                    data-bs-toggle="modal" data-bs-target="#bulkAcceptanceModal">
+                    Nghiệm thu
+                </button>
+                @endrole
             </div>
         </div>
 
@@ -176,6 +182,7 @@
     {{-- Modal --}}
     @include('system.modals.modal')
     @include('system.modals.acceptance')
+    @include('system.modals.bulk-acceptance')
     @include('system.modals.change-status-admin')
     @include('system.modals.update-tech')
     <script>
